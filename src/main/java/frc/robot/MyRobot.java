@@ -21,7 +21,7 @@ import com.revrobotics.ColorSensorV3;
  */
 public abstract class MyRobot extends AllRobots {
     Drivetrain drivetrain;
-    Shooter shooter;
+    //Shooter shooter;
 
     // Sprak Max CAN IDs
     final int CANMcleftDriveFront = 1;
@@ -51,11 +51,13 @@ public abstract class MyRobot extends AllRobots {
     public void MyRobotInit() {
         
         drivetrain = new Drivetrain(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
-        shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight);
+        //shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight);
         m_colorMatcher.addColorMatch(kBlueTarget);
         m_colorMatcher.addColorMatch(kGreenTarget);
         m_colorMatcher.addColorMatch(kRedTarget);
         m_colorMatcher.addColorMatch(kYellowTarget);
+
+        RechargeRobotInit();
     }
 
     @Override
@@ -97,7 +99,7 @@ public abstract class MyRobot extends AllRobots {
         SmartDashboard.putNumber("Confidence", match.confidence);
         SmartDashboard.putString("Detected Color", colorString);
 
-        SmartDashboard.putBoolean("useFixedSpeed", shooter.useFixedSpeed);
+        //SmartDashboard.putBoolean("useFixedSpeed", shooter.useFixedSpeed);
         RechargeTeleopPeriodic();
     }
 

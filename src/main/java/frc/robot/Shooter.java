@@ -93,6 +93,6 @@ public class Shooter {
             velocity = -999999;
           }
           SmartDashboard.putNumber("Current Velocity", (encoder.getVelocity()));
-          SmartDashboard.updateValues();  
+          SmartDashboard.updateValues();    
     }
 }
