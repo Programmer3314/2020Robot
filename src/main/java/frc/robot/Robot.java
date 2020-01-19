@@ -3,16 +3,18 @@ package frc.robot;
 import edu.wpi.first.networktables.NetworkTable;
 
 public class Robot extends MyRobot{
-  NetworkTable table;
+  NetworkTable ballTargetTable;
+  NetworkTable portalTapeTargetTable;
   TalonFXTest fxTest;
   DriveController driveController;
 
   @Override
   public void RechargeRobotInit() {
-    table = ntInst.getTable("Ball Target");
+    ballTargetTable = ntInst.getTable("Ball Target");
+    portalTapeTargetTable = ntInst.getTable("Retroreflective Tape Target");
     fxTest = new TalonFXTest();
     ntInst.getEntry("chooseCam").setNumber(0);
-    driveController = new DriveController(drivetrain, table);
+    driveController = new DriveController(drivetrain, ballTargetTable, portalTapeTargetTable);
   }
 
   @Override
