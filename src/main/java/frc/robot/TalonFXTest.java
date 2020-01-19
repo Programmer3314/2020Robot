@@ -68,7 +68,7 @@ public class TalonFXTest {
 
     public void Update() {
         SmartDashboard.putNumber("TalonFXReq", HumanInput.TalonFxTextSpeed);
-        fx.set(TalonFXControlMode.PercentOutput, HumanInput.TalonFxTextSpeed);
+        fx.set(TalonFXControlMode.Velocity, HumanInput.TalonFxTextSpeed*1023);
     }
 
 }

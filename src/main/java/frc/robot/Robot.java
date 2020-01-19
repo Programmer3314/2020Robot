@@ -40,6 +40,7 @@ public class Robot extends MyRobot{
 
   @Override
   public void RechargeTestPeriodic () {
+    HumanInput.update();
     fxTest.Update();
   }
 }
