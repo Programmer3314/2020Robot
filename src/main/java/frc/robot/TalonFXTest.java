@@ -14,6 +14,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXPIDSetConfiguration;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * Add your docs here.
  */
@@ -65,6 +67,7 @@ public class TalonFXTest {
     }
 
     public void Update() {
+        SmartDashboard.putNumber("TalonFXReq", HumanInput.TalonFxTextSpeed);
         fx.set(TalonFXControlMode.PercentOutput, HumanInput.TalonFxTextSpeed);
     }
 
