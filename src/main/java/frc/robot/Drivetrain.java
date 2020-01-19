@@ -7,6 +7,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.ControlType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Drivetrain {
     public CANSparkMax spark1, spark2, spark3, spark4, spark5, spark6;
     private CANPIDController leftPidController, rightPidController;
@@ -35,6 +37,13 @@ public class Drivetrain {
         spark5.follow(spark4);
         spark6.follow(spark4);
 
+        spark1.setSmartCurrentLimit(Constants.stallLimit, Constants.freeLimit);
+        spark2.setSmartCurrentLimit(Constants.stallLimit, Constants.freeLimit);
+        spark3.setSmartCurrentLimit(Constants.stallLimit, Constants.freeLimit);
+        spark4.setSmartCurrentLimit(Constants.stallLimit, Constants.freeLimit);
+        spark5.setSmartCurrentLimit(Constants.stallLimit, Constants.freeLimit);
+        spark6.setSmartCurrentLimit(Constants.stallLimit, Constants.freeLimit);
+
         leftPidController = spark1.getPIDController();
         rightPidController = spark4.getPIDController();
 
@@ -54,10 +63,17 @@ public class Drivetrain {
 
         leftEncoder = spark1.getEncoder();
         rightEncoder = spark4.getEncoder();
+
+        leftEncoder.setVelocityConversionFactor(1);
+        rightEncoder.setVelocityConversionFactor(1);
     }
 
     public void update(double leftSetPoint, double rightSetPoint){
         leftPidController.setReference(leftSetPoint, ControlType.kVelocity);
         rightPidController.setReference(rightSetPoint, ControlType.kVelocity);
+
+        Robot.ntInst.getEntry("RPM Left").setDouble(leftEncoder.getVelocity());
+        Robot.ntInst.getEntry("Set Point Left").setDouble(leftSetPoint);
+        SmartDashboard.putNumber("Current Flow ", spark1.getOutputCurrent());
     }
 }

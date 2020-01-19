@@ -1,0 +1,19 @@
+***Driving Mode***
+    {Motor Encoder, Gamepad Arcade Style,}
+    Chase ball{Camera turn by vision, forward from human control}
+    Drive along trench{Driver controlled speed, ultrasonic sensor, gyro, color sensor, Balls in auto, camera to get angle of trench line on side}
+    Target to high target tape{Camera to align with center of tape}
+    Align to climb{Gyro to be perpindicular to bar}
+    Line up from Control Panel{Weight sensor to detect when hood rips off and back up 2 feet}
+
+***Other Things***
+    Pickup ball{Sensor for where the ball is in the intake, Motor ecoder, }
+    Shoot{Adjust hood, Adjust motor speed (range) 
+    Sensors{Motor Encoder, Prox. Sensor(s) for up and down pos}}
+    Climb{Motor Encoder, Index of climber, Sensor for bar Leveling, Sensor for off ground}
+    Manage queueing balls (to shooter)
+    Spin Control Panel{Sensor for position of spinner motor, Motor Encoder, Color sensor(s), Camera?,  }
+    Move along climbing bar
+    Control shooter hood
+    Driver camera Control{Switching camera, Draw on camera that is chosen }
+    

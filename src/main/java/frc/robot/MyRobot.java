@@ -33,9 +33,6 @@ public abstract class MyRobot extends AllRobots {
     final int CANMcshooterLeft = 7;
     final int CANMcshooterRight = 8;
     final int CANMcctrlPanel = 67;
-    // Controller USB Input
-    final int xboxControllerUSBPort = 5;
-    final int stickUSBPort = 4;
 
     // Color Sensor
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -56,6 +53,7 @@ public abstract class MyRobot extends AllRobots {
         m_colorMatcher.addColorMatch(kGreenTarget);
         m_colorMatcher.addColorMatch(kRedTarget);
         m_colorMatcher.addColorMatch(kYellowTarget);
+        
 
         RechargeRobotInit();
     }
