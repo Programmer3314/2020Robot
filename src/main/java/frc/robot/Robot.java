@@ -1,8 +1,6 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.Joystick;
 
 public class Robot extends MyRobot{
   NetworkTable table;
