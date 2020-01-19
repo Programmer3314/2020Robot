@@ -8,11 +8,13 @@ public class Robot extends MyRobot{
   private Joystick xboxController = new Joystick(xboxControllerUSBPort);
   private Joystick stick = new Joystick(stickUSBPort);
   NetworkTable table;
+  TalonFXTest fxTest;
 
   @Override
   public void RechargeRobotInit() {
     // TODO Auto-generated method stub
     table = ntInst.getTable("Ball Target");
+    fxTest = new TalonFXTest(xboxController);
   }
 
   @Override
@@ -63,5 +65,6 @@ public class Robot extends MyRobot{
 
   @Override
   public void RechargeTestPeriodic () {
+    fxTest.Update();
   }
 }
