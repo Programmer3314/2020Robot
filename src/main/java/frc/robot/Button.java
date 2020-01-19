@@ -7,18 +7,27 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
+
 /**
  * Add your docs here.
  */
-public class Constants{
-    public static final double kP = 1.6e-5;//5e-5;
-    public static final double kI = 0;
-    public static final double kD = 0; 
-    public static final double kIz = 0; 
-    public static final double kFF = 1.9e-4; 
-    public static final double kMaxOutput = 1; 
-    public static final double kMinOutput = -1;
-    public static final double maxRPM = 5700;
-    public static final int stallLimit = 20;
-    public static final int freeLimit = 20;
+public class Button implements BooleanSource{
+    Joystick controller;
+    int buttonID;
+    
+    public Button(Joystick controller, int buttonIndex){
+        this.controller = controller;
+        buttonID = buttonIndex;
+    }
+
+    public boolean getButtonValue(){
+        return controller.getRawButton(buttonID);
+    
+    }
+
+    @Override
+    public boolean getBoolean() {
+        return getButtonValue();
+    }
 }

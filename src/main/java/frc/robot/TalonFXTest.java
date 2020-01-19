@@ -21,11 +21,10 @@ public class TalonFXTest {
 TalonFX fx;
 TalonFXConfiguration fxconfig;
 TalonFXPIDSetConfiguration fxpid;
-Joystick joystick;
 
-public TalonFXTest(Joystick joystick) {
+public TalonFXTest() {
 
-    this.joystick = joystick;
+    //this.joystick = joystick;
     //fxconfig = new TalonFXConfiguration();
     fx = new TalonFX(21);
     fx.configFactoryDefault();
@@ -54,7 +53,7 @@ public TalonFXTest(Joystick joystick) {
 }
 
 public void Update() {
-    double value = joystick.getRawAxis(3);
+    double value = HumanInput.driverController.getRawAxis(3);
     fx.set(TalonFXControlMode.PercentOutput, value);
 }
 
