@@ -9,7 +9,6 @@ public class Robot extends MyRobot{
 
   @Override
   public void RechargeRobotInit() {
-    // TODO Auto-generated method stub
     table = ntInst.getTable("Ball Target");
     fxTest = new TalonFXTest();
     ntInst.getEntry("chooseCam").setNumber(0);
