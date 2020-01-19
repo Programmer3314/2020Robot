@@ -37,29 +37,29 @@ public class Drivetrain {
         spark5.follow(spark4);
         spark6.follow(spark4);
 
-        spark1.setSmartCurrentLimit(Constants.stallLimit, Constants.freeLimit);
-        spark2.setSmartCurrentLimit(Constants.stallLimit, Constants.freeLimit);
-        spark3.setSmartCurrentLimit(Constants.stallLimit, Constants.freeLimit);
-        spark4.setSmartCurrentLimit(Constants.stallLimit, Constants.freeLimit);
-        spark5.setSmartCurrentLimit(Constants.stallLimit, Constants.freeLimit);
-        spark6.setSmartCurrentLimit(Constants.stallLimit, Constants.freeLimit);
+        spark1.setSmartCurrentLimit(Constants.motorControllerStallLimit, Constants.motorControllerFreeLimit);
+        spark2.setSmartCurrentLimit(Constants.motorControllerStallLimit, Constants.motorControllerFreeLimit);
+        spark3.setSmartCurrentLimit(Constants.motorControllerStallLimit, Constants.motorControllerFreeLimit);
+        spark4.setSmartCurrentLimit(Constants.motorControllerStallLimit, Constants.motorControllerFreeLimit);
+        spark5.setSmartCurrentLimit(Constants.motorControllerStallLimit, Constants.motorControllerFreeLimit);
+        spark6.setSmartCurrentLimit(Constants.motorControllerStallLimit, Constants.motorControllerFreeLimit);
 
         leftPidController = spark1.getPIDController();
         rightPidController = spark4.getPIDController();
 
-        leftPidController.setP(Constants.kP);
-        leftPidController.setI(Constants.kI);
-        leftPidController.setD(Constants.kD);
-        leftPidController.setIZone(Constants.kIz);
-        leftPidController.setFF(Constants.kFF);
-        leftPidController.setOutputRange(Constants.kMinOutput, Constants.kMaxOutput);
+        leftPidController.setP(Constants.driveTrainkP);
+        leftPidController.setI(Constants.driveTrainkI);
+        leftPidController.setD(Constants.driveTrainkD);
+        leftPidController.setIZone(Constants.driveTrainkIz);
+        leftPidController.setFF(Constants.driveTrainkFF);
+        leftPidController.setOutputRange(Constants.driveTrainkMinOutput, Constants.driveTrainkMaxOutput);
 
-        rightPidController.setP(Constants.kP);
-        rightPidController.setI(Constants.kI);
-        rightPidController.setD(Constants.kD);
-        rightPidController.setIZone(Constants.kIz);
-        rightPidController.setFF(Constants.kFF);
-        rightPidController.setOutputRange(Constants.kMinOutput, Constants.kMaxOutput);
+        rightPidController.setP(Constants.driveTrainkP);
+        rightPidController.setI(Constants.driveTrainkI);
+        rightPidController.setD(Constants.driveTrainkD);
+        rightPidController.setIZone(Constants.driveTrainkIz);
+        rightPidController.setFF(Constants.driveTrainkFF);
+        rightPidController.setOutputRange(Constants.driveTrainkMinOutput, Constants.driveTrainkMaxOutput);
 
         leftEncoder = spark1.getEncoder();
         rightEncoder = spark4.getEncoder();

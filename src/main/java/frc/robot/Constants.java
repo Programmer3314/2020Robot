@@ -11,14 +11,24 @@ package frc.robot;
  * Add your docs here.
  */
 public class Constants{
-    public static final double kP = 1.6e-5;//5e-5;
-    public static final double kI = 0;
-    public static final double kD = 0; 
-    public static final double kIz = 0; 
-    public static final double kFF = 1.9e-4; 
-    public static final double kMaxOutput = 1; 
-    public static final double kMinOutput = -1;
+    //Motor PID Control
+    public static final double driveTrainkP = 1.6e-5;//5e-5;
+    public static final double driveTrainkI = 0;
+    public static final double driveTrainkD = 0; 
+    public static final double driveTrainkIz = 0; 
+    public static final double driveTrainkFF = 1.9e-4; 
+    public static final double driveTrainkMaxOutput = 1; 
+    public static final double driveTrainkMinOutput = -1;
+
+    //Motor Controllers
+    public static final int motorControllerStallLimit = 20;
+    public static final int motorControllerFreeLimit = 20;
+    
+    //Power Port
+    public static final double powerPortTolerance = 5;
+    public static final double powerPortkP = 0.0013;
+    public static final double powerPortkD = 0.04;
+
+    //Motors
     public static final double maxRPM = 5700;
-    public static final int stallLimit = 20;
-    public static final int freeLimit = 20;
 }

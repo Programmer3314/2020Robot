@@ -32,8 +32,8 @@ public class DriveController {
         this.drivetrain = drivetrain;
         this.ballTargetTable = ballTargetTable;
         this.retroTapeTable = retrotapeTable;
-        powerPortTracking = new PDController(0.0013, 0.04);
-        powerPortTracking.setToleranceValue(5);
+        powerPortTracking = new PDController(Constants.powerPortkP, Constants.powerPortkD);
+        powerPortTracking.setToleranceValue(Constants.powerPortTolerance);
     }
 
     public void update() {
