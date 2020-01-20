@@ -29,7 +29,7 @@ public class PDController {
         currentError = actualPoint - setPoint;
 
         if (Math.abs(currentError) < toleranceValue) {
-            correction = 0;
+            correction = 0.5;
         } else {
             if (isLastErrorSet) {
                 correction = currentError * kP + (currentError - lastError) * kD;

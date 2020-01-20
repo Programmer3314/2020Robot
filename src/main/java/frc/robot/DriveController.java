@@ -18,7 +18,7 @@ public class DriveController {
     int scale = 1;
     boolean isForward = true;
     int camNum = 0;
-    PDController powerPortTracking;
+    PDController powerPortTracking, ballTracking;
 
     public enum DriveState {
         MANUAL, BALLCHASE, POWERPORTALIGNMENT, CLIMBALIGNMENT, CONTROLPANELALIGNMENT
@@ -34,6 +34,8 @@ public class DriveController {
         this.retroTapeTable = retrotapeTable;
         powerPortTracking = new PDController(Constants.powerPortkP, Constants.powerPortkD);
         powerPortTracking.setToleranceValue(Constants.powerPortTolerance);
+        ballTracking = new PDController(Constants.ballkP, Constants.ballkD);
+        ballTracking.setToleranceValue(Constants.ballTolerance);
     }
 
     public void update() {
@@ -64,7 +66,9 @@ public class DriveController {
             if (ballTargetTable.getEntry("Target Found").getBoolean(false)) {
                 double centerX = ballTargetTable.getEntry("x").getDouble(0);
                 forward = HumanInput.forward;
-                turn = centerX / 1000.0;
+                turn = powerPortTracking.calculate(0, centerX);
+            }else{
+                ballTracking.reset();
             }
 
             break;

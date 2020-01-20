@@ -20,15 +20,20 @@ public class Constants{
     public static final double driveTrainkMaxOutput = 1; 
     public static final double driveTrainkMinOutput = -1;
 
+    //Motors
+    public static final double maxRPM = 5700;
+
     //Motor Controllers
     public static final int motorControllerStallLimit = 20;
     public static final int motorControllerFreeLimit = 20;
     
     //Power Port
-    public static final double powerPortTolerance = 5;
+    public static final double powerPortTolerance = 20;
     public static final double powerPortkP = 0.0013;
     public static final double powerPortkD = 0.04;
 
-    //Motors
-    public static final double maxRPM = 5700;
+    //Ball Chasing
+    public static final double ballTolerance = 0;
+    public static final double ballkP = 0.0013;
+    public static final double ballkD = 0.004;
 }
