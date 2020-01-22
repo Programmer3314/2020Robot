@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
@@ -14,6 +15,7 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.SPI;
 
 /**
  * Add your docs here.
@@ -21,6 +23,9 @@ import edu.wpi.first.wpilibj.util.Color;
 public abstract class MyRobot extends AllRobots {
     Drivetrain drivetrain;
     //Shooter shooter;
+
+    public static AHRS navx;
+    public static double gyro;
 
     // Sprak Max CAN IDs
     final int CANMcleftDriveFront = 1;
@@ -46,6 +51,9 @@ public abstract class MyRobot extends AllRobots {
     @Override
     public void MyRobotInit() {
         
+        navx = new AHRS(SPI.Port.kMXP);
+        navx.reset();
+
         drivetrain = new Drivetrain(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
         //shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight);
         m_colorMatcher.addColorMatch(kBlueTarget);
@@ -64,6 +72,7 @@ public abstract class MyRobot extends AllRobots {
 
     @Override
     public void MyAutonomousPeriodic() {
+        gyro = navx.getAngle();
         RechargeAutonomousPeriodic();
     }
 
@@ -77,6 +86,7 @@ public abstract class MyRobot extends AllRobots {
         Color detectedColor = m_colorSensor.getColor();
         String colorString;
         ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
+        gyro = navx.getAngle();
 
         if (match.color == kBlueTarget) {
             colorString = "Blue";
@@ -107,6 +117,7 @@ public abstract class MyRobot extends AllRobots {
 
     @Override
     public void MyTestPeriodic() {
+        gyro = navx.getAngle();
         RechargeTestPeriodic();
     }
 

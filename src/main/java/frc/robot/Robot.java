@@ -31,6 +31,7 @@ public class Robot extends MyRobot{
 
   @Override
   public void RechargeTeleopPeriodic() {
+    
     HumanInput.update();
     driveController.update();
     //shooter.update(stick, xboxController);

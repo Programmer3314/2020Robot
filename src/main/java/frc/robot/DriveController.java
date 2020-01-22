@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -26,7 +28,7 @@ public class DriveController {
 
     private DriveState currentDriveState = DriveState.MANUAL;
     private Drivetrain drivetrain;
-    private double forward, turn;
+    private double forward, turn, angleOffset;
 
     public DriveController(Drivetrain drivetrain, NetworkTable ballTargetTable, NetworkTable retrotapeTable) {
         this.drivetrain = drivetrain;
@@ -34,6 +36,7 @@ public class DriveController {
         this.retroTapeTable = retrotapeTable;
         powerPortTracking = new PDController(Constants.powerPortkP, Constants.powerPortkD);
         powerPortTracking.setToleranceValue(Constants.powerPortTolerance);
+        powerPortTracking.setMinCorrectionValue(0.04);
         ballTracking = new PDController(Constants.ballkP, Constants.ballkD);
         ballTracking.setToleranceValue(Constants.ballTolerance);
     }
@@ -42,6 +45,11 @@ public class DriveController {
         if (HumanInput.ballChaseButton) {
             currentDriveState = DriveState.BALLCHASE;
         } else if (HumanInput.powerPortAlignmentButton) {
+            if(HumanInput.powerPortAlignmentButtonPressed){
+                angleOffset = retroTapeTable.getEntry("X Angle").getDouble(0);
+                retroTapeTable.getEntry("gyro").setDouble(Robot.gyro);
+                angleOffset += Robot.gyro;
+            }
             currentDriveState = DriveState.POWERPORTALIGNMENT;
         } else if (HumanInput.controlPanelAlignmentButton) {
             currentDriveState = DriveState.CONTROLPANELALIGNMENT;
@@ -66,7 +74,7 @@ public class DriveController {
             if (ballTargetTable.getEntry("Target Found").getBoolean(false)) {
                 double centerX = ballTargetTable.getEntry("x").getDouble(0);
                 forward = HumanInput.forward;
-                turn = powerPortTracking.calculate(0, centerX);
+                turn = ballTracking.calculate(0, centerX);
             }else{
                 ballTracking.reset();
             }
@@ -79,10 +87,22 @@ public class DriveController {
             if (retroTapeTable.getEntry("Retroreflective Target Found") == null)
                 System.out.print("Retro Tape Entry is Null");
 
+            // if (retroTapeTable.getEntry("Retroreflective Target Found").getBoolean(false)) {
+            //     double centerX = retroTapeTable.getEntry("Retro x").getDouble(0);
+            //     forward = HumanInput.forward;
+            //     turn = powerPortTracking.calculate(0, centerX);
+            // }else{
+            //     powerPortTracking.reset();
+            // }
+
             if (retroTapeTable.getEntry("Retroreflective Target Found").getBoolean(false)) {
-                double centerX = retroTapeTable.getEntry("Retro x").getDouble(0);
+                
+                //double angleOffset = retroTapeTable.getEntry("X Angle").getDouble(0);
+                retroTapeTable.getEntry("Set Point").setDouble(angleOffset);
+                retroTapeTable.getEntry("Actual Point").setDouble(Robot.gyro);
                 forward = HumanInput.forward;
-                turn = powerPortTracking.calculate(0, centerX);
+                turn = powerPortTracking.calculate(angleOffset, Robot.gyro);
+                retroTapeTable.getEntry("PD turn").setDouble(powerPortTracking.calculate(angleOffset, Robot.gyro));
             }else{
                 powerPortTracking.reset();
             }
@@ -111,6 +131,8 @@ public class DriveController {
 
             Robot.ntInst.getEntry("chooseCam").setNumber(camNum);
         }
+
+        retroTapeTable.getEntry("Turn value").setDouble(turn);
 
         double leftSetPoint = (forward * scale - turn * 0.5) * Constants.maxRPM;
         double rightSetPoint = (forward * scale + turn * 0.5) * Constants.maxRPM;

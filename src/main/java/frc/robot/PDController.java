@@ -18,6 +18,7 @@ public class PDController {
     private double correction;
     private double toleranceValue;
     private boolean isLastErrorSet;
+    private double minCorrectionVal;
 
     public PDController(double newKP, double newKD) {
         kP = newKP;
@@ -26,19 +27,26 @@ public class PDController {
     }
 
     public double calculate(double setPoint, double actualPoint) {
-        currentError = actualPoint - setPoint;
+        currentError = setPoint - actualPoint;
 
         if (Math.abs(currentError) < toleranceValue) {
-            correction = 0.5;
+            correction = 0;
         } else {
             if (isLastErrorSet) {
                 correction = currentError * kP + (currentError - lastError) * kD;
             }else{
                 correction = currentError * kP;
             }
+
+            if(Math.abs(correction) < minCorrectionVal){
+                correction = minCorrectionVal * Math.signum(correction);
+            }
         }
 
+
+
         lastError = currentError;
+        isLastErrorSet = true;
         return correction;
     }
 
@@ -46,6 +54,9 @@ public class PDController {
         toleranceValue = tolerance;
     }
 
+    public void setMinCorrectionValue(double minCorrection){
+        minCorrectionVal = minCorrection;
+    }
     public void reset() {
         isLastErrorSet = false;
     }

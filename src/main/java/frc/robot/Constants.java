@@ -28,9 +28,9 @@ public class Constants{
     public static final int motorControllerFreeLimit = 20;
     
     //Power Port
-    public static final double powerPortTolerance = 20;
-    public static final double powerPortkP = 0.0013;
-    public static final double powerPortkD = 0.04;
+    public static final double powerPortTolerance = 0.5;
+    public static final double powerPortkP = 0.0225;
+    public static final double powerPortkD = 0;//0.04;
 
     //Ball Chasing
     public static final double ballTolerance = 0;
