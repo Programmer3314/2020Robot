@@ -42,6 +42,7 @@ public class Shooter {
         shooterLeft.restoreFactoryDefaults();
         shooterRight.restoreFactoryDefaults();
 
+        //TODO: Make Conststants
         shooterLeft.setSmartCurrentLimit(40, 40);
         shooterRight.setSmartCurrentLimit(40, 40);
 
@@ -49,6 +50,7 @@ public class Shooter {
         shooterRight.setIdleMode(IdleMode.kCoast);
 
         encoder = shooterLeft.getEncoder();
+        //TODO: Add Constant
         encoder.setVelocityConversionFactor(1.0);
 
         
@@ -64,6 +66,8 @@ public class Shooter {
         
         shootSpeed = 0;
 
+            //TODO: Change to use HumanInput (throughout class)
+            //TODO: Eliminate the need for xboxController parameter
             double throttleSpeed = stick.getRawAxis(2)*1.0;
             double stickSpeed = stick.getRawAxis(1)*1.0;
 

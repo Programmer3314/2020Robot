@@ -10,9 +10,6 @@ package frc.robot;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 
-/**
- * Add your docs here.
- */
 public abstract class AllRobots extends TimedRobot {
     public static NetworkTableInstance ntInst;
 

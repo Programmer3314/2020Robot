@@ -9,9 +9,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 
-/**
- * Add your docs here.
- */
 public class Button implements BooleanSource{
     Joystick controller;
     int buttonID;

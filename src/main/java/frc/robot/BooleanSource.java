@@ -7,9 +7,6 @@
 
 package frc.robot;
 
-/**
- * Add your docs here.
- */
 public interface BooleanSource {
     public boolean getBoolean();
 }

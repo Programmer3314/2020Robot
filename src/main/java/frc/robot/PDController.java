@@ -7,9 +7,8 @@
 
 package frc.robot;
 
-/**
- * Add your docs here.
- */
+//TODO: Add maxCorrectionVal functionallity
+
 public class PDController {
     private double kP;
     private double kD;
@@ -42,8 +41,6 @@ public class PDController {
                 correction = minCorrectionVal * Math.signum(correction);
             }
         }
-
-
 
         lastError = currentError;
         isLastErrorSet = true;

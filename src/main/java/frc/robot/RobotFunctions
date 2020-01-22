@@ -46,35 +46,6 @@
 
 Tasks:
 
-TODO:
-PDController was not pushed to the repo
-
-TODO:
-Computing target angle: 
- // In pseudocode.
-
-// Compute focal length in pixels from FOV
-double f = (0.5 * image_width) / tan(0.5 * fov_radians);
-
-// Vectors subtending image center and pixel from optical center
-// in camera coordinates.
-// -- in our case (x - center_x) is handled by the Pi
-// -- we only want the horizontal angle, so the y-center_y
-//    should be ignored (0)
-Vector3D center(0, 0, f), pixel(x - center_x, y - center_y, f);
-
-// angle between vector (0, 0, f) and pixel
-// -- the dot_product of (a,b,c) and (d,e,f) = a*d+b*e+c*f
-//    in this case a & b are always 0, so this dot product = f*f;
-// -- the dot product is always positive 
-//    so the answer should get the sign (+/-)  
-//    of the original x
-double dot = dot_product(center, pixel)
-double alpha = acos(dot / (center.length() * pixel.length()));   
-
-TODO:
-For fixed targets (Power Port): 
-Let's try wrapping PDController in another class that 
-grabs the gyro angle and the target offset and move to that 
-angle based on the gyro. 
-
+Follow instructions to train a neural net based on the First/WPI dataset
+Clean up TODOs - They show up in the "Problems window" below.
+Mihir: Review Double Tap rational with others. 

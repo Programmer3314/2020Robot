@@ -17,9 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.SPI;
 
-/**
- * Add your docs here.
- */
 public abstract class MyRobot extends AllRobots {
     Drivetrain drivetrain;
     //Shooter shooter;
@@ -61,7 +58,6 @@ public abstract class MyRobot extends AllRobots {
         m_colorMatcher.addColorMatch(kRedTarget);
         m_colorMatcher.addColorMatch(kYellowTarget);
         
-
         RechargeRobotInit();
     }
 

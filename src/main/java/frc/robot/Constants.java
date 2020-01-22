@@ -7,9 +7,6 @@
 
 package frc.robot;
 
-/**
- * Add your docs here.
- */
 public class Constants{
     //Motor PID Control
     public static final double driveTrainkP = 1.6e-5;//5e-5;
