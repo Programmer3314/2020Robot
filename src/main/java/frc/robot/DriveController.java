@@ -36,14 +36,21 @@ public class DriveController {
         this.retroTapeTable = retrotapeTable;
         powerPortTracking = new PDController(Constants.powerPortkP, Constants.powerPortkD);
         powerPortTracking.setToleranceValue(Constants.powerPortTolerance);
-        //TODO: Create Constant 
-        powerPortTracking.setMinCorrectionValue(0.04);
+        powerPortTracking.setMaxCorrectionValue(Constants.maxCorrection);
+        powerPortTracking.setMinCorrectionValue(Constants.minCorrection);
         ballTracking = new PDController(Constants.ballkP, Constants.ballkD);
         ballTracking.setToleranceValue(Constants.ballTolerance);
+        ballTracking.setMaxCorrectionValue(Constants.maxCorrection);
+        ballTracking.setMinCorrectionValue(Constants.minCorrection);
     }
 
     public void update() {
         if (HumanInput.ballChaseButton) {
+            // if(HumanInput.powerPortAlignmentButtonPressed){
+            //     angleOffset = ballTargetTable.getEntry("x").getDouble(0);
+            //     ballTargetTable.getEntry("gyro").setDouble(Robot.gyro);
+            //     angleOffset += Robot.gyro;
+            // }
             currentDriveState = DriveState.BALLCHASE;
         } else if (HumanInput.powerPortAlignmentButton) {
             if(HumanInput.powerPortAlignmentButtonPressed){
@@ -75,10 +82,24 @@ public class DriveController {
             if (ballTargetTable.getEntry("Target Found").getBoolean(false)) {
                 double centerX = ballTargetTable.getEntry("x").getDouble(0);
                 forward = HumanInput.forward;
-                turn = ballTracking.calculate(0, centerX);
+                turn = -ballTracking.calculate(0, centerX);
             }else{
                 ballTracking.reset();
             }
+
+            // if (ballTargetTable.getEntry("Target Found").getBoolean(false)) {
+                
+            //     //double angleOffset = ballTargetTable.getEntry("X Angle").getDouble(0);
+            //     ballTargetTable.getEntry("Set Point").setDouble(angleOffset);
+            //     ballTargetTable.getEntry("Actual Point").setDouble(Robot.gyro);
+            //     forward = HumanInput.forward;
+            //     turn = ballTracking.calculate(angleOffset, Robot.gyro);
+            //     ballTargetTable.getEntry("PD turn").setDouble(ballTracking.calculate(angleOffset, Robot.gyro));
+            // }else{
+            //     ballTracking.reset();
+            // }
+
+            SmartDashboard.putNumber("Turn output Value: ", turn);
 
             break;
         case POWERPORTALIGNMENT:

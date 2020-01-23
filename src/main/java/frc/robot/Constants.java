@@ -7,6 +7,9 @@
 
 package frc.robot;
 
+/**
+ * Add your docs here.
+ */
 public class Constants{
     //Motor PID Control
     public static final double driveTrainkP = 1.6e-5;//5e-5;
@@ -19,6 +22,8 @@ public class Constants{
 
     //Motors
     public static final double maxRPM = 5700;
+    public static final double maxCorrection = 0.2;
+    public static final double minCorrection = 0.04;
 
     //Motor Controllers
     public static final int motorControllerStallLimit = 20;
@@ -30,7 +35,7 @@ public class Constants{
     public static final double powerPortkD = 0;//0.04;
 
     //Ball Chasing
-    public static final double ballTolerance = 0;
-    public static final double ballkP = 0.0013;
-    public static final double ballkD = 0.004;
+    public static final double ballTolerance = 8;
+    public static final double ballkP = 0.0008;//.00065->.0009->.0008
+    public static final double ballkD = 0.0009;//.00009->.0009
 }
