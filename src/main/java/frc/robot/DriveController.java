@@ -155,6 +155,7 @@ public class DriveController {
         }
 
         retroTapeTable.getEntry("Turn value").setDouble(turn);
+        SmartDashboard.putNumber("Forward Value", forward);
 
         double leftSetPoint = (forward * scale - turn * 0.5) * Constants.maxRPM;
         double rightSetPoint = (forward * scale + turn * 0.5) * Constants.maxRPM;
