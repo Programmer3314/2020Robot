@@ -7,6 +7,7 @@ public class Robot extends MyRobot{
   NetworkTable portalTapeTargetTable;
   TalonFXTest fxTest;
   DriveController driveController;
+  BagMotorTest test;
 
   @Override
   public void RechargeRobotInit() {
@@ -15,6 +16,7 @@ public class Robot extends MyRobot{
     fxTest = new TalonFXTest();
     ntInst.getEntry("chooseCam").setNumber(0);
     driveController = new DriveController(drivetrain, ballTargetTable, portalTapeTargetTable);
+    test = new BagMotorTest();
   }
 
   @Override
@@ -34,6 +36,7 @@ public class Robot extends MyRobot{
     
     HumanInput.update();
     driveController.update();
+    test.update();
     //shooter.update(stick, xboxController);
   }
 

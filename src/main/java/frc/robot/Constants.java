@@ -21,7 +21,8 @@ public class Constants{
     public static final double driveTrainkMinOutput = -1;
 
     //Motors
-    public static final double maxRPM = 5700;
+    public static final double maxRPMNeo = 5700;
+    public static final double maxRPMFX = 6380;
     public static final double maxCorrection = 0.2;
     public static final double minCorrection = 0.04;
 

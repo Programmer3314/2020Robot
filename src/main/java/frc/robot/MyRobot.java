@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.SPI;
 
 public abstract class MyRobot extends AllRobots {
-    Drivetrain drivetrain;
+    IDriveTrain drivetrain;
     //Shooter shooter;
 
     public static AHRS navx;
@@ -51,7 +51,7 @@ public abstract class MyRobot extends AllRobots {
         navx = new AHRS(SPI.Port.kMXP);
         navx.reset();
 
-        drivetrain = new Drivetrain(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
+        drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
         //shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight);
         m_colorMatcher.addColorMatch(kBlueTarget);
         m_colorMatcher.addColorMatch(kGreenTarget);

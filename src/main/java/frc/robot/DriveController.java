@@ -27,10 +27,10 @@ public class DriveController {
     }
 
     private DriveState currentDriveState = DriveState.MANUAL;
-    private Drivetrain drivetrain;
+    private IDriveTrain drivetrain;
     private double forward, turn, angleOffset;
 
-    public DriveController(Drivetrain drivetrain, NetworkTable ballTargetTable, NetworkTable retrotapeTable) {
+    public DriveController(IDriveTrain drivetrain, NetworkTable ballTargetTable, NetworkTable retrotapeTable) {
         this.drivetrain = drivetrain;
         this.ballTargetTable = ballTargetTable;
         this.retroTapeTable = retrotapeTable;
@@ -157,8 +157,8 @@ public class DriveController {
         retroTapeTable.getEntry("Turn value").setDouble(turn);
         SmartDashboard.putNumber("Forward Value", forward);
 
-        double leftSetPoint = (forward * scale - turn * 0.5) * Constants.maxRPM;
-        double rightSetPoint = (forward * scale + turn * 0.5) * Constants.maxRPM;
+        double leftSetPoint = (forward * scale - turn * 0.5);
+        double rightSetPoint = (forward * scale + turn * 0.5);
 
         drivetrain.update(leftSetPoint, rightSetPoint);
     }

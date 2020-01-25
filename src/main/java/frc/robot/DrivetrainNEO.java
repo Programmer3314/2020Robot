@@ -9,13 +9,13 @@ import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Drivetrain {
+public class DrivetrainNEO implements IDriveTrain {
     public CANSparkMax spark1, spark2, spark3, spark4, spark5, spark6;
     private CANPIDController leftPidController, rightPidController;
     private CANEncoder leftEncoder, rightEncoder;
 
 
-    public Drivetrain( int leftDriveFront, int leftDriveMiddle, int leftDriveBack, int rightDriveFront, int rightDriveMiddle, int rightDriveBack){
+    public DrivetrainNEO( int leftDriveFront, int leftDriveMiddle, int leftDriveBack, int rightDriveFront, int rightDriveMiddle, int rightDriveBack){
         spark1 = new CANSparkMax(leftDriveFront, CANSparkMaxLowLevel.MotorType.kBrushless);
         spark2 = new CANSparkMax(leftDriveMiddle, CANSparkMaxLowLevel.MotorType.kBrushless);
         spark3 = new CANSparkMax(leftDriveBack, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -68,9 +68,10 @@ public class Drivetrain {
         rightEncoder.setVelocityConversionFactor(1);
     }
 
+    @Override
     public void update(double leftSetPoint, double rightSetPoint){
-        leftPidController.setReference(leftSetPoint, ControlType.kVelocity);
-        rightPidController.setReference(rightSetPoint, ControlType.kVelocity);
+        leftPidController.setReference(leftSetPoint * Constants.maxRPMNeo, ControlType.kVelocity);
+        rightPidController.setReference(rightSetPoint * Constants.maxRPMNeo, ControlType.kVelocity);
 
         Robot.ntInst.getEntry("RPM Left").setDouble(leftEncoder.getVelocity());
         Robot.ntInst.getEntry("Set Point Left").setDouble(leftSetPoint);

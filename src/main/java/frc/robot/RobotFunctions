@@ -1,8 +1,8 @@
 ***Actions***
-Control Panel | turn 3 - 5 | color sensor | Camera
-Climb | motors | enocder and switch || 2 switches | 2 Lasers - Bar is level when it breaks both Sensors
+Control Panel | revolutions 3 - 5 | color sensor | Camera
+Climb | mini SIM | enocder and switch || 2 switches | 2 Lasers - Bar is level when it breaks both Sensors
 shooter | control convey belt | motor brush | motor controller | encoder | 
-ball Queuing | 
+ball Queuing | mini sim | 
 
 
 ***Motors & Encoders***
@@ -10,15 +10,22 @@ ball Queuing |
 4 Falcons | Drive Train
 2 Neos | Shooter
 1 Mini Sim | Brushed Motor | Intake
+1/2 Motor | Intake Track
 1 Mini Sim | Move on Climber Bar
 1 Bag Motor | Control Panel | 
 1 <= ??? motor(s) | Queuing Balls
 
+***Sensors***
+>= 2 Pairs of Sensors | Queuing Balls | 1 before the Shooter | A few more along the tracking
 
+***Pneumatics***
+1 Small Piston | Control Panel Manipulator
 
+*****Ball Intake*****
+Mini SIM
 
-
-
+*****Ball Queuing*****
+????? Motors = using Conveyor belt to move balls in robot
 
 
 
