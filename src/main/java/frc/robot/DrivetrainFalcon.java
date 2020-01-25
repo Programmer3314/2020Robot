@@ -10,6 +10,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
@@ -32,6 +33,10 @@ public class DrivetrainFalcon implements IDriveTrain{
 
         talon2.follow(talon1);
         talon4.follow(talon3);
+
+        // for safety... let's be explicit
+        talon2.setInverted(TalonFXInvertType.FollowMaster);
+        talon4.setInverted(TalonFXInvertType.FollowMaster);
 
     }
 
@@ -68,6 +73,21 @@ public class DrivetrainFalcon implements IDriveTrain{
         fx.configAllSettings(fxconfig);
     }
 
+
+    // TODO: I think the "maxSpeed" for the falcons should be 
+    // calculated as follows:
+    // (from docs:  https://github.com/CrossTheRoadElec/Phoenix-Documentation/blob/master/source/ch14_MCSensor.rst#sensor-resolution)
+    // maxSpeed = (kMaxRPM  / 600) * (kSensorUnitsPerRotation / kGearRatio)
+    // where:
+    //  kMaxRPM is the free speed of the Falocon (6380)
+    //  kSensorUnitsPerRotation = 2048 
+    //  kGearRatio = 1 
+    //      This is the ratio of any gears between the motor and the sensor.
+    //      Since the sensor is internal to the motor there are no gears separating 
+    //      the sensor and the motor. 
+    // Please adjust the below and test. 
+    // 
+    // TODO: use parameters instead of HumanInput...
     @Override
     public void update(double leftSetPoint, double rightSetPoint) {
         talon1.set(TalonFXControlMode.Velocity, HumanInput.TalonFxTextSpeed*1023);
