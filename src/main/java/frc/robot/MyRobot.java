@@ -8,9 +8,12 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.SparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,31 +26,26 @@ public abstract class MyRobot extends AllRobots {
 
     public static AHRS navx;
     public static double gyro;
+    public boolean isFalcon, isShooter, isControlPanel, isTalonFXTest;
 
-    // Sprak Max CAN IDs
-    // final int CANMcleftDriveFront = 1;
-    // final int CANMcleftDriveMiddle = 2;
-    // final int CANMcleftDriveBack = 3;
-    // final int CANMcrightDriveFront = 4;
-    // final int CANMcrightDriveMiddle = 5;
-    // final int CANMcrightDriveBack = 6;
+    //Sprak Max CAN IDs NEO
+    final int CANMcleftDriveFront = 1;
+    final int CANMcleftDriveMiddle = 2;
+    final int CANMcleftDriveBack = 3;
+    final int CANMcrightDriveFront = 4;
+    final int CANMcrightDriveMiddle = 5;
+    final int CANMcrightDriveBack = 6;
+    final int CANMcshooterLeft = 7;
+    final int CANMcshooterRight = 8;
+
+    //Talon FX CAN IDs Falcons
     final int CANMcFalconFrontLeft = 1;
     final int CANMcFalconBackLeft = 2;
     final int CANMcFalconFrontRight = 3;
     final int CANMcFalconBackRight = 4;
-    final int CANMcshooterLeft = 7;
-    final int CANMcshooterRight = 8;
-    final int CANMcctrlPanel = 67;
-
-    // Color Sensor
-    private final I2C.Port i2cPort = I2C.Port.kOnboard;
-    private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
-
-    private final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
-    private final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
-    private final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
-    private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
-    private final ColorMatch m_colorMatcher = new ColorMatch();
+    
+    //Talon SRX CAN IDs Bag Motors
+    final int CANMcctrlPanel = 31;
 
     @Override
     public void MyRobotInit() {
@@ -55,13 +53,41 @@ public abstract class MyRobot extends AllRobots {
         navx = new AHRS(SPI.Port.kMXP);
         navx.reset();
 
-        drivetrain = new DrivetrainFalcon(CANMcFalconFrontLeft, CANMcFalconBackLeft, CANMcFalconFrontRight, CANMcFalconBackRight);
-        //drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
-        //shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight);
-        m_colorMatcher.addColorMatch(kBlueTarget);
-        m_colorMatcher.addColorMatch(kGreenTarget);
-        m_colorMatcher.addColorMatch(kRedTarget);
-        m_colorMatcher.addColorMatch(kYellowTarget);
+        String ControllerVersion="";
+
+        try {
+            CANSparkMax controllerCheck=new CANSparkMax(5, MotorType.kBrushless);
+            SmartDashboard.putString("Controller Check1","Passed");
+            if (controllerCheck==null) {
+                SmartDashboard.putString("Controller Check2","IS NULL");
+            }
+            ControllerVersion = controllerCheck.getFirmwareString();
+            SmartDashboard.putString("Controller Check 4", ControllerVersion);
+            controllerCheck.close();
+        }
+        catch(Exception cc) {
+            SmartDashboard.putString("Controller Check 3","CATCH");
+        }
+        if(ControllerVersion.equalsIgnoreCase("v0.0.0")) {
+            isFalcon = false;
+            isShooter = false;
+            isTalonFXTest = true;
+            isControlPanel = false;
+        }
+        else {
+            isFalcon = true;
+            isShooter = true;
+            isTalonFXTest = false;
+            isControlPanel = true;
+        }
+
+        if(isFalcon){
+            drivetrain = new DrivetrainFalcon(CANMcFalconFrontLeft, CANMcFalconBackLeft, CANMcFalconFrontRight, CANMcFalconBackRight);
+            SmartDashboard.putString("DriveTrain Type:", "Falcons");
+        }else{
+            drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
+            SmartDashboard.putString("DriveTrain Type:", "Neos");
+        }
         
         RechargeRobotInit();
     }
@@ -84,28 +110,7 @@ public abstract class MyRobot extends AllRobots {
 
     @Override
     public void MyTeleopPeriodic() {
-        Color detectedColor = m_colorSensor.getColor();
-        String colorString;
-        ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
         gyro = navx.getAngle();
-
-        if (match.color == kBlueTarget) {
-            colorString = "Blue";
-        } else if (match.color == kRedTarget) {
-            colorString = "Red";
-        } else if (match.color == kGreenTarget) {
-            colorString = "Green";
-        } else if (match.color == kYellowTarget) {
-            colorString = "Yellow";
-        } else {
-            colorString = "Unknown";
-        }
-
-        SmartDashboard.putNumber("Red", detectedColor.red);
-        SmartDashboard.putNumber("Green", detectedColor.green);
-        SmartDashboard.putNumber("Blue", detectedColor.blue);
-        SmartDashboard.putNumber("Confidence", match.confidence);
-        SmartDashboard.putString("Detected Color", colorString);
 
         //SmartDashboard.putBoolean("useFixedSpeed", shooter.useFixedSpeed);
         RechargeTeleopPeriodic();
