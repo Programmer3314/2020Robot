@@ -17,7 +17,7 @@ public class HumanInput {
     public static Joystick operatorController = new Joystick(4);
     public static double forward, turn;
     public static boolean controlPanelAlignmentButton, powerPortAlignmentButton, powerPortAlignmentButtonPressed, ballChaseButton, climbAlignmentButton, cameraChangeButton;
-    public static double TalonFxTextSpeed;
+    public static double TalonFxTestSpeed;
 
     public HumanInput(){
     
@@ -25,7 +25,7 @@ public class HumanInput {
 
     public static void update(){
         forward = driverController.getRawAxis(1);
-        TalonFxTextSpeed = driverController.getRawAxis(3);
+        TalonFxTestSpeed = driverController.getRawAxis(3);
         turn = driverController.getRawAxis(4);
         
         controlPanelAlignmentButton = driverController.getRawButton(1);

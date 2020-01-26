@@ -25,12 +25,16 @@ public abstract class MyRobot extends AllRobots {
     public static double gyro;
 
     // Sprak Max CAN IDs
-    final int CANMcleftDriveFront = 1;
-    final int CANMcleftDriveMiddle = 2;
-    final int CANMcleftDriveBack = 3;
-    final int CANMcrightDriveFront = 4;
-    final int CANMcrightDriveMiddle = 5;
-    final int CANMcrightDriveBack = 6;
+    // final int CANMcleftDriveFront = 1;
+    // final int CANMcleftDriveMiddle = 2;
+    // final int CANMcleftDriveBack = 3;
+    // final int CANMcrightDriveFront = 4;
+    // final int CANMcrightDriveMiddle = 5;
+    // final int CANMcrightDriveBack = 6;
+    final int CANMcFalconFrontLeft = 1;
+    final int CANMcFalconBackLeft = 2;
+    final int CANMcFalconFrontRight = 3;
+    final int CANMcFalconBackRight = 4;
     final int CANMcshooterLeft = 7;
     final int CANMcshooterRight = 8;
     final int CANMcctrlPanel = 67;
@@ -51,7 +55,8 @@ public abstract class MyRobot extends AllRobots {
         navx = new AHRS(SPI.Port.kMXP);
         navx.reset();
 
-        drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
+        drivetrain = new DrivetrainFalcon(CANMcFalconFrontLeft, CANMcFalconBackLeft, CANMcFalconFrontRight, CANMcFalconBackRight);
+        //drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
         //shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight);
         m_colorMatcher.addColorMatch(kBlueTarget);
         m_colorMatcher.addColorMatch(kGreenTarget);

@@ -14,6 +14,8 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * Add your docs here.
  */
@@ -56,15 +58,15 @@ public class DrivetrainFalcon implements IDriveTrain{
         fxconfig.peakOutputForward = 1; // [0,1]
         fxconfig.peakOutputReverse = -1; // [-1, 0]
 
-        //SupplyCurrentLimitConfiguration supplyLimit = new SupplyCurrentLimitConfiguration(true, 23.1, 25, 1.4);
-        //fxconfig.supplyCurrLimit = supplyLimit;
+        SupplyCurrentLimitConfiguration supplyLimit = new SupplyCurrentLimitConfiguration(true, 23.1, 25, 1.4);
+        fxconfig.supplyCurrLimit = supplyLimit;
         //StatorCurrentLimitConfiguration statorLimit = new StatorCurrentLimitConfiguration(true, 12.1, 87.4, 0.4);
         //fxconfig.statorCurrLimit = statorLimit;
 
-        fxconfig.slot0.kP = 5.000000; //
+        fxconfig.slot0.kP = 0.00300;//5.000000; //
         fxconfig.slot0.kI = 0.000000; //
-        fxconfig.slot0.kD = 0.020000; //
-        fxconfig.slot0.kF = 19.300000; //
+        fxconfig.slot0.kD = 0;//0.020000; //
+        fxconfig.slot0.kF = 0.050000; //
         //fxconfig.slot0.integralZone = 900; //
         fxconfig.slot0.allowableClosedloopError = 217; //
         //fxconfig.slot0.maxIntegralAccumulator = 254.000000; //
@@ -90,8 +92,12 @@ public class DrivetrainFalcon implements IDriveTrain{
     // TODO: use parameters instead of HumanInput...
     @Override
     public void update(double leftSetPoint, double rightSetPoint) {
-        talon1.set(TalonFXControlMode.Velocity, HumanInput.TalonFxTextSpeed*1023);
-        talon3.set(TalonFXControlMode.Velocity, HumanInput.TalonFxTextSpeed*1023);
+        talon1.set(TalonFXControlMode.Velocity, leftSetPoint * 21777);
+        talon3.set(TalonFXControlMode.Velocity, rightSetPoint * 21777);
+        SmartDashboard.putNumber("Left Set Point", leftSetPoint);
+        SmartDashboard.putNumber("Right Set Point", rightSetPoint);
+        SmartDashboard.putNumber("velocity of left", talon1.getSelectedSensorVelocity());
+        //talon1.set(TalonFXControlMode.PercentOutput, leftSetPoint);
+        //talon3.set(TalonFXControlMode.PercentOutput, rightSetPoint);
     }
-
 }

@@ -31,14 +31,14 @@ public class TalonFXTest {
         fx = new TalonFX(21);
         fx.configFactoryDefault();
         fx.getAllConfigs(fxconfig);
-        fxconfig.closedloopRamp = 3; // seconds to go from 0 to full in closed loop
+        fxconfig.closedloopRamp = .1; // seconds to go from 0 to full in closed loop
         fxconfig.motionAcceleration = (int) (1000.0 * 2048 / 60.0 / 10); // raw sensor units per 100 ms
         fxconfig.motionCruiseVelocity = (int) (3000.0 * 2048 / 60.0 / 10); // raw sensor units per 100 ms
         fxconfig.motionCurveStrength = 0; // 0=>Trapezoidal, 1-8 for S-Curve
         fxconfig.motionProfileTrajectoryPeriod = 50; // ms
         fxconfig.nominalOutputForward = 0; // minimum forward output
         fxconfig.nominalOutputReverse = 0; // minimum reverse output
-        fxconfig.openloopRamp = 1; // seconds to go from 0 to full in "power" mode
+        fxconfig.openloopRamp = .1; // seconds to go from 0 to full in "power" mode
         fxconfig.peakOutputForward = 1; // [0,1]
         fxconfig.peakOutputReverse = -1; // [-1, 0]
 
@@ -54,7 +54,7 @@ public class TalonFXTest {
         fxconfig.slot0.integralZone = 900; //
         fxconfig.slot0.allowableClosedloopError = 217; //
         fxconfig.slot0.maxIntegralAccumulator = 254.000000; //
-        fxconfig.slot0.closedLoopPeakOutput = 0.869990; //
+        fxconfig.slot0.closedLoopPeakOutput = 1.0; //
         //fxconfig.slot0.closedLoopPeriod = 33; //
 
         fx.configAllSettings(fxconfig);
@@ -67,8 +67,10 @@ public class TalonFXTest {
     }
 
     public void Update() {
-        SmartDashboard.putNumber("TalonFXReq", HumanInput.TalonFxTextSpeed);
-        fx.set(TalonFXControlMode.Velocity, HumanInput.TalonFxTextSpeed*1023);
+        SmartDashboard.putNumber("TalonFXReq", HumanInput.TalonFxTestSpeed);
+        //fx.set(TalonFXControlMode.Velocity, HumanInput.TalonFxTestSpeed*21777.0);
+        fx.set(TalonFXControlMode.PercentOutput, HumanInput.TalonFxTestSpeed);
+        SmartDashboard.putNumber("Measured FX Velocity",fx.getSelectedSensorVelocity());
     }
 
 }

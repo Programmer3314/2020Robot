@@ -36,7 +36,7 @@ public class Robot extends MyRobot{
     
     HumanInput.update();
     driveController.update();
-    test.update();
+    //test.update();
     //shooter.update(stick, xboxController);
   }
 
