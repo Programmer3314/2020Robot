@@ -25,6 +25,17 @@ public class ControlPanel {
   private String colorString;
   public TalonSRX talon31;
   public boolean reset;
+  public int[][] colorTable = {{0, 1, 1, -1}, {-1, 0, 1, 1}, {1, -1, 0, 1}, {1, 1, -1, 0}};
+  public SetColor currentState, nextState;
+  public int destinationColor, currentColor; 
+  public int scale;
+
+  public enum SetColor{
+    START,
+    SPINTOCOLOR,
+    SPININCOLOR,
+    DONE
+  }
 
   // Color Sensor
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -47,6 +58,9 @@ public class ControlPanel {
     m_colorMatcher.addColorMatch(kRedTarget);
     m_colorMatcher.addColorMatch(kYellowTarget);
 
+
+    currentState = SetColor.START;
+
   }
 
   public void update() {
@@ -57,14 +71,19 @@ public class ControlPanel {
 
     if (match.color == kBlueTarget) {
       colorString = "Blue";
+      currentColor = 2;
     } else if (match.color == kRedTarget) {
       colorString = "Red";
+      currentColor = 0;
     } else if (match.color == kGreenTarget) {
       colorString = "Green";
+      currentColor = 1;
     } else if (match.color == kYellowTarget) {
       colorString = "Yellow";
+      currentColor = 3;
     } else {
       colorString = "Unknown";
+      currentColor = -1;
     }
 
     SmartDashboard.putNumber("Red", detectedColor.red);
@@ -75,14 +94,19 @@ public class ControlPanel {
 
     if (HumanInput.operatorController.getRawButton(1)) {
       desiredColor = "Yellow";
+      destinationColor = 1;
     } else if (HumanInput.operatorController.getRawButton(2)) {
       desiredColor = "Blue";
+      destinationColor = 0;
     } else if (HumanInput.operatorController.getRawButton(3)) {
       desiredColor = "Red";
+      destinationColor = 2;
     } else if (HumanInput.operatorController.getRawButton(4)) {
       desiredColor = "Green";
+      destinationColor = 3;
     } else {
       desiredColor = "null";
+      destinationColor = -1;
     }
 
     SmartDashboard.putString("Desired Color", desiredColor);
@@ -95,7 +119,7 @@ public class ControlPanel {
 
     // Rotation four times
 
-    if (HumanInput.operatorController.getRawButton(6)) {
+    if (HumanInput.operatorController.getRawButtonPressed(6)) {
       if (reset) {
         talon31.setSelectedSensorPosition(0);
       }
@@ -110,6 +134,46 @@ public class ControlPanel {
       reset = true;
     }
 
+      nextState = currentState;
+    switch(currentState){
+      case START:
+            if(currentColor >=0 && destinationColor >= 0){
+                  scale = colorTable[destinationColor][currentColor];
+                  if (scale == 0){
+                    nextState = SetColor.DONE;
+                  }else{
+                    nextState = SetColor.SPINTOCOLOR;
+                  }
+            }
+        break;
+      
+      case SPINTOCOLOR:
+        if(!(colorString.equalsIgnoreCase(desiredColor))){
+          talon31.set(ControlMode.PercentOutput, (0.2)*Math.signum(scale));
+        }else{
+          talon31.setSelectedSensorPosition(0);
+          nextState = SetColor.SPININCOLOR;
+        }
+
+        break;
+
+      case SPININCOLOR:
+          if((Math.abs(talon31.getSelectedSensorPosition())<= 6437.5)){
+            talon31.set(ControlMode.PercentOutput, (0.1)*Math.signum(scale));
+          }else{
+            nextState = SetColor.DONE;
+          }
+
+        break;
+
+      case DONE:
+          talon31.set(ControlMode.PercentOutput, 0.0);
+          nextState = SetColor.START;
+        break;
+    }
+
     SmartDashboard.putNumber("Encoder Value", talon31.getSelectedSensorPosition());
+    currentState = nextState;
   }
+
 }

@@ -69,15 +69,15 @@ public abstract class MyRobot extends AllRobots {
             SmartDashboard.putString("Controller Check 3","CATCH");
         }
         if(ControllerVersion.equalsIgnoreCase("v0.0.0")) {
-            isFalcon = false;
-            isShooter = false;
-            isTalonFXTest = true;
-            isControlPanel = false;
-        }
-        else {
             isFalcon = true;
             isShooter = true;
             isTalonFXTest = false;
+            isControlPanel = false;
+        }
+        else {
+            isFalcon = false;
+            isShooter = false;
+            isTalonFXTest = true;
             isControlPanel = true;
         }
 
