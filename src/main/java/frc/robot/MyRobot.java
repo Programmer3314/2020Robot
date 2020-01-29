@@ -58,9 +58,9 @@ public abstract class MyRobot extends AllRobots {
         try {
             CANSparkMax controllerCheck=new CANSparkMax(5, MotorType.kBrushless);
             SmartDashboard.putString("Controller Check1","Passed");
-            if (controllerCheck==null) {
-                SmartDashboard.putString("Controller Check2","IS NULL");
-            }
+            // if (controllerCheck==null) {
+            //     SmartDashboard.putString("Controller Check2","IS NULL");
+            // }
             ControllerVersion = controllerCheck.getFirmwareString();
             SmartDashboard.putString("Controller Check 4", ControllerVersion);
             controllerCheck.close();

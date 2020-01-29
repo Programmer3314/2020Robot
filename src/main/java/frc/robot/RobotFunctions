@@ -67,7 +67,14 @@ Mini SIM
 
 Tasks:
 
-HOLD OFF ON THIS ITEM - Follow instructions to train a neural net based on the First/WPI dataset
-Clean up TODOs - They show up in the "Problems window" below.
-Mihir: Review Double Tap rational with others. 
-PowerCell tracking
+-Clean up TODOs - They show up in the "Problems window" below.
+-Clean up Warnings
+-There are a bunch of is... variables set based on which chassis the code is running on.
+But these variables are not fully used. For example, isShooter is set, but the shooter 
+update is commented out. On the other hand, the controlPanel "new" statement is conditioned
+but the .update isn't. Please fix all of these. You may also want to change the boolean names 
+to has... - if(hasShooter)... 
+-Gyro Drive: rotate to specified angle (most often 0 degrees), and let the driver control speed. 
+This is meant to be used to drive the trench. 
+-Gyro Distance Drive: rotate to specified angle and drive for a specified distance. 
+This is meant for autonomous. 
