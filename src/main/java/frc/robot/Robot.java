@@ -42,6 +42,9 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeTeleopInit() {
+    if (isControlPanel) {
+      controlPanel = new ControlPanel(CANMcctrlPanel);
+    }
   }
 
   @Override

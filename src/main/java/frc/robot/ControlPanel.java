@@ -24,17 +24,14 @@ public class ControlPanel {
   private String desiredColor;
   private String colorString;
   public TalonSRX talon31;
-  public boolean reset;
-  public int[][] colorTable = {{0, 1, 1, -1}, {-1, 0, 1, 1}, {1, -1, 0, 1}, {1, 1, -1, 0}};
+  public boolean reset, inFourSpins;
+  public int[][] colorTable = { { 0, 1, 2, -1 }, { -1, 0, 1, 2 }, { 2, -1, 0, 1 }, { 1, 2, -1, 0 } };
   public SetColor currentState, nextState;
-  public int destinationColor, currentColor; 
-  public int scale;
+  public int destinationColor, currentColor;
+  public int scale, colorCounter, tickMax;
 
-  public enum SetColor{
-    START,
-    SPINTOCOLOR,
-    SPININCOLOR,
-    DONE
+  public enum SetColor {
+    START, SPINTOCOLOR, SPININCOLOR, DONE
   }
 
   // Color Sensor
@@ -52,15 +49,15 @@ public class ControlPanel {
 
     talon31.configFactoryDefault();
     reset = true;
+    inFourSpins = false;
 
     m_colorMatcher.addColorMatch(kBlueTarget);
     m_colorMatcher.addColorMatch(kGreenTarget);
     m_colorMatcher.addColorMatch(kRedTarget);
     m_colorMatcher.addColorMatch(kYellowTarget);
 
-
     currentState = SetColor.START;
-
+    colorCounter = 0;
   }
 
   public void update() {
@@ -92,87 +89,100 @@ public class ControlPanel {
     SmartDashboard.putNumber("Confidence", match.confidence);
     SmartDashboard.putString("Detected Color", colorString);
 
-    if (HumanInput.operatorController.getRawButton(1)) {
-      desiredColor = "Yellow";
-      destinationColor = 1;
-    } else if (HumanInput.operatorController.getRawButton(2)) {
-      desiredColor = "Blue";
-      destinationColor = 0;
-    } else if (HumanInput.operatorController.getRawButton(3)) {
-      desiredColor = "Red";
-      destinationColor = 2;
-    } else if (HumanInput.operatorController.getRawButton(4)) {
-      desiredColor = "Green";
-      destinationColor = 3;
-    } else {
-      desiredColor = "null";
-      destinationColor = -1;
-    }
-
-    SmartDashboard.putString("Desired Color", desiredColor);
-
-    if (!colorString.equalsIgnoreCase(desiredColor) && !desiredColor.equalsIgnoreCase("null")) {
-      talon31.set(ControlMode.PercentOutput, 0.3);
-    } else {
-      talon31.set(ControlMode.PercentOutput, 0.0);
-    }
-
     // Rotation four times
 
-    if (HumanInput.operatorController.getRawButtonPressed(6)) {
-      if (reset) {
-        talon31.setSelectedSensorPosition(0);
-      }
-
+    if (HumanInput.operatorController.getRawButtonReleased(6)) {
+      inFourSpins = true;
+      talon31.setSelectedSensorPosition(0);
+    }
+    if (inFourSpins) {
       if (talon31.getSelectedSensorPosition() <= 412000) {
         talon31.set(ControlMode.PercentOutput, 0.4);
       } else {
         talon31.set(ControlMode.PercentOutput, 0.0);
+        inFourSpins = false;
       }
-      reset = false;
-    } else {
-      reset = true;
     }
 
-      nextState = currentState;
-    switch(currentState){
-      case START:
-            if(currentColor >=0 && destinationColor >= 0){
-                  scale = colorTable[destinationColor][currentColor];
-                  if (scale == 0){
-                    nextState = SetColor.DONE;
-                  }else{
-                    nextState = SetColor.SPINTOCOLOR;
-                  }
-            }
-        break;
-      
-      case SPINTOCOLOR:
-        if(!(colorString.equalsIgnoreCase(desiredColor))){
-          talon31.set(ControlMode.PercentOutput, (0.2)*Math.signum(scale));
-        }else{
-          talon31.setSelectedSensorPosition(0);
-          nextState = SetColor.SPININCOLOR;
-        }
+    nextState = currentState;
+    switch (currentState) {
+    case START:
+      if (HumanInput.operatorController.getRawButton(1)) {
+        desiredColor = "Yellow";
+        destinationColor = 3;
+      } else if (HumanInput.operatorController.getRawButton(2)) {
+        desiredColor = "Blue";
+        destinationColor = 2;
+      } else if (HumanInput.operatorController.getRawButton(3)) {
+        desiredColor = "Red";
+        destinationColor = 0;
+      } else if (HumanInput.operatorController.getRawButton(4)) {
+        desiredColor = "Green";
+        destinationColor = 1;
+      } else {
+        desiredColor = "null";
+        destinationColor = -1;
+      }
 
-        break;
-
-      case SPININCOLOR:
-          if((Math.abs(talon31.getSelectedSensorPosition())<= 6437.5)){
-            talon31.set(ControlMode.PercentOutput, (0.1)*Math.signum(scale));
+      // if (!colorString.equalsIgnoreCase(desiredColor) &&
+      // !desiredColor.equalsIgnoreCase("null")) {
+      // talon31.set(ControlMode.PercentOutput, 0.3);
+      // } else {
+      // talon31.set(ControlMode.PercentOutput, 0.0);
+      // }
+      talon31.set(ControlMode.PercentOutput, 0.0);
+      if (currentColor >= 0 && destinationColor >= 0) {
+        scale = colorTable[destinationColor][currentColor];
+        if (scale == 0) {
+          nextState = SetColor.DONE;
+        } else {
+          nextState = SetColor.SPINTOCOLOR;
+          if(scale > 0){
+            tickMax = 2800;
           }else{
-            nextState = SetColor.DONE;
+            tickMax = 3500;
           }
+        }
+      }
+      break;
 
-        break;
+    case SPINTOCOLOR:
+      talon31.set(ControlMode.PercentOutput, (0.15) * Math.signum(scale));
+      if (!(colorString.equalsIgnoreCase(desiredColor))) {
+        colorCounter = 0;
+      } else {
+        colorCounter++;
+      }
+      if (colorCounter >= 5) {
+        talon31.setSelectedSensorPosition(0);
+        nextState = SetColor.SPININCOLOR;
+      }
 
-      case DONE:
-          talon31.set(ControlMode.PercentOutput, 0.0);
-          nextState = SetColor.START;
-        break;
+      break;
+
+    case SPININCOLOR:
+      talon31.set(ControlMode.PercentOutput, (0.075) * Math.signum(scale));
+      if ((Math.abs(talon31.getSelectedSensorPosition()) <= tickMax)) {
+
+      } else {
+        nextState = SetColor.DONE;
+      }
+
+      break;
+
+    case DONE:
+      talon31.set(ControlMode.PercentOutput, 0.0);
+      destinationColor = -1;
+      talon31.setSelectedSensorPosition(0);
+      nextState = SetColor.START;
+      break;
     }
 
     SmartDashboard.putNumber("Encoder Value", talon31.getSelectedSensorPosition());
+    SmartDashboard.putString("Control Panel State", currentState.toString());
+    SmartDashboard.putString("Desired Color", desiredColor);
+    SmartDashboard.putNumber("scale", scale);
+    SmartDashboard.putNumber("color counter", colorCounter);
     currentState = nextState;
   }
 
