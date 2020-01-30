@@ -23,7 +23,10 @@ public class DriveController {
     PDController powerPortTracking, ballTracking;
 
     public enum DriveState {
-        MANUAL, BALLCHASE, POWERPORTALIGNMENT, CLIMBALIGNMENT, CONTROLPANELALIGNMENT
+        MANUAL, 
+        BALLCHASE, 
+        POWERPORTALIGNMENT, 
+        CLIMBALIGNMENT, CONTROLPANELALIGNMENT
     }
 
     private DriveState currentDriveState = DriveState.MANUAL;
@@ -136,6 +139,21 @@ public class DriveController {
 
             break;
         case CONTROLPANELALIGNMENT:
+            forward = HumanInput.forward;
+            if(Robot.gyro > 10){
+                turn = -0.4;
+            }else if(Robot.gyro < -10){
+                turn = 0.4;
+            }else if(Robot.gyro > 1){
+                turn = -0.05;
+            }else if(Robot.gyro < -1){
+                turn = 0.05;
+            }else{
+                turn = 0;
+            }
+
+
+            SmartDashboard.putNumber("Gyro value:", Robot.gyro);
 
             break;
         }

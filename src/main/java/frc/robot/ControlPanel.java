@@ -89,21 +89,6 @@ public class ControlPanel {
     SmartDashboard.putNumber("Confidence", match.confidence);
     SmartDashboard.putString("Detected Color", colorString);
 
-    // Rotation four times
-
-    if (HumanInput.operatorController.getRawButtonReleased(6)) {
-      inFourSpins = true;
-      talon31.setSelectedSensorPosition(0);
-    }
-    if (inFourSpins) {
-      if (talon31.getSelectedSensorPosition() <= 412000) {
-        talon31.set(ControlMode.PercentOutput, 0.4);
-      } else {
-        talon31.set(ControlMode.PercentOutput, 0.0);
-        inFourSpins = false;
-      }
-    }
-
     nextState = currentState;
     switch (currentState) {
     case START:
@@ -176,6 +161,23 @@ public class ControlPanel {
       talon31.setSelectedSensorPosition(0);
       nextState = SetColor.START;
       break;
+    }
+
+    // Rotation four times
+    SmartDashboard.putNumber("Bag Talon 31 speed", 0);
+    if (HumanInput.operatorController.getRawButtonReleased(6)) {
+      inFourSpins = true;
+      talon31.setSelectedSensorPosition(0);
+    }
+    if (inFourSpins) {
+      if (talon31.getSelectedSensorPosition() <= 412000) {
+        talon31.set(ControlMode.PercentOutput, 0.4);
+        SmartDashboard.putNumber("Bag Talon 31 speed", 0.4);
+      } else {
+        talon31.set(ControlMode.PercentOutput, 0.0);
+        inFourSpins = false;
+        SmartDashboard.putNumber("Bag Talon 31 speed", -1);
+      }
     }
 
     SmartDashboard.putNumber("Encoder Value", talon31.getSelectedSensorPosition());

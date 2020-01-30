@@ -42,21 +42,20 @@ public class Shooter {
         shooterLeft.restoreFactoryDefaults();
         shooterRight.restoreFactoryDefaults();
 
-        //TODO: Make Conststants
-        shooterLeft.setSmartCurrentLimit(40, 40);
-        shooterRight.setSmartCurrentLimit(40, 40);
+        shooterLeft.setSmartCurrentLimit(Constants.sparkShooterStallLimit, Constants.sparkShooterFreeLimit);
+        shooterRight.setSmartCurrentLimit(Constants.sparkShooterStallLimit, Constants.sparkShooterFreeLimit);
 
         shooterLeft.setIdleMode(IdleMode.kCoast);
         shooterRight.setIdleMode(IdleMode.kCoast);
 
         encoder = shooterLeft.getEncoder();
-        //TODO: Add Constant
-        encoder.setVelocityConversionFactor(1.0);
+        
+        encoder.setVelocityConversionFactor(Constants.sparkShooterVelocityConversionFactor);
 
         
     }
 
-    public void update(Joystick stick, Joystick xboxController) {
+    public void update() {
         ntShooterMin = Robot.ntInst.getEntry("Shooter/Min Velocity");
         ntShooterVelocity = Robot.ntInst.getEntry("Shooter/Cur Velocity");
         ntShooterTargetRate = Robot.ntInst.getEntry("Shooter/Target Rate");
@@ -68,16 +67,12 @@ public class Shooter {
 
             //TODO: Change to use HumanInput (throughout class)
             //TODO: Eliminate the need for xboxController parameter
-            double throttleSpeed = stick.getRawAxis(2)*1.0;
-            double stickSpeed = stick.getRawAxis(1)*1.0;
+            double throttleSpeed = HumanInput.operatorController.getRawAxis(2)*1.0;
 
-            if(stick.getRawButton(10)) {  
+            if(HumanInput.operatorController.getRawButton(8)) {  
                 shootSpeed= throttleSpeed;
-            }else if(stick.getRawButton(1)){
-                shootSpeed = stickSpeed;
             }
 
-            SmartDashboard.putNumber("echoStickSpeed", stickSpeed);
             SmartDashboard.putNumber("echoShootSpeed", shootSpeed);
             SmartDashboard.putNumber("echoThrottleSpeed", throttleSpeed);
             //shooterPidController.setReference(manualSpeed, ControlType.kVelocity);
@@ -85,14 +80,14 @@ public class Shooter {
             shooterRight.set(-shootSpeed);
           
       
-          if(xboxController.getRawButton(3)){
+          if(HumanInput.operatorController.getRawButton(7)){
             double v = encoder.getVelocity();
             if(v > velocity){
               velocity = v;
               SmartDashboard.putNumber("Minimum Velocity", (velocity));
             }   
           }
-          if(xboxController.getRawButton(4)){
+          if(HumanInput.operatorController.getRawButton(5)){
             velocity = -999999;
           }
           SmartDashboard.putNumber("Current Velocity", (encoder.getVelocity()));

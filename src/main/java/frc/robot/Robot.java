@@ -6,11 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends MyRobot {
   NetworkTable ballTargetTable;
   NetworkTable portalTapeTargetTable;
-  TalonFXTest fxTest;
-  DriveController driveController;
-  ControlPanel controlPanel;
-  Shooter shooter;
-  
 
   @Override
   public void RechargeRobotInit() {
@@ -19,7 +14,7 @@ public class Robot extends MyRobot {
     ntInst.getEntry("chooseCam").setNumber(0);
     driveController = new DriveController(drivetrain, ballTargetTable, portalTapeTargetTable);
 
-    if (isShooter) {
+    if (hasShooter) {
       shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight);
     }
 
@@ -27,7 +22,7 @@ public class Robot extends MyRobot {
       fxTest = new TalonFXTest();
     }
 
-    if (isControlPanel) {
+    if (hasControlPanel) {
       controlPanel = new ControlPanel(CANMcctrlPanel);
     }
   }
@@ -42,7 +37,7 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeTeleopInit() {
-    if (isControlPanel) {
+    if (hasControlPanel) {
       controlPanel = new ControlPanel(CANMcctrlPanel);
     }
   }
@@ -51,8 +46,12 @@ public class Robot extends MyRobot {
   public void RechargeTeleopPeriodic() {
     HumanInput.update();
     driveController.update();
-    controlPanel.update();
-    // shooter.update(stick, xboxController);
+    if (hasControlPanel) {
+      controlPanel.update();
+    }
+    if (hasShooter) {
+      shooter.update();
+    }
   }
 
   @Override

@@ -34,5 +34,6 @@ public class HumanInput {
         ballChaseButton = driverController.getRawButton(3);
         climbAlignmentButton = driverController.getRawButton(4);
         cameraChangeButton = driverController.getRawButtonReleased(6);
+        
     }
 }

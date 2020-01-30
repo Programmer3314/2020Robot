@@ -27,8 +27,8 @@ public class Constants{
     public static final double minCorrection = 0.04;
 
     //Motor Controllers
-    public static final int motorControllerStallLimit = 20;
-    public static final int motorControllerFreeLimit = 20;
+    public static final int sparkDriveTrainStallLimit = 20;
+    public static final int sparkDriveTrainFreeLimit = 20;
     
     //Power Port
     public static final double powerPortTolerance = 0.5;
@@ -39,4 +39,14 @@ public class Constants{
     public static final double ballTolerance = 8;
     public static final double ballkP = 0.0008;//.00065->.0009->.0008
     public static final double ballkD = 0.0009;//.00009->.0009
+
+    //Shooter Motors
+    public static final int sparkShooterStallLimit = 40;
+    public static final int sparkShooterFreeLimit = 40;
+
+    //Shooter Motor Controllers
+
+
+    //Shooter Encoder
+    public static final double sparkShooterVelocityConversionFactor = 1.0;
 }

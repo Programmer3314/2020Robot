@@ -9,24 +9,21 @@ package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ColorMatch;
-import com.revrobotics.ColorMatchResult;
-import com.revrobotics.ColorSensorV3;
-import com.revrobotics.SparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.SPI;
 
 public abstract class MyRobot extends AllRobots {
     IDriveTrain drivetrain;
-    //Shooter shooter;
+    Shooter shooter;
+    TalonFXTest fxTest;
+    DriveController driveController;
+    ControlPanel controlPanel;
 
     public static AHRS navx;
     public static double gyro;
-    public boolean isFalcon, isShooter, isControlPanel, isTalonFXTest;
+    public boolean isFalcon, hasShooter, hasControlPanel, isTalonFXTest;
 
     //Sprak Max CAN IDs NEO
     final int CANMcleftDriveFront = 1;
@@ -70,15 +67,15 @@ public abstract class MyRobot extends AllRobots {
         }
         if(ControllerVersion.equalsIgnoreCase("v0.0.0")) {
             isFalcon = true;
-            isShooter = true;
+            hasShooter = true;
             isTalonFXTest = false;
-            isControlPanel = false;
+            hasControlPanel = false;
         }
         else {
             isFalcon = false;
-            isShooter = false;
+            hasShooter = false;
             isTalonFXTest = true;
-            isControlPanel = true;
+            hasControlPanel = true;
         }
 
         if(isFalcon){
@@ -94,6 +91,7 @@ public abstract class MyRobot extends AllRobots {
 
     @Override
     public void MyAutonomousInit() {
+        navx.reset();
         RechargeAutonomousInit();
     }
 
@@ -105,6 +103,7 @@ public abstract class MyRobot extends AllRobots {
 
     @Override
     public void MyTeleopInit() {
+        navx.reset();
         RechargeTeleopInit();
     }
 
@@ -118,6 +117,7 @@ public abstract class MyRobot extends AllRobots {
 
     @Override
     public void MyTestInit() {
+        navx.reset();
         RechargeTestInit();
     }
 

@@ -37,12 +37,12 @@ public class DrivetrainNEO implements IDriveTrain {
         spark5.follow(spark4);
         spark6.follow(spark4);
 
-        spark1.setSmartCurrentLimit(Constants.motorControllerStallLimit, Constants.motorControllerFreeLimit);
-        spark2.setSmartCurrentLimit(Constants.motorControllerStallLimit, Constants.motorControllerFreeLimit);
-        spark3.setSmartCurrentLimit(Constants.motorControllerStallLimit, Constants.motorControllerFreeLimit);
-        spark4.setSmartCurrentLimit(Constants.motorControllerStallLimit, Constants.motorControllerFreeLimit);
-        spark5.setSmartCurrentLimit(Constants.motorControllerStallLimit, Constants.motorControllerFreeLimit);
-        spark6.setSmartCurrentLimit(Constants.motorControllerStallLimit, Constants.motorControllerFreeLimit);
+        spark1.setSmartCurrentLimit(Constants.sparkDriveTrainStallLimit, Constants.sparkDriveTrainFreeLimit);
+        spark2.setSmartCurrentLimit(Constants.sparkDriveTrainStallLimit, Constants.sparkDriveTrainFreeLimit);
+        spark3.setSmartCurrentLimit(Constants.sparkDriveTrainStallLimit, Constants.sparkDriveTrainFreeLimit);
+        spark4.setSmartCurrentLimit(Constants.sparkDriveTrainStallLimit, Constants.sparkDriveTrainFreeLimit);
+        spark5.setSmartCurrentLimit(Constants.sparkDriveTrainStallLimit, Constants.sparkDriveTrainFreeLimit);
+        spark6.setSmartCurrentLimit(Constants.sparkDriveTrainStallLimit, Constants.sparkDriveTrainFreeLimit);
 
         leftPidController = spark1.getPIDController();
         rightPidController = spark4.getPIDController();
