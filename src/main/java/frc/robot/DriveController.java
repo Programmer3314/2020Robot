@@ -17,16 +17,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class DriveController {
     NetworkTable ballTargetTable, retroTapeTable;
-    int scale = 1;
+    int scaleForward = 1;
+    double scaleTurn = 1;
     boolean isForward = true;
     int camNum = 0;
-    PDController powerPortTracking, ballTracking;
+    PDController powerPortTracking, ballTracking, trenchTracking;
 
     public enum DriveState {
         MANUAL, 
         BALLCHASE, 
         POWERPORTALIGNMENT, 
-        CLIMBALIGNMENT, CONTROLPANELALIGNMENT
+        CLIMBALIGNMENT, 
+        CONTROLPANELALIGNMENT
     }
 
     private DriveState currentDriveState = DriveState.MANUAL;
@@ -45,6 +47,10 @@ public class DriveController {
         ballTracking.setToleranceValue(Constants.ballTolerance);
         ballTracking.setMaxCorrectionValue(Constants.maxCorrection);
         ballTracking.setMinCorrectionValue(Constants.minCorrection);
+        trenchTracking = new PDController(Constants.trenchkP, Constants.trenchkD);
+        trenchTracking.setToleranceValue(Constants.trenchTolerance);
+        trenchTracking.setMaxCorrectionValue(Constants.maxCorrection);
+        trenchTracking.setMinCorrectionValue(Constants.minCorrection);
     }
 
     public void update() {
@@ -58,8 +64,8 @@ public class DriveController {
         } else if (HumanInput.powerPortAlignmentButton) {
             if(HumanInput.powerPortAlignmentButtonPressed){
                 angleOffset = retroTapeTable.getEntry("X Angle").getDouble(0);
-                retroTapeTable.getEntry("gyro").setDouble(Robot.gyro);
-                angleOffset += Robot.gyro;
+                retroTapeTable.getEntry("gyro").setDouble(Robot.rawGyro);
+                angleOffset += Robot.rawGyro;
             }
             currentDriveState = DriveState.POWERPORTALIGNMENT;
         } else if (HumanInput.controlPanelAlignmentButton) {
@@ -69,6 +75,8 @@ public class DriveController {
         } else {
             currentDriveState = DriveState.MANUAL;
         }
+        
+        scaleTurn = 0.5;
 
         switch (currentDriveState) {
         case MANUAL:
@@ -124,10 +132,10 @@ public class DriveController {
                 
                 //double angleOffset = retroTapeTable.getEntry("X Angle").getDouble(0);
                 retroTapeTable.getEntry("Set Point").setDouble(angleOffset);
-                retroTapeTable.getEntry("Actual Point").setDouble(Robot.gyro);
+                retroTapeTable.getEntry("Actual Point").setDouble(Robot.rawGyro);
                 forward = HumanInput.forward;
-                turn = powerPortTracking.calculate(angleOffset, Robot.gyro);
-                retroTapeTable.getEntry("PD turn").setDouble(powerPortTracking.calculate(angleOffset, Robot.gyro));
+                turn = powerPortTracking.calculate(angleOffset, Robot.rawGyro);
+                retroTapeTable.getEntry("PD turn").setDouble(powerPortTracking.calculate(angleOffset, Robot.rawGyro));
             }else{
                 powerPortTracking.reset();
             }
@@ -140,20 +148,18 @@ public class DriveController {
             break;
         case CONTROLPANELALIGNMENT:
             forward = HumanInput.forward;
-            if(Robot.gyro > 10){
-                turn = -0.4;
-            }else if(Robot.gyro < -10){
-                turn = 0.4;
-            }else if(Robot.gyro > 1){
-                turn = -0.05;
-            }else if(Robot.gyro < -1){
-                turn = 0.05;
-            }else{
-                turn = 0;
-            }
-
-
-            SmartDashboard.putNumber("Gyro value:", Robot.gyro);
+            turn = -powerPortTracking.calculate(Robot.cleanGyro, 0);
+            // if(Robot.cleanGyro > 15){
+            //     turn = -0.5;
+            // }else if(Robot.cleanGyro < -15){
+            //     turn = 0.5;
+            // }else if(Robot.cleanGyro > 0.5){
+            //     turn = -0.05;
+            // }else if(Robot.cleanGyro < -0.5){
+            //     turn = 0.05;
+            // }else{
+            //     turn = 0;
+            // }
 
             break;
         }
@@ -163,10 +169,10 @@ public class DriveController {
 
             if (isForward) {
                 camNum = 0;
-                scale = 1;
+                scaleForward = 1;
             } else {
                 camNum = 1;
-                scale = -1;
+                scaleForward = -1;
             }
 
             Robot.ntInst.getEntry("chooseCam").setNumber(camNum);
@@ -175,8 +181,8 @@ public class DriveController {
         retroTapeTable.getEntry("Turn value").setDouble(turn);
         SmartDashboard.putNumber("Forward Value", forward);
 
-        double leftSetPoint = (forward * scale - turn * 0.5);
-        double rightSetPoint = (forward * scale + turn * 0.5);
+        double leftSetPoint = (forward * scaleForward - turn * scaleTurn);
+        double rightSetPoint = (forward * scaleForward + turn * scaleTurn);
 
         drivetrain.update(leftSetPoint, rightSetPoint);
     }

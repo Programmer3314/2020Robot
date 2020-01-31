@@ -23,8 +23,8 @@ public class Constants{
     //Motors
     public static final double maxRPMNeo = 5700;
     public static final double maxRPMFX = 6380;
-    public static final double maxCorrection = 0.2;
-    public static final double minCorrection = 0.04;
+    public static double maxCorrection = 0.2;
+    public static double minCorrection = 0.04;
 
     //Motor Controllers
     public static final int sparkDriveTrainStallLimit = 20;
@@ -49,4 +49,10 @@ public class Constants{
 
     //Shooter Encoder
     public static final double sparkShooterVelocityConversionFactor = 1.0;
+
+    //Control Panel
+    public static final double trenchTolerance = 0.5;
+    public static final double trenchkP = 0.0008;
+    public static final double trenchkD = 0.0009;
+
 }

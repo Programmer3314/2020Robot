@@ -22,7 +22,7 @@ public abstract class MyRobot extends AllRobots {
     ControlPanel controlPanel;
 
     public static AHRS navx;
-    public static double gyro;
+    public static double rawGyro, cleanGyro;
     public boolean isFalcon, hasShooter, hasControlPanel, isTalonFXTest;
 
     //Sprak Max CAN IDs NEO
@@ -81,9 +81,13 @@ public abstract class MyRobot extends AllRobots {
         if(isFalcon){
             drivetrain = new DrivetrainFalcon(CANMcFalconFrontLeft, CANMcFalconBackLeft, CANMcFalconFrontRight, CANMcFalconBackRight);
             SmartDashboard.putString("DriveTrain Type:", "Falcons");
+            Constants.maxCorrection = 0.4;
+            Constants.minCorrection = 0.04;
         }else{
             drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
             SmartDashboard.putString("DriveTrain Type:", "Neos");
+            Constants.maxCorrection = 0.2;
+            Constants.minCorrection = 0.04;
         }
         
         RechargeRobotInit();
@@ -97,7 +101,7 @@ public abstract class MyRobot extends AllRobots {
 
     @Override
     public void MyAutonomousPeriodic() {
-        gyro = navx.getAngle();
+        periodicInit();
         RechargeAutonomousPeriodic();
     }
 
@@ -109,7 +113,7 @@ public abstract class MyRobot extends AllRobots {
 
     @Override
     public void MyTeleopPeriodic() {
-        gyro = navx.getAngle();
+        periodicInit();
 
         //SmartDashboard.putBoolean("useFixedSpeed", shooter.useFixedSpeed);
         RechargeTeleopPeriodic();
@@ -123,8 +127,15 @@ public abstract class MyRobot extends AllRobots {
 
     @Override
     public void MyTestPeriodic() {
-        gyro = navx.getAngle();
+        periodicInit();
+
         RechargeTestPeriodic();
+    }
+
+    private void periodicInit(){
+        rawGyro = navx.getAngle();
+        cleanGyro = (rawGyro + 180 * Math.signum(rawGyro)) % 360 - 180 * Math.signum(rawGyro);
+        SmartDashboard.putNumber("Gyro value:", Robot.cleanGyro);
     }
 
     public abstract void RechargeRobotInit();
