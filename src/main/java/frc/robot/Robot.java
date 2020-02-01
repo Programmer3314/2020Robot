@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends MyRobot {
   NetworkTable ballTargetTable;
   NetworkTable portalTapeTargetTable;
+  public static DriveController.DriveState currentDriveState;
 
   @Override
   public void RechargeRobotInit() {
@@ -27,10 +28,6 @@ public class Robot extends MyRobot {
     }
   }
 
-
-
-  
-
   @Override
   public void RechargeAutonomousInit() {
   }
@@ -49,13 +46,32 @@ public class Robot extends MyRobot {
   @Override
   public void RechargeTeleopPeriodic() {
     HumanInput.update();
-    driveController.update();
+    currentDriveState= DriveController.DriveState.MANUAL;
+
+    if (HumanInput.ballChaseButton) {
+      currentDriveState = DriveController.DriveState.BALLCHASE;
+    } else if (HumanInput.powerPortAlignmentButton) {
+      currentDriveState = DriveController.DriveState.POWERPORTALIGNMENT;
+    } else if (HumanInput.controlPanelAlignmentButton) {
+      currentDriveState = DriveController.DriveState.CONTROLPANELALIGNMENT;
+    } else if (HumanInput.climbAlignmentButton) {
+      currentDriveState = DriveController.DriveState.CLIMBALIGNMENT;
+    } else if (HumanInput.gyroLock) {
+      currentDriveState = DriveController.DriveState.GYROLOCK;
+    } else if (HumanInput.wallAlignment) {
+      currentDriveState = DriveController.DriveState.TRENCHALIGNMENT;
+    } else {
+      currentDriveState = DriveController.DriveState.MANUAL;
+    }
+
     if (hasControlPanel) {
       controlPanel.update();
     }
     if (hasShooter) {
       shooter.update();
     }
+
+    driveController.update(currentDriveState);
   }
 
   @Override

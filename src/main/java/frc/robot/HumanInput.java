@@ -15,8 +15,10 @@ import edu.wpi.first.wpilibj.Joystick;
 public class HumanInput {
     public static Joystick driverController = new Joystick(5);
     public static Joystick operatorController = new Joystick(4);
+    public static Joystick buttonBox1 = new Joystick(2);
+    public static Joystick buttonBox2 = new Joystick(3);
     public static double forward, turn;
-    public static boolean controlPanelAlignmentButton, powerPortAlignmentButton, powerPortAlignmentButtonPressed, ballChaseButton, climbAlignmentButton, cameraChangeButton;
+    public static boolean controlPanelAlignmentButton, powerPortAlignmentButton, powerPortAlignmentButtonPressed, ballChaseButton, climbAlignmentButton, cameraChangeButton, wallAlignment;
     public static double TalonFxTestSpeed;
     public static boolean gyroLock;
 
@@ -36,5 +38,6 @@ public class HumanInput {
         climbAlignmentButton = driverController.getRawButton(4);
         cameraChangeButton = driverController.getRawButtonReleased(6);
         gyroLock = driverController.getRawAxis(2) > 0.5;
+        wallAlignment = buttonBox1.getRawButton(1);
     }
 }

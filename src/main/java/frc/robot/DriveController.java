@@ -21,13 +21,15 @@ public class DriveController {
     double scaleTurn = 1;
     boolean isForward = true;
     int camNum = 0;
+    double distanceToWall;
     PDController powerPortTracking, ballTracking, trenchTracking;
 
-    public enum DriveState {
-        MANUAL, BALLCHASE, POWERPORTALIGNMENT, CLIMBALIGNMENT, CONTROLPANELALIGNMENT, GYROLOCK
+    public static enum DriveState {
+        MANUAL, BALLCHASE, POWERPORTALIGNMENT, CLIMBALIGNMENT, CONTROLPANELALIGNMENT, GYROLOCK, TRENCHALIGNMENT, NONE
     }
 
-    private DriveState currentDriveState = DriveState.MANUAL;
+    public DriveState lastDriveState = DriveState.NONE;
+
     private IDriveTrain drivetrain;
     private double forward, turn, angleOffset;
     private double gyroLockAngle;
@@ -50,35 +52,20 @@ public class DriveController {
         trenchTracking.setMinCorrectionValue(Constants.minCorrection);
     }
 
-    public void update() {
-        if (HumanInput.ballChaseButton) {
-            // if(HumanInput.powerPortAlignmentButtonPressed){
-            // angleOffset = ballTargetTable.getEntry("x").getDouble(0);
-            // ballTargetTable.getEntry("gyro").setDouble(Robot.gyro);
-            // angleOffset += Robot.gyro;
-            // }
-            gyroLockAngle = Robot.cleanGyro;
-            currentDriveState = DriveState.BALLCHASE;
-        } else if (HumanInput.powerPortAlignmentButton) {
-            if (HumanInput.powerPortAlignmentButtonPressed) {
+    public void update(DriveState currentDriveState) {
+        if (currentDriveState != lastDriveState) {
+            switch (currentDriveState) {
+            case POWERPORTALIGNMENT:
                 angleOffset = retroTapeTable.getEntry("X Angle").getDouble(0);
                 retroTapeTable.getEntry("gyro").setDouble(Robot.rawGyro);
                 angleOffset += Robot.rawGyro;
+                break;
+            case GYROLOCK:
+                gyroLockAngle = Robot.cleanGyro;
             }
-            gyroLockAngle = Robot.cleanGyro;
-            currentDriveState = DriveState.POWERPORTALIGNMENT;
-        } else if (HumanInput.controlPanelAlignmentButton) {
-            gyroLockAngle = Robot.cleanGyro;
-            currentDriveState = DriveState.CONTROLPANELALIGNMENT;
-        } else if (HumanInput.climbAlignmentButton) {
-            gyroLockAngle = Robot.cleanGyro;
-            currentDriveState = DriveState.CLIMBALIGNMENT;
-        } else if (HumanInput.gyroLock) {
-            currentDriveState = DriveState.GYROLOCK;
-        } else {
-            gyroLockAngle = Robot.cleanGyro;
-            currentDriveState = DriveState.MANUAL;
         }
+
+        distanceToWall = Robot.uSSensor.getDistanceFromWall2();
 
         switch (currentDriveState) {
         case MANUAL:
@@ -170,6 +157,24 @@ public class DriveController {
             forward = HumanInput.forward;
             turn = -trenchTracking.calculate(Robot.cleanGyro, gyroLockAngle);
             break;
+
+        case TRENCHALIGNMENT:
+            if (distanceToWall > 29) {
+                forward = 0.05;
+                turn = 0;
+            } else if (distanceToWall < 27) {
+                forward = -0.05;
+                turn = 0;
+            } else {
+                forward = 0;
+                turn = -trenchTracking.calculate(Robot.cleanGyro, 0);
+            }
+            break;
+
+        case NONE:
+            forward = 0;
+            turn = 0;
+            break;
         }
 
         if (HumanInput.cameraChangeButton) {
@@ -195,6 +200,8 @@ public class DriveController {
         double leftSetPoint = (forward * scaleForward - turn * scaleTurn);
         double rightSetPoint = (forward * scaleForward + turn * scaleTurn);
 
+        lastDriveState = currentDriveState;
         drivetrain.update(leftSetPoint, rightSetPoint);
     }
+
 }

@@ -20,10 +20,10 @@ public abstract class MyRobot extends AllRobots {
     TalonFXTest fxTest;
     DriveController driveController;
     ControlPanel controlPanel;
-    UltraSonicSensor uSSensor;
+    public static UltraSonicSensor uSSensor;
 
     public static AHRS navx;
-    public static double rawGyro, cleanGyro;
+    public static double rawGyro, cleanGyro, ultraSonicDistance;
     public boolean isFalcon, hasShooter, hasControlPanel, isTalonFXTest;
 
 
@@ -51,7 +51,6 @@ public abstract class MyRobot extends AllRobots {
         
         navx = new AHRS(SPI.Port.kMXP);
         navx.reset();
-
         String ControllerVersion="";
 
         try {
@@ -138,8 +137,12 @@ public abstract class MyRobot extends AllRobots {
     private void periodicInit(){
         rawGyro = navx.getAngle();
         cleanGyro = (rawGyro + 180 * Math.signum(rawGyro)) % 360 - 180 * Math.signum(rawGyro);
+        ultraSonicDistance = uSSensor.getDistance();
         SmartDashboard.putNumber("Gyro value:", Robot.cleanGyro);
-        SmartDashboard.putNumber("Ultra Sonic Distance in inches", uSSensor.getDistance());
+        SmartDashboard.putNumber("Ultra Sonic Distance in inches", ultraSonicDistance);
+        SmartDashboard.putNumber("Center of Robot to wall", uSSensor.getDistanceFromWall2());
+
+        
     }
 
     public abstract void RechargeRobotInit();
