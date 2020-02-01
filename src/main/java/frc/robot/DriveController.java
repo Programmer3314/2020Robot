@@ -24,16 +24,13 @@ public class DriveController {
     PDController powerPortTracking, ballTracking, trenchTracking;
 
     public enum DriveState {
-        MANUAL, 
-        BALLCHASE, 
-        POWERPORTALIGNMENT, 
-        CLIMBALIGNMENT, 
-        CONTROLPANELALIGNMENT
+        MANUAL, BALLCHASE, POWERPORTALIGNMENT, CLIMBALIGNMENT, CONTROLPANELALIGNMENT, GYROLOCK
     }
 
     private DriveState currentDriveState = DriveState.MANUAL;
     private IDriveTrain drivetrain;
     private double forward, turn, angleOffset;
+    private double gyroLockAngle;
 
     public DriveController(IDriveTrain drivetrain, NetworkTable ballTargetTable, NetworkTable retrotapeTable) {
         this.drivetrain = drivetrain;
@@ -56,27 +53,32 @@ public class DriveController {
     public void update() {
         if (HumanInput.ballChaseButton) {
             // if(HumanInput.powerPortAlignmentButtonPressed){
-            //     angleOffset = ballTargetTable.getEntry("x").getDouble(0);
-            //     ballTargetTable.getEntry("gyro").setDouble(Robot.gyro);
-            //     angleOffset += Robot.gyro;
+            // angleOffset = ballTargetTable.getEntry("x").getDouble(0);
+            // ballTargetTable.getEntry("gyro").setDouble(Robot.gyro);
+            // angleOffset += Robot.gyro;
             // }
+            gyroLockAngle = Robot.cleanGyro;
             currentDriveState = DriveState.BALLCHASE;
         } else if (HumanInput.powerPortAlignmentButton) {
-            if(HumanInput.powerPortAlignmentButtonPressed){
+            if (HumanInput.powerPortAlignmentButtonPressed) {
                 angleOffset = retroTapeTable.getEntry("X Angle").getDouble(0);
                 retroTapeTable.getEntry("gyro").setDouble(Robot.rawGyro);
                 angleOffset += Robot.rawGyro;
             }
+            gyroLockAngle = Robot.cleanGyro;
             currentDriveState = DriveState.POWERPORTALIGNMENT;
         } else if (HumanInput.controlPanelAlignmentButton) {
+            gyroLockAngle = Robot.cleanGyro;
             currentDriveState = DriveState.CONTROLPANELALIGNMENT;
         } else if (HumanInput.climbAlignmentButton) {
+            gyroLockAngle = Robot.cleanGyro;
             currentDriveState = DriveState.CLIMBALIGNMENT;
+        } else if (HumanInput.gyroLock) {
+            currentDriveState = DriveState.GYROLOCK;
         } else {
+            gyroLockAngle = Robot.cleanGyro;
             currentDriveState = DriveState.MANUAL;
         }
-        
-        scaleTurn = 0.5;
 
         switch (currentDriveState) {
         case MANUAL:
@@ -94,20 +96,21 @@ public class DriveController {
                 double centerX = ballTargetTable.getEntry("x").getDouble(0);
                 forward = HumanInput.forward;
                 turn = -ballTracking.calculate(0, centerX);
-            }else{
+            } else {
                 ballTracking.reset();
             }
 
             // if (ballTargetTable.getEntry("Target Found").getBoolean(false)) {
-                
-            //     //double angleOffset = ballTargetTable.getEntry("X Angle").getDouble(0);
-            //     ballTargetTable.getEntry("Set Point").setDouble(angleOffset);
-            //     ballTargetTable.getEntry("Actual Point").setDouble(Robot.gyro);
-            //     forward = HumanInput.forward;
-            //     turn = ballTracking.calculate(angleOffset, Robot.gyro);
-            //     ballTargetTable.getEntry("PD turn").setDouble(ballTracking.calculate(angleOffset, Robot.gyro));
+
+            // //double angleOffset = ballTargetTable.getEntry("X Angle").getDouble(0);
+            // ballTargetTable.getEntry("Set Point").setDouble(angleOffset);
+            // ballTargetTable.getEntry("Actual Point").setDouble(Robot.gyro);
+            // forward = HumanInput.forward;
+            // turn = ballTracking.calculate(angleOffset, Robot.gyro);
+            // ballTargetTable.getEntry("PD
+            // turn").setDouble(ballTracking.calculate(angleOffset, Robot.gyro));
             // }else{
-            //     ballTracking.reset();
+            // ballTracking.reset();
             // }
 
             SmartDashboard.putNumber("Turn output Value: ", turn);
@@ -120,23 +123,24 @@ public class DriveController {
             if (retroTapeTable.getEntry("Retroreflective Target Found") == null)
                 System.out.print("Retro Tape Entry is Null");
 
-            // if (retroTapeTable.getEntry("Retroreflective Target Found").getBoolean(false)) {
-            //     double centerX = retroTapeTable.getEntry("Retro x").getDouble(0);
-            //     forward = HumanInput.forward;
-            //     turn = powerPortTracking.calculate(0, centerX);
+            // if (retroTapeTable.getEntry("Retroreflective Target
+            // Found").getBoolean(false)) {
+            // double centerX = retroTapeTable.getEntry("Retro x").getDouble(0);
+            // forward = HumanInput.forward;
+            // turn = powerPortTracking.calculate(0, centerX);
             // }else{
-            //     powerPortTracking.reset();
+            // powerPortTracking.reset();
             // }
 
             if (retroTapeTable.getEntry("Retroreflective Target Found").getBoolean(false)) {
-                
-                //double angleOffset = retroTapeTable.getEntry("X Angle").getDouble(0);
+
+                // double angleOffset = retroTapeTable.getEntry("X Angle").getDouble(0);
                 retroTapeTable.getEntry("Set Point").setDouble(angleOffset);
                 retroTapeTable.getEntry("Actual Point").setDouble(Robot.rawGyro);
                 forward = HumanInput.forward;
                 turn = powerPortTracking.calculate(angleOffset, Robot.rawGyro);
                 retroTapeTable.getEntry("PD turn").setDouble(powerPortTracking.calculate(angleOffset, Robot.rawGyro));
-            }else{
+            } else {
                 powerPortTracking.reset();
             }
 
@@ -148,19 +152,23 @@ public class DriveController {
             break;
         case CONTROLPANELALIGNMENT:
             forward = HumanInput.forward;
-            turn = -powerPortTracking.calculate(Robot.cleanGyro, 0);
+            turn = -trenchTracking.calculate(Robot.cleanGyro, 0);
             // if(Robot.cleanGyro > 15){
-            //     turn = -0.5;
+            // turn = -0.5;
             // }else if(Robot.cleanGyro < -15){
-            //     turn = 0.5;
+            // turn = 0.5;
             // }else if(Robot.cleanGyro > 0.5){
-            //     turn = -0.05;
+            // turn = -0.05;
             // }else if(Robot.cleanGyro < -0.5){
-            //     turn = 0.05;
+            // turn = 0.05;
             // }else{
-            //     turn = 0;
+            // turn = 0;
             // }
 
+            break;
+        case GYROLOCK:
+            forward = HumanInput.forward;
+            turn = -trenchTracking.calculate(Robot.cleanGyro, gyroLockAngle);
             break;
         }
 
@@ -179,7 +187,10 @@ public class DriveController {
         }
 
         retroTapeTable.getEntry("Turn value").setDouble(turn);
+        SmartDashboard.putNumber("Turn", turn);
         SmartDashboard.putNumber("Forward Value", forward);
+        SmartDashboard.putNumber("Set Gyro Value", gyroLockAngle);
+        SmartDashboard.putString("Case State", currentDriveState.toString());
 
         double leftSetPoint = (forward * scaleForward - turn * scaleTurn);
         double rightSetPoint = (forward * scaleForward + turn * scaleTurn);

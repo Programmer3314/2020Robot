@@ -92,13 +92,14 @@ public class DrivetrainFalcon implements IDriveTrain{
     // TODO: use parameters instead of HumanInput...
     @Override
     public void update(double leftSetPoint, double rightSetPoint) {
-        talon1.set(TalonFXControlMode.Velocity, leftSetPoint * 21777);
-        talon3.set(TalonFXControlMode.Velocity, rightSetPoint * 21777);
+        //talon1.set(TalonFXControlMode.Velocity, leftSetPoint * 21777);
+        //talon3.set(TalonFXControlMode.Velocity, rightSetPoint * 21777);
         SmartDashboard.putNumber("Left Set Point", leftSetPoint);
         SmartDashboard.putNumber("Right Set Point", rightSetPoint);
         SmartDashboard.putNumber("velocity of left", talon1.getSelectedSensorVelocity());
-        //talon1.set(TalonFXControlMode.PercentOutput, leftSetPoint);
-        //talon3.set(TalonFXControlMode.PercentOutput, rightSetPoint);
+        SmartDashboard.putNumber("velocity of right", talon3.getSelectedSensorVelocity());
+        talon1.set(TalonFXControlMode.PercentOutput, leftSetPoint);
+        talon3.set(TalonFXControlMode.PercentOutput, rightSetPoint);
         
     }
 }

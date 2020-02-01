@@ -18,6 +18,7 @@ public class HumanInput {
     public static double forward, turn;
     public static boolean controlPanelAlignmentButton, powerPortAlignmentButton, powerPortAlignmentButtonPressed, ballChaseButton, climbAlignmentButton, cameraChangeButton;
     public static double TalonFxTestSpeed;
+    public static boolean gyroLock;
 
     public HumanInput(){
     
@@ -34,6 +35,6 @@ public class HumanInput {
         ballChaseButton = driverController.getRawButton(3);
         climbAlignmentButton = driverController.getRawButton(4);
         cameraChangeButton = driverController.getRawButtonReleased(6);
-        
+        gyroLock = driverController.getRawAxis(2) > 0.5;
     }
 }

@@ -28,9 +28,59 @@ Mini SIM
 ????? Motors = using Conveyor belt to move balls in robot
 
 
+*************************Controls*********************************************
+******Operator*********
+toggle the piston on bag motor on the Control Panel
+automative color selector
+four spin on the Control Panel
+abort
+manual control on the bag motor
 
+open up Hood
+adjust hood angle (3 positions?)(point blank)(distance)
+manual hood movement
+shoot ball
+spin up shooter
+abort shoot 
 
+turn ball queue tracking
+reverse ball queue track
+preset angle/hood?
+feed ball
 
+pull out/pull in intake
+manual pull out/pull in
+intake
+eject/reverse intake 
+
+elevator
+manual elevator
+winch it down
+release 
+creep on bar + stop creep
+abort climb
+buddy climb (hopefully)
+    release
+    grab
+    
+auto selection
+field position
+
+driver
+throttle
+turn
+switch cameras/switch front and back
+
+ball targetting
+powerport targetting
+gyrolock
+run the trench
+
+button that saves angle for gyrolock 0 
+
+switches on button box determine specific control sets
+
+reset gyro button
 
 
 

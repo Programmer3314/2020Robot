@@ -52,7 +52,7 @@ public class Constants{
 
     //Control Panel
     public static final double trenchTolerance = 0.5;
-    public static final double trenchkP = 0.0008;
-    public static final double trenchkD = 0.0009;
+    public static final double trenchkP = 0.025;
+    public static final double trenchkD = 0.012;
 
 }
