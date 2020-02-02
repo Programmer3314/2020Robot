@@ -12,29 +12,24 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Add your docs here.
  */
 public class Shooter {
+    public enum ShooterStates {
+        IDLE, PREPARE, FIRE_BALL_AUTO,
+    }
+
+    double shooterRPM, shooterRPMTolerance;
+    ShooterStates shooterStates;
+    public CANSparkMax shooterLeft, shooterRight;
     public CANEncoder encoder;
     double lastEncoderVal;
-    public CANSparkMax shooterLeft, shooterRight;
-    NetworkTable ntShooter;
-    NetworkTableEntry ntShooterTargetRate;
-    NetworkTableEntry ntShooterVelocity;
-    NetworkTableEntry ntShooterMin;
-    boolean useFixedSpeed;
-    double shooterRate;
-    double velocity;
-    double shootSpeed;
 
     public Shooter(int CANMcshooterLeft, int CANMcshooterRight) {
-        velocity = -999999;
+        shooterStates = ShooterStates.IDLE;
 
         shooterLeft = new CANSparkMax(CANMcshooterLeft, CANSparkMaxLowLevel.MotorType.kBrushless);
         shooterRight = new CANSparkMax(CANMcshooterRight, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -42,55 +37,53 @@ public class Shooter {
         shooterLeft.restoreFactoryDefaults();
         shooterRight.restoreFactoryDefaults();
 
+        shooterRight.follow(shooterLeft, true);
+
         shooterLeft.setSmartCurrentLimit(Constants.sparkShooterStallLimit, Constants.sparkShooterFreeLimit);
-        shooterRight.setSmartCurrentLimit(Constants.sparkShooterStallLimit, Constants.sparkShooterFreeLimit);
 
         shooterLeft.setIdleMode(IdleMode.kCoast);
-        shooterRight.setIdleMode(IdleMode.kCoast);
 
         encoder = shooterLeft.getEncoder();
-        
+
         encoder.setVelocityConversionFactor(Constants.sparkShooterVelocityConversionFactor);
 
-        
     }
 
     public void update() {
-        ntShooterMin = Robot.ntInst.getEntry("Shooter/Min Velocity");
-        ntShooterVelocity = Robot.ntInst.getEntry("Shooter/Cur Velocity");
-        ntShooterTargetRate = Robot.ntInst.getEntry("Shooter/Target Rate");
+        switch (shooterStates) {
+        case IDLE:
 
-        
-        shooterRate = ntShooterTargetRate.getDouble(0);
-        
-        shootSpeed = 0;
-
-            //TODO: Change to use HumanInput (throughout class)
-            //TODO: Eliminate the need for xboxController parameter
-            double throttleSpeed = HumanInput.operatorController.getRawAxis(2)*1.0;
-
-            if(HumanInput.operatorController.getRawButton(8)) {  
-                shootSpeed= throttleSpeed;
+            break;
+        case PREPARE:
+            if (HumanInput.stick.getRawAxis(2) * 1.0 - shooterRPM <= shooterRPMTolerance) {
+                shooterStates = ShooterStates.FIRE_BALL_AUTO;
             }
 
-            SmartDashboard.putNumber("echoShootSpeed", shootSpeed);
-            SmartDashboard.putNumber("echoThrottleSpeed", throttleSpeed);
-            //shooterPidController.setReference(manualSpeed, ControlType.kVelocity);
-            shooterLeft.set(shootSpeed);
-            shooterRight.set(-shootSpeed);
-          
-      
-          if(HumanInput.operatorController.getRawButton(7)){
-            double v = encoder.getVelocity();
-            if(v > velocity){
-              velocity = v;
-              SmartDashboard.putNumber("Minimum Velocity", (velocity));
-            }   
-          }
-          if(HumanInput.operatorController.getRawButton(5)){
-            velocity = -999999;
-          }
-          SmartDashboard.putNumber("Current Velocity", (encoder.getVelocity()));
-          SmartDashboard.updateValues();    
+            break;
+        case FIRE_BALL_AUTO:
+            if (HumanInput.stick.getRawAxis(2) * 1.0 - shooterRPM > shooterRPMTolerance) {
+                shooterStates = ShooterStates.PREPARE;
+            }
+            break;
+        }
+
+        switch (shooterStates) {
+        case IDLE:
+
+            break;
+        case PREPARE:
+
+            break;
+        case FIRE_BALL_AUTO:
+
+            break;
+        }
+
+        SmartDashboard.putNumber("Current RPM of the Shooter Motors", encoder.getVelocity());
+    }
+
+    public void activate() {
+        shooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
+        shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
     }
 }

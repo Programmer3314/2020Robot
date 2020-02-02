@@ -2,11 +2,15 @@ package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.DriveController.DriveState;
 
 public class Robot extends MyRobot {
   NetworkTable ballTargetTable;
   NetworkTable portalTapeTargetTable;
-  public static DriveController.DriveState currentDriveState;
+  ControlPanelAlignment trenchAlignment;
+  boolean isForward = true;
+  int camNum = 0;
+  //public static DriveController.DriveState currentDriveState;
 
   @Override
   public void RechargeRobotInit() {
@@ -16,7 +20,7 @@ public class Robot extends MyRobot {
     driveController = new DriveController(drivetrain, ballTargetTable, portalTapeTargetTable);
 
     if (hasShooter) {
-      shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight);
+      shooter = new OldShooter(CANMcshooterLeft, CANMcshooterRight);
     }
 
     if (isTalonFXTest) {
@@ -26,6 +30,7 @@ public class Robot extends MyRobot {
     if (hasControlPanel) {
       controlPanel = new ControlPanel(CANMcctrlPanel);
     }
+    trenchAlignment = new ControlPanelAlignment();
   }
 
   @Override
@@ -41,28 +46,50 @@ public class Robot extends MyRobot {
     if (hasControlPanel) {
       controlPanel = new ControlPanel(CANMcctrlPanel);
     }
+    trenchAlignment.resetState();
   }
 
   @Override
   public void RechargeTeleopPeriodic() {
     HumanInput.update();
-    currentDriveState= DriveController.DriveState.MANUAL;
+    DriveController.MoveParameters mP = driveController.new MoveParameters();
+    mP.currentState = DriveController.DriveState.MANUAL;
 
     if (HumanInput.ballChaseButton) {
-      currentDriveState = DriveController.DriveState.BALLCHASE;
+      mP.currentState = DriveController.DriveState.BALLCHASE;
     } else if (HumanInput.powerPortAlignmentButton) {
-      currentDriveState = DriveController.DriveState.POWERPORTALIGNMENT;
-    } else if (HumanInput.controlPanelAlignmentButton) {
-      currentDriveState = DriveController.DriveState.CONTROLPANELALIGNMENT;
+      mP.currentState = DriveController.DriveState.POWERPORTALIGNMENT;
+    } else if (HumanInput.trenchRunAlignment) {
+      mP.currentState = DriveController.DriveState.TRENCHRUNALIGNMENT;
     } else if (HumanInput.climbAlignmentButton) {
-      currentDriveState = DriveController.DriveState.CLIMBALIGNMENT;
+      mP.currentState = DriveController.DriveState.CLIMBALIGNMENT;
     } else if (HumanInput.gyroLock) {
-      currentDriveState = DriveController.DriveState.GYROLOCK;
-    } else if (HumanInput.wallAlignment) {
-      currentDriveState = DriveController.DriveState.TRENCHALIGNMENT;
+      mP.currentState = DriveController.DriveState.GYROLOCK;
+    } else if (HumanInput.controlPanelAlignment) {
+      trenchAlignment.activate();
     } else {
-      currentDriveState = DriveController.DriveState.MANUAL;
+      mP.currentState = DriveController.DriveState.MANUAL;
     }
+
+    mP.forward = HumanInput.forward;
+    mP.turn = HumanInput.turn;
+
+    if (mP.cameraToggle) {
+      isForward = !isForward;
+
+      if (isForward) {
+          camNum = 0;
+          //mP.forward *= 1;
+      } else {
+          camNum = 1;
+          mP.forward *= -1;
+      }
+
+      Robot.ntInst.getEntry("chooseCam").setNumber(camNum);
+  }
+
+    mP.cameraToggle = HumanInput.cameraChangeButton;
+    trenchAlignment.update(mP);
 
     if (hasControlPanel) {
       controlPanel.update();
@@ -71,7 +98,7 @@ public class Robot extends MyRobot {
       shooter.update();
     }
 
-    driveController.update(currentDriveState);
+    driveController.update(mP);
   }
 
   @Override

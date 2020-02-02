@@ -50,9 +50,19 @@ public class Constants{
     //Shooter Encoder
     public static final double sparkShooterVelocityConversionFactor = 1.0;
 
-    //Control Panel
-    public static final double trenchTolerance = 0.5;
-    public static final double trenchkP = 0.025;
+    //trench
+    public static final double trenchTolerance = 1;
+    public static final double trenchkP = 0.006;
     public static final double trenchkD = 0.012;
 
+    //Control Panel
+    public static final double controlPanelTolerance = 1;
+    public static final double controlPanelkP = 0.02;
+    public static final double controlPanelkD = 0;
+    public static final double controlPanelMinCorrection = 0.05;
+    public static final double controlPanelMaxCorrection = 0.1;
+
+    //Ultra Sonic Sensor
+    public static final int AIControlPanelSensor = 2;
+    public static final double USSensorMB1013ToInchFactor = 0.0492126;
 }

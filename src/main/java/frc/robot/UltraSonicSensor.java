@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * Add your docs here.
  */
 public class UltraSonicSensor {
-    private final AnalogInput m_ultrasonic = new AnalogInput(2);
-    private static final double kValueToInches = 0.0492126;
+    private final AnalogInput m_ultrasonic;
+    private static double kValueToInches;
     private double sensorWidthFromCenter = 10.5;
     private double sensorLengthFromCenter = 8;
     private double sensorHypFromCenter = Math.sqrt(Math.pow(sensorWidthFromCenter,2) + Math.pow(sensorLengthFromCenter,2));
@@ -27,6 +27,11 @@ public class UltraSonicSensor {
     private double distance;
     //private double distance 
     
+    public UltraSonicSensor(int analoginput, double conversionFactor){
+        m_ultrasonic = new AnalogInput(analoginput);
+        kValueToInches = conversionFactor;
+    }
+
     public double getDistance(){
         return m_ultrasonic.getValue() * kValueToInches;
     }

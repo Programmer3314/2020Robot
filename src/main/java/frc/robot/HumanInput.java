@@ -17,8 +17,9 @@ public class HumanInput {
     public static Joystick operatorController = new Joystick(4);
     public static Joystick buttonBox1 = new Joystick(2);
     public static Joystick buttonBox2 = new Joystick(3);
+    public static Joystick stick = new Joystick(1);
     public static double forward, turn;
-    public static boolean controlPanelAlignmentButton, powerPortAlignmentButton, powerPortAlignmentButtonPressed, ballChaseButton, climbAlignmentButton, cameraChangeButton, wallAlignment;
+    public static boolean trenchRunAlignment, powerPortAlignmentButton, powerPortAlignmentButtonPressed, ballChaseButton, climbAlignmentButton, cameraChangeButton, controlPanelAlignment;
     public static double TalonFxTestSpeed;
     public static boolean gyroLock;
 
@@ -31,13 +32,13 @@ public class HumanInput {
         TalonFxTestSpeed = driverController.getRawAxis(3);
         turn = driverController.getRawAxis(4);
         
-        controlPanelAlignmentButton = driverController.getRawButton(1);
+        trenchRunAlignment = driverController.getRawButton(1);
         powerPortAlignmentButton = driverController.getRawButton(2);
         powerPortAlignmentButtonPressed = driverController.getRawButtonPressed(2);       
         ballChaseButton = driverController.getRawButton(3);
         climbAlignmentButton = driverController.getRawButton(4);
         cameraChangeButton = driverController.getRawButtonReleased(6);
         gyroLock = driverController.getRawAxis(2) > 0.5;
-        wallAlignment = buttonBox1.getRawButton(1);
+        controlPanelAlignment = buttonBox1.getRawButtonPressed(1);
     }
 }

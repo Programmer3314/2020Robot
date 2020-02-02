@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.SPI;
 
 public abstract class MyRobot extends AllRobots {
     IDriveTrain drivetrain;
-    Shooter shooter;
+    OldShooter shooter;
     TalonFXTest fxTest;
     DriveController driveController;
     ControlPanel controlPanel;
@@ -87,11 +87,11 @@ public abstract class MyRobot extends AllRobots {
         }else{
             drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
             SmartDashboard.putString("DriveTrain Type:", "Neos");
-            Constants.maxCorrection = 0.2;
+            Constants.maxCorrection = 0.1;
             Constants.minCorrection = 0.04;
         }
         
-        uSSensor = new UltraSonicSensor();
+        uSSensor = new UltraSonicSensor(Constants.AIControlPanelSensor, Constants.USSensorMB1013ToInchFactor);
         RechargeRobotInit();
     }
 
