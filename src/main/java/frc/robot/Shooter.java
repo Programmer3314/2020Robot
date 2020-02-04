@@ -19,7 +19,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Shooter {
     public enum ShooterStates {
-        IDLE, PREPARE, FIRE_BALL_AUTO,
+        IDLE,
+        PREPARE, 
+        FIRE_BALL_AUTO, 
+        DONE
     }
 
     double shooterRPM, shooterRPMTolerance;
@@ -55,27 +58,32 @@ public class Shooter {
 
             break;
         case PREPARE:
-            if (HumanInput.stick.getRawAxis(2) * 1.0 - shooterRPM <= shooterRPMTolerance) {
+            if (Math.abs(HumanInput.stick.getRawAxis(2) * 1.0 - shooterRPM) <= shooterRPMTolerance) {
                 shooterStates = ShooterStates.FIRE_BALL_AUTO;
             }
 
             break;
         case FIRE_BALL_AUTO:
-            if (HumanInput.stick.getRawAxis(2) * 1.0 - shooterRPM > shooterRPMTolerance) {
+            if ((HumanInput.stick.getRawAxis(2) * 1.0 - shooterRPM) > shooterRPMTolerance) {
                 shooterStates = ShooterStates.PREPARE;
             }
+            break;
+        case DONE:
             break;
         }
 
         switch (shooterStates) {
         case IDLE:
-
+            shooterLeft.set(0);
             break;
         case PREPARE:
-
+            shooterLeft.set(shooterRPM);
             break;
         case FIRE_BALL_AUTO:
-
+            shooterLeft.set(shooterRPM);
+            break;
+        case DONE:
+            
             break;
         }
 
@@ -85,5 +93,6 @@ public class Shooter {
     public void activate() {
         shooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
         shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+        shooterStates = ShooterStates.PREPARE;
     }
 }

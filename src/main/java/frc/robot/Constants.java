@@ -45,7 +45,7 @@ public class Constants{
     public static final int sparkShooterFreeLimit = 40;
 
     //Shooter Motor Controllers
-
+    public static final double shooterRPM = 3200;
 
     //Shooter Encoder
     public static final double sparkShooterVelocityConversionFactor = 1.0;

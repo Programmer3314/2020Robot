@@ -12,15 +12,18 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SPI;
 
 public abstract class MyRobot extends AllRobots {
     IDriveTrain drivetrain;
-    OldShooter shooter;
+    Shooter shooter;
     TalonFXTest fxTest;
     DriveController driveController;
     ControlPanel controlPanel;
     public static UltraSonicSensor uSSensor;
+    AnalogInput IRSensor;
 
     public static AHRS navx;
     public static double rawGyro, cleanGyro, ultraSonicDistance;
@@ -45,7 +48,7 @@ public abstract class MyRobot extends AllRobots {
     
     //Talon SRX CAN IDs Bag Motors
     final int CANMcctrlPanel = 31;
-
+    public int counter = 0;
     @Override
     public void MyRobotInit() {
         
@@ -80,17 +83,17 @@ public abstract class MyRobot extends AllRobots {
         }
 
         if(isFalcon){
-            drivetrain = new DrivetrainFalcon(CANMcFalconFrontLeft, CANMcFalconBackLeft, CANMcFalconFrontRight, CANMcFalconBackRight);
+            //drivetrain = new DrivetrainFalcon(CANMcFalconFrontLeft, CANMcFalconBackLeft, CANMcFalconFrontRight, CANMcFalconBackRight);
             SmartDashboard.putString("DriveTrain Type:", "Falcons");
             Constants.maxCorrection = 0.4;
             Constants.minCorrection = 0.04;
         }else{
-            drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
+            //drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
             SmartDashboard.putString("DriveTrain Type:", "Neos");
             Constants.maxCorrection = 0.1;
             Constants.minCorrection = 0.04;
         }
-        
+        IRSensor = new AnalogInput(3);
         uSSensor = new UltraSonicSensor(Constants.AIControlPanelSensor, Constants.USSensorMB1013ToInchFactor);
         RechargeRobotInit();
     }
@@ -135,14 +138,21 @@ public abstract class MyRobot extends AllRobots {
     }
 
     private void periodicInit(){
+        boolean IRSensorValue;
+        if(IRSensor.getValue() > 3500){
+            IRSensorValue = false;
+        }else{
+            IRSensorValue = true;
+        }
         rawGyro = navx.getAngle();
         cleanGyro = (rawGyro + 180 * Math.signum(rawGyro)) % 360 - 180 * Math.signum(rawGyro);
         ultraSonicDistance = uSSensor.getDistance();
         SmartDashboard.putNumber("Gyro value:", Robot.cleanGyro);
         SmartDashboard.putNumber("Ultra Sonic Distance in inches", ultraSonicDistance);
         SmartDashboard.putNumber("Center of Robot to wall", uSSensor.getDistanceFromWall2());
-
-        
+        SmartDashboard.putBoolean("IR Sensor is blocked", IRSensorValue);
+        SmartDashboard.putNumber("IR Sensor Value", IRSensor.getValue());
+        SmartDashboard.putNumber("Counter For Rich", counter++);
     }
 
     public abstract void RechargeRobotInit();

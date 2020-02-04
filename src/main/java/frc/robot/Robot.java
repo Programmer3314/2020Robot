@@ -20,7 +20,7 @@ public class Robot extends MyRobot {
     driveController = new DriveController(drivetrain, ballTargetTable, portalTapeTargetTable);
 
     if (hasShooter) {
-      shooter = new OldShooter(CANMcshooterLeft, CANMcshooterRight);
+      shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight);
     }
 
     if (isTalonFXTest) {
@@ -58,7 +58,7 @@ public class Robot extends MyRobot {
     if (HumanInput.ballChaseButton) {
       mP.currentState = DriveController.DriveState.BALLCHASE;
     } else if (HumanInput.powerPortAlignmentButton) {
-      mP.currentState = DriveController.DriveState.POWERPORTALIGNMENT;
+      shooter.activate();
     } else if (HumanInput.trenchRunAlignment) {
       mP.currentState = DriveController.DriveState.TRENCHRUNALIGNMENT;
     } else if (HumanInput.climbAlignmentButton) {
@@ -98,7 +98,7 @@ public class Robot extends MyRobot {
       shooter.update();
     }
 
-    driveController.update(mP);
+    //driveController.update(mP);
   }
 
   @Override
