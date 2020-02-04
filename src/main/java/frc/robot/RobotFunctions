@@ -18,6 +18,18 @@ ball Queuing | mini sim |
 ***Sensors***
 >= 2 Pairs of Sensors | Queuing Balls | 1 before the Shooter | A few more along the tracking
 
+Analog Sensors: We have 8 total, but there might be a problem with 1 (due to NAVX)
+We need to manage this list as we move forward. hopefully we'll be able to move the 
+ball sensors to digital inputs. 
+0 - Front Right Ultrasonic - trench alignment
+1 - Floor Ultrasonic sensor - distance to ground
+2 - Ball Sensor for intake - Should be digital
+3 - Ball Sensor for queuing - Should be digital
+4 - Ball Sensor for queuing - Should be digital
+5 - Ball Sensor for queuing - Should be digital
+6 - Ball Sensor for queuing - Should be digital
+7 - Lookup sensor to detect going under Control panel
+
 ***Pneumatics***
 1 Small Piston | Control Panel Manipulator
 
