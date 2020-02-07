@@ -10,6 +10,7 @@ public class Robot extends MyRobot {
   ControlPanelAlignment trenchAlignment;
   boolean isForward = true;
   int camNum = 0;
+  double shooterRPM, shooterRPMTolerance;
   //public static DriveController.DriveState currentDriveState;
 
   @Override
@@ -31,6 +32,12 @@ public class Robot extends MyRobot {
       controlPanel = new ControlPanel(CANMcctrlPanel);
     }
     trenchAlignment = new ControlPanelAlignment();
+
+    shooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
+    shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+    SmartDashboard.putNumber("Shooter RPM Desired", shooterRPM);
+    SmartDashboard.putNumber("Shooter RPM Tolerance Desired", shooterRPMTolerance);
+
   }
 
   @Override
@@ -90,12 +97,17 @@ public class Robot extends MyRobot {
 
     mP.cameraToggle = HumanInput.cameraChangeButton;
     trenchAlignment.update(mP);
-
+    
     if (hasControlPanel) {
       controlPanel.update();
     }
+
     if (hasShooter) {
       shooter.update();
+    }
+
+    if(HumanInput.reset){
+      shooter.reset();
     }
 
     //driveController.update(mP);

@@ -24,6 +24,7 @@ public abstract class MyRobot extends AllRobots {
     ControlPanel controlPanel;
     public static UltraSonicSensor uSSensor;
     AnalogInput IRSensor;
+    DigitalInput IRSensor2;
 
     public static AHRS navx;
     public static double rawGyro, cleanGyro, ultraSonicDistance;
@@ -94,6 +95,7 @@ public abstract class MyRobot extends AllRobots {
             Constants.minCorrection = 0.04;
         }
         IRSensor = new AnalogInput(3);
+        IRSensor2 = new DigitalInput(0);
         uSSensor = new UltraSonicSensor(Constants.AIControlPanelSensor, Constants.USSensorMB1013ToInchFactor);
         RechargeRobotInit();
     }
@@ -153,6 +155,7 @@ public abstract class MyRobot extends AllRobots {
         SmartDashboard.putBoolean("IR Sensor is blocked", IRSensorValue);
         SmartDashboard.putNumber("IR Sensor Value", IRSensor.getValue());
         SmartDashboard.putNumber("Counter For Rich", counter++);
+        SmartDashboard.putBoolean("New IR Sensor is blocked", IRSensor2.get());
     }
 
     public abstract void RechargeRobotInit();

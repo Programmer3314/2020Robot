@@ -77,11 +77,11 @@ public class Shooter {
             shooterLeft.set(0);
             break;
         case PREPARE:
-            shooterLeft.set(shooterRPM);
+            shooterLeft.set(HumanInput.throttle);
             break;
         case FIRE_BALL_AUTO:
-            shooterLeft.set(shooterRPM);
-            break;
+            shooterLeft.set(HumanInput.throttle);
+            break;  
         case DONE:
             
             break;
@@ -91,8 +91,29 @@ public class Shooter {
     }
 
     public void activate() {
-        shooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
-        shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+        SmartDashboard.putNumber("Shooter RPM Desired", shooterRPM);
+        SmartDashboard.putNumber("Shooter RPM Tolerance Desired", shooterRPMTolerance);
         shooterStates = ShooterStates.PREPARE;
+    }
+
+    public double getShooterRPMDesired(){
+        return shooterRPM;
+    }
+    
+    public double getShooterRPMToleranceDesired(){
+        return shooterRPMTolerance;
+    }
+
+    public void setShooterRPMDesired(){
+        shooterRPM = 0;
+    }
+    
+    public void setShooterRPMToleranceDesired(){
+        shooterRPMTolerance = 0;
+    }
+
+
+    public void reset(){
+        shooterStates = ShooterStates.IDLE;
     }
 }
