@@ -1,5 +1,7 @@
 package frc.robot;
 
+import javax.swing.text.StyleContext.SmallAttributeSet;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DriveController.DriveState;
@@ -10,7 +12,8 @@ public class Robot extends MyRobot {
   ControlPanelAlignment trenchAlignment;
   boolean isForward = true;
   int camNum = 0;
-  double shooterRPM, shooterRPMTolerance;
+  double targetShooterRPM, shooterRPMTolerance;
+  double queuingBeltSpeed;
   //public static DriveController.DriveState currentDriveState;
 
   @Override
@@ -21,7 +24,7 @@ public class Robot extends MyRobot {
     driveController = new DriveController(drivetrain, ballTargetTable, portalTapeTargetTable);
 
     if (hasShooter) {
-      shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight);
+      shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight, CANMcBallQueuing);
     }
 
     if (isTalonFXTest) {
@@ -33,10 +36,14 @@ public class Robot extends MyRobot {
     }
     trenchAlignment = new ControlPanelAlignment();
 
-    shooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
+    targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
     shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
-    SmartDashboard.putNumber("Shooter RPM Desired", shooterRPM);
+    SmartDashboard.putNumber("Shooter RPM Desired", targetShooterRPM);
     SmartDashboard.putNumber("Shooter RPM Tolerance Desired", shooterRPMTolerance);
+
+    queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
+    SmartDashboard.putNumber("Queuing Belt Speed", queuingBeltSpeed);
+
 
   }
 
@@ -59,13 +66,14 @@ public class Robot extends MyRobot {
   @Override
   public void RechargeTeleopPeriodic() {
     HumanInput.update();
+    SensorInput.update();
     DriveController.MoveParameters mP = driveController.new MoveParameters();
     mP.currentState = DriveController.DriveState.MANUAL;
 
     if (HumanInput.ballChaseButton) {
       mP.currentState = DriveController.DriveState.BALLCHASE;
     } else if (HumanInput.powerPortAlignmentButton) {
-      shooter.activate();
+      shooter.shootAll();
     } else if (HumanInput.trenchRunAlignment) {
       mP.currentState = DriveController.DriveState.TRENCHRUNALIGNMENT;
     } else if (HumanInput.climbAlignmentButton) {
@@ -121,6 +129,7 @@ public class Robot extends MyRobot {
   @Override
   public void RechargeTestPeriodic() {
     HumanInput.update();
+    SensorInput.update();
     fxTest.Update();
   }
 }
