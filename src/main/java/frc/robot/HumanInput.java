@@ -19,9 +19,10 @@ public class HumanInput {
     public static Joystick buttonBox2 = new Joystick(3);
     public static Joystick stick = new Joystick(1);
     public static double forward, turn, throttle;
-    public static boolean trenchRunAlignment, powerPortAlignmentButton, powerPortAlignmentButtonPressed, ballChaseButton, climbAlignmentButton, cameraChangeButton, controlPanelAlignment, reset;
+    public static boolean trenchRunAlignment, powerPortAlignmentButton, powerPortAlignmentButtonPressed, ballChaseButton, climbAlignmentButton, cameraChangeButton, controlPanelAlignment, reset, hoodUp, hoodDown;
     public static double TalonFxTestSpeed;
     public static boolean gyroLock;
+    public static int autoNumber;
 
     public HumanInput(){
     
@@ -32,6 +33,7 @@ public class HumanInput {
         TalonFxTestSpeed = driverController.getRawAxis(3);
         turn = driverController.getRawAxis(4);
         throttle = stick.getRawAxis(2);
+        //autoNumber = (booleanToInt(buttonBox1.getRawButton(13)) * Math.pow(2, 0)) + 
         
         trenchRunAlignment = driverController.getRawButton(1);
         powerPortAlignmentButton = driverController.getRawButton(2);
@@ -42,5 +44,18 @@ public class HumanInput {
         gyroLock = driverController.getRawAxis(2) > 0.5;
         controlPanelAlignment = buttonBox1.getRawButtonPressed(1);
         reset = buttonBox1.getRawButton(10);
+        hoodUp = buttonBox1.getRawButton(2);
+        hoodDown = buttonBox1.getRawButton(3);
+    }
+    public int booleanToInt(boolean gate){
+        if(gate){
+            return 1;
+        }
+        return 0;
+    }
+
+    public int binaryToDecimal(boolean[] gate){
+        int num = 0;
+        return num;
     }
 }

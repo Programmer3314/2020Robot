@@ -50,6 +50,7 @@ public abstract class MyRobot extends AllRobots {
     //Talon SRX CAN IDs Bag Motors
     final int CANMcctrlPanel = 31;
     final int CANMcBallQueuing = 11;
+    final int CANMcHood = 9;
     public int counter = 0;
     @Override
     public void MyRobotInit() {
@@ -79,7 +80,7 @@ public abstract class MyRobot extends AllRobots {
         }
         else {
             isFalcon = false;
-            hasShooter = false;
+            hasShooter = true;
             isTalonFXTest = true;
             hasControlPanel = true;
         }

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 
 public abstract class AllRobots extends TimedRobot {
     public static NetworkTableInstance ntInst;
+    public AutoStateMachines auto;
     public static final double degtorad = Math.PI /180;
     public static final double radtodeg = 180/Math.PI;
 

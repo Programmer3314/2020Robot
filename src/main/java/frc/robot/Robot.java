@@ -24,7 +24,7 @@ public class Robot extends MyRobot {
     driveController = new DriveController(drivetrain, ballTargetTable, portalTapeTargetTable);
 
     if (hasShooter) {
-      shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight, CANMcBallQueuing);
+      shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight, CANMcBallQueuing, CANMcHood);
     }
 
     if (isTalonFXTest) {
@@ -45,6 +45,8 @@ public class Robot extends MyRobot {
     SmartDashboard.putNumber("Queuing Belt Speed", queuingBeltSpeed);
 
 
+
+    //auto = 
   }
 
   @Override

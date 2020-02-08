@@ -8,11 +8,14 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -21,94 +24,138 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Shooter {
     public enum ShooterStates {
-        IDLE,
-        PREPARE, 
-        FIRE_BALL_AUTO, 
-        DONE
+        IDLE, PREPARE, FIRE_BALL_AUTO, DONE
     }
-
 
     double targetShooterRPM, shooterRPMTolerance;
     double queuingBeltSpeed;
     ShooterStates shooterStates;
     public CANSparkMax shooterLeft, shooterRight;
-    public TalonSRX ballQueuing;
-    public CANEncoder encoder;
+    public TalonSRX ballQueuing, hood;
+    public CANEncoder shooterEncoder;
+    int hoodEncoder, beltQueuingEncoder;
     double lastEncoderVal;
     boolean shooterBusy;
+    int counter;
+    CANPIDController shooterPidController;
 
-    public Shooter(int CANMcshooterLeft, int CANMcshooterRight, int CANMcBallQueuing) {
+    public Shooter(int CANMcshooterLeft, int CANMcshooterRight, int CANMcBallQueuing, int CANMcHood) {
         shooterStates = ShooterStates.IDLE;
 
         shooterLeft = new CANSparkMax(CANMcshooterLeft, CANSparkMaxLowLevel.MotorType.kBrushless);
         shooterRight = new CANSparkMax(CANMcshooterRight, CANSparkMaxLowLevel.MotorType.kBrushless);
         ballQueuing = new TalonSRX(CANMcBallQueuing);
+        hood = new TalonSRX(CANMcHood);
 
         shooterLeft.restoreFactoryDefaults();
         shooterRight.restoreFactoryDefaults();
         ballQueuing.configFactoryDefault();
+        hood.configFactoryDefault();
+
+        shooterPidController = shooterLeft.getPIDController();
+        shooterPidController.setP(Constants.shooterkP);
+        shooterPidController.setI(Constants.shooterkI);
+        shooterPidController.setD(Constants.shooterkD);
+        shooterPidController.setFF(Constants.shooterkFF);
+        shooterPidController.setOutputRange(Constants.shooterkMinOutput, Constants.shooterkMaxOutput);
 
         shooterRight.follow(shooterLeft, true);
 
         shooterLeft.setSmartCurrentLimit(Constants.sparkShooterStallLimit, Constants.sparkShooterFreeLimit);
 
         shooterLeft.setIdleMode(IdleMode.kCoast);
+        hood.setNeutralMode(NeutralMode.Brake);
+        ballQueuing.setNeutralMode(NeutralMode.Brake);
 
-        encoder = shooterLeft.getEncoder();
+        shooterEncoder = shooterLeft.getEncoder();
+        hoodEncoder = hood.getSelectedSensorPosition();
+        beltQueuingEncoder = ballQueuing.getSelectedSensorPosition();
 
-        encoder.setVelocityConversionFactor(Constants.sparkShooterVelocityConversionFactor);
+        shooterEncoder.setVelocityConversionFactor(Constants.sparkShooterVelocityConversionFactor);
 
-        
+        counter = 0;
     }
 
     public void update() {
-        switch (shooterStates) {
-            case IDLE:
-                shooterBusy = false;
-                break;
-
-            case PREPARE:
-                if(SensorInput.hasBall){
-                    shooterBusy = true;
-                    if (Math.abs(HumanInput.stick.getRawAxis(2) * 1.0 - targetShooterRPM) <= shooterRPMTolerance) {
-                        shooterStates = ShooterStates.FIRE_BALL_AUTO;
-                    }
-                }else{
-                    shooterStates = ShooterStates.DONE;
-                }
-
-                break;
-
-            case FIRE_BALL_AUTO:
-                if ((HumanInput.stick.getRawAxis(2) * 1.0 - targetShooterRPM) > shooterRPMTolerance) {
-                    shooterStates = ShooterStates.PREPARE;
-                }
-                break;
-            case DONE:
-                shooterBusy = false;
-                shooterStates = shooterStates.IDLE;
-                break;
+        hoodEncoder = hood.getSelectedSensorPosition();
+        beltQueuingEncoder = ballQueuing.getSelectedSensorPosition();
+        if(HumanInput.hoodUp){
+            hood.set(ControlMode.PercentOutput, -0.1);
+        }else if(HumanInput.hoodDown){
+            hood.set(ControlMode.PercentOutput, 0.1);
+        }else{
+            hood.set(ControlMode.PercentOutput, 0);
+        }
+        if(HumanInput.buttonBox1.getRawButton(4)){
+            ballQueuing.set(ControlMode.PercentOutput, 0.5);
+        }else if(HumanInput.buttonBox1.getRawButton(5)){
+            ballQueuing.set(ControlMode.PercentOutput, -0.5);
+        }else{
+            ballQueuing.set(ControlMode.PercentOutput, 0);
         }
 
         switch (shooterStates) {
-            case IDLE:
-                shooterLeft.set(0);
-                break;
-            case PREPARE:
-                shooterLeft.set(HumanInput.throttle);
-                ballQueuing.set(ControlMode.PercentOutput, 0);
-                break;
-            case FIRE_BALL_AUTO:
-                shooterLeft.set(HumanInput.throttle);
-                ballQueuing.set(ControlMode.PercentOutput, queuingBeltSpeed);
-                break;
-            case DONE:
-                ballQueuing.set(ControlMode.PercentOutput, 0);
+        case IDLE:
+            shooterBusy = false;
+            counter = 0;
+            break;
 
-                break;
+        case PREPARE:
+            if (SensorInput.hasBall) {
+                shooterBusy = true;
+                if (Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) <= shooterRPMTolerance) {
+                    shooterStates = ShooterStates.FIRE_BALL_AUTO;
+                }
+            } else if(counter >= 500){
+                shooterStates = ShooterStates.DONE;
+            }
+            counter++;
+
+            break;
+
+        case FIRE_BALL_AUTO:
+            if (Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) > shooterRPMTolerance) {
+                shooterStates = ShooterStates.PREPARE;
+            }
+            counter = 0;
+            break;
+
+        case DONE:
+            shooterBusy = false;
+            shooterStates = shooterStates.IDLE;
+            break;
         }
 
-        SmartDashboard.putNumber("Current RPM of the Shooter Motors", encoder.getVelocity());
+        switch (shooterStates) {
+        case IDLE:
+            shooterLeft.set(0);
+            hood.setSelectedSensorPosition(0);
+            break;
+        case PREPARE:
+            //shooterLeft.set(-HumanInput.throttle);
+            shooterPidController.setReference(targetShooterRPM,ControlType.kVelocity);
+
+            if(SensorInput.hasBall){
+                ballQueuing.set(ControlMode.PercentOutput, 0);
+            }else{
+                ballQueuing.set(ControlMode.PercentOutput, 0.5);
+            }
+            
+            break;
+        case FIRE_BALL_AUTO:
+            //shooterLeft.set(-HumanInput.throttle);
+            shooterPidController.setReference(targetShooterRPM,ControlType.kVelocity);
+            ballQueuing.set(ControlMode.PercentOutput, queuingBeltSpeed);
+            break;
+        case DONE:
+
+            break;
+        }
+
+        SmartDashboard.putNumber("Current RPM of the Shooter Motors", shooterEncoder.getVelocity());
+        SmartDashboard.putNumber("Belt Queue Value", beltQueuingEncoder);
+        SmartDashboard.putNumber("Hood value", hoodEncoder);
+        SmartDashboard.putString("Shoot All State", shooterStates.toString());
     }
 
     public void shootAll() {
@@ -121,27 +168,14 @@ public class Shooter {
         SmartDashboard.putNumber("Queuing Belt Speed", queuingBeltSpeed);
         shooterStates = ShooterStates.PREPARE;
     }
-
-    public double getShooterRPMDesired() {
-        return targetShooterRPM;
-    }
-
-    public double getShooterRPMToleranceDesired() {
-        return shooterRPMTolerance;
-    }
-
-    public void setShooterRPMDesired() {
-        targetShooterRPM = 0;
-    }
-
-    public void setShooterRPMToleranceDesired() {
-        shooterRPMTolerance = 0;
-    }
-
-    public boolean getShooterStatus(){
+    public boolean getShooterStatus() {
         return shooterBusy;
     }
+
     public void reset() {
         shooterStates = ShooterStates.IDLE;
+        ballQueuing.set(ControlMode.PercentOutput, 0);
+        shooterLeft.set(0);
+        hood.setSelectedSensorPosition(0);
     }
 }
