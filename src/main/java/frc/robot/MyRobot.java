@@ -20,7 +20,7 @@ public abstract class MyRobot extends AllRobots {
     IDriveTrain drivetrain;
     Shooter shooter;
     TalonFXTest fxTest;
-    DriveController driveController;
+    public static DriveController driveController;
     ControlPanel controlPanel;
     public static UltraSonicSensor uSSensor;
     AnalogInput IRSensor;
@@ -86,12 +86,12 @@ public abstract class MyRobot extends AllRobots {
         }
 
         if(isFalcon){
-            //drivetrain = new DrivetrainFalcon(CANMcFalconFrontLeft, CANMcFalconBackLeft, CANMcFalconFrontRight, CANMcFalconBackRight);
+            drivetrain = new DrivetrainFalcon(CANMcFalconFrontLeft, CANMcFalconBackLeft, CANMcFalconFrontRight, CANMcFalconBackRight);
             SmartDashboard.putString("DriveTrain Type:", "Falcons");
             Constants.maxCorrection = 0.4;
             Constants.minCorrection = 0.04;
         }else{
-            //drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
+            drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
             SmartDashboard.putString("DriveTrain Type:", "Neos");
             Constants.maxCorrection = 0.1;
             Constants.minCorrection = 0.04;
@@ -158,6 +158,7 @@ public abstract class MyRobot extends AllRobots {
         SmartDashboard.putNumber("IR Sensor Value", IRSensor.getValue());
         SmartDashboard.putNumber("Counter For Rich", counter++);
         SmartDashboard.putBoolean("New IR Sensor is blocked", SensorInput.hasBall);
+        
     }
 
     public abstract void RechargeRobotInit();

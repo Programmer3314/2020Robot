@@ -77,4 +77,9 @@ public class DrivetrainNEO implements IDriveTrain {
         Robot.ntInst.getEntry("Set Point Left").setDouble(leftSetPoint);
         SmartDashboard.putNumber("Current Flow ", spark1.getOutputCurrent());
     }
+
+    @Override
+    public double getEncoderVal(){
+        return leftEncoder.getPosition();
+    }
 }

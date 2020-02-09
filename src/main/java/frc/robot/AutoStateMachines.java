@@ -13,5 +13,6 @@ import frc.robot.DriveController.MoveParameters;
  * Add your docs here.
  */
 public interface AutoStateMachines {
-    public void updates();
+    public void update(MoveParameters mP);
+
 }

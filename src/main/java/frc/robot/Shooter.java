@@ -36,6 +36,9 @@ public class Shooter {
     int hoodEncoder, beltQueuingEncoder;
     double lastEncoderVal;
     boolean shooterBusy;
+    boolean useGyro;
+    double desiredGyroAngle;
+    double gyroTolerance;
     int counter;
     CANPIDController shooterPidController;
 
@@ -51,6 +54,7 @@ public class Shooter {
         shooterRight.restoreFactoryDefaults();
         ballQueuing.configFactoryDefault();
         hood.configFactoryDefault();
+        hood.setSelectedSensorPosition(0);
 
         shooterPidController = shooterLeft.getPIDController();
         shooterPidController.setP(Constants.shooterkP);
@@ -72,7 +76,7 @@ public class Shooter {
         beltQueuingEncoder = ballQueuing.getSelectedSensorPosition();
 
         shooterEncoder.setVelocityConversionFactor(Constants.sparkShooterVelocityConversionFactor);
-
+        
         counter = 0;
     }
 
@@ -104,7 +108,11 @@ public class Shooter {
             if (SensorInput.hasBall) {
                 shooterBusy = true;
                 if (Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) <= shooterRPMTolerance) {
-                    shooterStates = ShooterStates.FIRE_BALL_AUTO;
+                    if(useGyro == false){
+                        shooterStates = ShooterStates.FIRE_BALL_AUTO;
+                    }else if(Math.abs(Robot.cleanGyro - desiredGyroAngle) <= gyroTolerance){
+                        shooterStates = ShooterStates.FIRE_BALL_AUTO;
+                    }
                 }
             } else if(counter >= 500){
                 shooterStates = ShooterStates.DONE;
@@ -129,7 +137,7 @@ public class Shooter {
         switch (shooterStates) {
         case IDLE:
             shooterLeft.set(0);
-            hood.setSelectedSensorPosition(0);
+            
             break;
         case PREPARE:
             //shooterLeft.set(-HumanInput.throttle);
@@ -158,10 +166,13 @@ public class Shooter {
         SmartDashboard.putString("Shoot All State", shooterStates.toString());
     }
 
-    public void shootAll() {
-        targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
-        shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
-        queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
+    public void shootAll(double targetShooterRPM, double shooterRPMTolerance, double queuingBeltSpeed, boolean useGyro, double gyroAngleDesired, double gyroTolerance) {
+        this.targetShooterRPM = targetShooterRPM;
+        this.shooterRPMTolerance = shooterRPMTolerance;
+        this.queuingBeltSpeed = queuingBeltSpeed;
+        this.useGyro = useGyro;
+        this.desiredGyroAngle = gyroAngleDesired;
+        this.gyroTolerance = gyroTolerance;
         shooterBusy = true;
         SmartDashboard.putNumber("Shooter RPM Desired", targetShooterRPM);
         SmartDashboard.putNumber("Shooter RPM Tolerance Desired", shooterRPMTolerance);
@@ -177,5 +188,9 @@ public class Shooter {
         ballQueuing.set(ControlMode.PercentOutput, 0);
         shooterLeft.set(0);
         hood.setSelectedSensorPosition(0);
+    }
+
+    public void resetState() {
+        shooterStates = ShooterStates.IDLE;
     }
 }

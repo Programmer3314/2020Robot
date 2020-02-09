@@ -25,6 +25,7 @@ public class Constants{
     public static final double maxRPMFX = 6380;
     public static double maxCorrection = 0.2;
     public static double minCorrection = 0.04;
+    public static final int encoderTicksToFeet = 12527;
 
     //Motor Controllers
     public static final int sparkDriveTrainStallLimit = 20;

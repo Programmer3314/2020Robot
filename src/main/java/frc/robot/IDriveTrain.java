@@ -13,5 +13,5 @@ package frc.robot;
 interface IDriveTrain {
 
     void update(double leftSetPoint, double rightSetPoint);
-
+    double getEncoderVal();
 }

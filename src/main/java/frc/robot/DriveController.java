@@ -33,7 +33,7 @@ public class DriveController {
     PDController powerPortTracking, ballTracking, trenchTracking;
 
     public static enum DriveState {
-        MANUAL, BALLCHASE, POWERPORTALIGNMENT, CLIMBALIGNMENT, TRENCHRUNALIGNMENT, GYROLOCK, CONTROLPANELALIGNMENT, NONE
+        MANUAL, BALLCHASE, POWERPORTALIGNMENT, CLIMBALIGNMENT, TRENCHRUNALIGNMENT, GYROLOCK, CONTROLPANELALIGNMENT, TURN_TO_GYRO, NONE
     }
 
     public DriveState lastDriveState = DriveState.NONE;
@@ -42,6 +42,7 @@ public class DriveController {
     // private double forward, turn;
     private double angleOffset;
     private double gyroLockAngle;
+    double encoderPos;
 
     public DriveController(IDriveTrain drivetrain, NetworkTable ballTargetTable, NetworkTable retrotapeTable) {
         this.drivetrain = drivetrain;
@@ -63,7 +64,8 @@ public class DriveController {
 
     public void update(MoveParameters mP) {
         scaleForward = 1;
-
+        encoderPos = drivetrain.getEncoderVal();
+        
         if (mP.currentState != lastDriveState) {
             switch (mP.currentState) {
             case POWERPORTALIGNMENT:
@@ -121,15 +123,6 @@ public class DriveController {
             if (retroTapeTable.getEntry("Retroreflective Target Found") == null)
                 System.out.print("Retro Tape Entry is Null");
 
-            // if (retroTapeTable.getEntry("Retroreflective Target
-            // Found").getBoolean(false)) {
-            // double centerX = retroTapeTable.getEntry("Retro x").getDouble(0);
-            // forward = HumanInput.forward;
-            // turn = powerPortTracking.calculate(0, centerX);
-            // }else{
-            // powerPortTracking.reset();
-            // }
-
             if (retroTapeTable.getEntry("Retroreflective Target Found").getBoolean(false)) {
 
                 // double angleOffset = retroTapeTable.getEntry("X Angle").getDouble(0);
@@ -182,6 +175,9 @@ public class DriveController {
             }
             break;
 
+        case TURN_TO_GYRO:
+            mP.turn = powerPortTracking.calculate(mP.angle, Robot.cleanGyro);
+            break;
         case NONE:
             mP.forward = 0;
             mP.turn = 0;

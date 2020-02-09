@@ -19,10 +19,12 @@ public class HumanInput {
     public static Joystick buttonBox2 = new Joystick(3);
     public static Joystick stick = new Joystick(1);
     public static double forward, turn, throttle;
-    public static boolean trenchRunAlignment, powerPortAlignmentButton, powerPortAlignmentButtonPressed, ballChaseButton, climbAlignmentButton, cameraChangeButton, controlPanelAlignment, reset, hoodUp, hoodDown;
+    public static boolean trenchRunAlignment, shooterAllInTarget, powerPortAlignmentButtonPressed, ballChaseButton, climbAlignmentButton, cameraChangeButton, controlPanelAlignment, reset, hoodUp, hoodDown;
     public static double TalonFxTestSpeed;
     public static boolean gyroLock;
     public static int autoNumber;
+    public static boolean activateAuto;
+    public static boolean shutDownAuto;
 
     public HumanInput(){
     
@@ -36,7 +38,7 @@ public class HumanInput {
         //autoNumber = (booleanToInt(buttonBox1.getRawButton(13)) * Math.pow(2, 0)) + 
         
         trenchRunAlignment = driverController.getRawButton(1);
-        powerPortAlignmentButton = driverController.getRawButton(2);
+        shooterAllInTarget = driverController.getRawButton(2);
         powerPortAlignmentButtonPressed = driverController.getRawButtonPressed(2);       
         ballChaseButton = driverController.getRawButton(3);
         climbAlignmentButton = driverController.getRawButton(4);
@@ -46,6 +48,8 @@ public class HumanInput {
         reset = buttonBox1.getRawButton(10);
         hoodUp = buttonBox1.getRawButton(2);
         hoodDown = buttonBox1.getRawButton(3);
+        activateAuto = buttonBox1.getRawButtonPressed(7);
+        shutDownAuto  = buttonBox1.getRawButtonReleased(7);
     }
     public int booleanToInt(boolean gate){
         if(gate){

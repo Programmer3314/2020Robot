@@ -102,4 +102,8 @@ public class DrivetrainFalcon implements IDriveTrain{
         talon3.set(TalonFXControlMode.PercentOutput, rightSetPoint);
         
     }
+    @Override
+    public double getEncoderVal(){
+        return talon1.getSelectedSensorPosition();
+    }
 }
