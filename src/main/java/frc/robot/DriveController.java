@@ -188,7 +188,7 @@ public class DriveController {
         SmartDashboard.putNumber("Turn", mP.turn);
         SmartDashboard.putNumber("Forward Value", mP.forward);
         SmartDashboard.putNumber("Set Gyro Value", gyroLockAngle);
-        SmartDashboard.putString("Case State", mP.currentState.toString());
+        SmartDashboard.putString("Drive State", mP.currentState.toString());
 
         double leftSetPoint = (mP.forward * scaleForward - mP.turn * scaleTurn);
         double rightSetPoint = (mP.forward * scaleForward + mP.turn * scaleTurn);

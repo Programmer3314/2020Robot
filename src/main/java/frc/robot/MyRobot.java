@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.SPI;
 
 public abstract class MyRobot extends AllRobots {
     IDriveTrain drivetrain;
-    Shooter shooter;
+    public static Shooter shooter;
     TalonFXTest fxTest;
     public static DriveController driveController;
     ControlPanel controlPanel;

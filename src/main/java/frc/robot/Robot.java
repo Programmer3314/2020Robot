@@ -18,6 +18,7 @@ public class Robot extends MyRobot {
   boolean useGyro;
   double angleOffset;
   double gyroTolerance, gyroAngleDesired;
+  DriveController.MoveParameters mP;
   
   //public static DriveController.DriveState currentDriveState;
 
@@ -67,17 +68,22 @@ public class Robot extends MyRobot {
     if (hasControlPanel) {
       controlPanel = new ControlPanel(CANMcctrlPanel);
     }
+    mP = driveController.new MoveParameters();
+
+    mP.currentState = DriveController.DriveState.MANUAL;
     auto1 = new ThreeBallAuto();
     trenchAlignment.resetState();
     shooter.resetState();
+    auto1.reset();
   }
 
+  
   @Override
   public void RechargeTeleopPeriodic() {
     HumanInput.update();
     SensorInput.update();
-    DriveController.MoveParameters mP = driveController.new MoveParameters();
-    mP.currentState = DriveController.DriveState.MANUAL;
+    
+    
 
     if (HumanInput.ballChaseButton) {
         mP.currentState = DriveController.DriveState.BALLCHASE;
@@ -101,11 +107,14 @@ public class Robot extends MyRobot {
     } else if (HumanInput.controlPanelAlignment) {
         trenchAlignment.activate();
     } else if(HumanInput.activateAuto){
-        auto1.update(mP);
-    }else if(HumanInput.shutDownAuto){
+      SmartDashboard.putString("In active Auto", "Yes");
+      auto1.activate();  
+      //auto1.update(mP);
+    }/*else if(HumanInput.shutDownAuto){
+      SmartDashboard.putString("In active Auto", "No");
         mP.currentState = DriveState.NONE;
         auto1.reset();
-    }else {
+    }*/else {
         mP.currentState = DriveController.DriveState.MANUAL;
     }
 
@@ -128,7 +137,8 @@ public class Robot extends MyRobot {
 
     mP.cameraToggle = HumanInput.cameraChangeButton;
     trenchAlignment.update(mP);
-    
+    auto1.update(mP);
+
     if (hasControlPanel) {
       controlPanel.update();
     }
@@ -139,6 +149,7 @@ public class Robot extends MyRobot {
 
     if(HumanInput.reset){
       shooter.reset();
+      auto1.reset();
     }
 
     driveController.update(mP);

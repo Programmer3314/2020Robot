@@ -21,6 +21,7 @@ import frc.robot.DriveController.MoveParameters;
 public class ThreeBallAuto implements AutoStateMachines{
     public enum AutoStates {
         IDLE,
+        START,
         ALIGN, //Align to power port
         SHOOT, // Shoot 3 balls
         TURN_TO_GYRO, // Turn to gyro 0
@@ -31,8 +32,8 @@ public class ThreeBallAuto implements AutoStateMachines{
     int counter;
     double pastGyro;
     AutoStates autoStates;
-    Shooter shooter;
-    DriveController driveController;
+    //Shooter shooter;
+    //DriveController driveController;
     //DriveController.MoveParameters mP;
     double targetShooterRPM, shooterRPMTolerance;
     double queuingBeltSpeed;
@@ -43,24 +44,29 @@ public class ThreeBallAuto implements AutoStateMachines{
     double lastEncoderPos;
 
     public ThreeBallAuto(){
-        autoStates = AutoStates.IDLE;
-        shooter = new Shooter(7, 8, 11, 9);
+        autoStates = AutoStates.START;
+        //shooter = new Shooter(7, 8, 11, 9);
         counter = 0;
+        portalTapeTargetTable = Robot.ntInst.getTable("Retroreflective Tape Target");
         //mP = driveController.new MoveParameters();
         targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
         shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
         queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
         gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 1);
         
-        useGyro = false;
+        useGyro = true;
     }
 
     @Override
     public void update(MoveParameters mP){
-        encoderPos = driveController.encoderPos;
+        encoderPos = Robot.driveController.encoderPos;
         pastGyro = Robot.cleanGyro;
         switch(autoStates){
             case IDLE:
+                
+            break;
+
+            case START:
                 counter = 0;
                 if(portalTapeTargetTable.getEntry("Retroreflective Target Found").getBoolean(false)){
                     angleOffset = portalTapeTargetTable.getEntry("X Angle").getDouble(0);
@@ -75,12 +81,18 @@ public class ThreeBallAuto implements AutoStateMachines{
                 //mP.currentState = DriveState.POWERPORTALIGNMENT;
                 mP.angle = angleOffset;
                 mP.currentState = DriveState.TURN_TO_GYRO;
-                shooter.shootAll(targetShooterRPM, shooterRPMTolerance, queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
+                targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
+                shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+                queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
+                gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 5);
+                Robot.shooter.shootAll(targetShooterRPM, shooterRPMTolerance, queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
                 autoStates = AutoStates.SHOOT;
             break;
 
             case SHOOT:
-                if(shooter.getShooterStatus() == false){
+                mP.angle = angleOffset;
+                mP.currentState = DriveState.TURN_TO_GYRO;
+                if(Robot.shooter.getShooterStatus() == false){
                     autoStates = AutoStates.TURN_TO_GYRO;
                 }
             break;
@@ -105,8 +117,8 @@ public class ThreeBallAuto implements AutoStateMachines{
             case FORWARD:
                 //go 2 - 5 inches forward or something
                 mP.currentState = DriveState.GYROLOCK;
-                mP.forward = 0.2;
-                if((encoderPos - lastEncoderPos) / Constants.encoderTicksToFeet>=4){
+                mP.forward = -0.2;
+                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet>=2){
                     autoStates = AutoStates.DONE;
                 }
             break;
@@ -119,9 +131,13 @@ public class ThreeBallAuto implements AutoStateMachines{
         }
         SmartDashboard.putString("Auto State", autoStates.toString());
     }
-    
+    @Override
+    public void activate(){
+        autoStates = AutoStates.START;
+    }
+
     public void reset(){
         autoStates = AutoStates.IDLE;
-        shooter.reset();
+        Robot.shooter.reset();
     }
 }

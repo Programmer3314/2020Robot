@@ -23,8 +23,8 @@ public class Constants{
     //Motors
     public static final double maxRPMNeo = 5700;
     public static final double maxRPMFX = 6380;
-    public static double maxCorrection = 0.2;
-    public static double minCorrection = 0.04;
+    public static double maxCorrection = 0.1;
+    public static double minCorrection = 0.05;
     public static final int encoderTicksToFeet = 12527;
 
     //Motor Controllers
@@ -47,10 +47,10 @@ public class Constants{
 
     //Shooter Motor Controllers
     //public static final double shooterRPM = 3200;
-    public static final double shooterkP = 1.6e-5;
+    public static final double shooterkP = 3.8e-4;
     public static final double shooterkI = 0;
     public static final double shooterkD = 0;
-    public static final double shooterkFF = 1.85e-4;
+    public static final double shooterkFF = 1.84e-4;
     public static final double shooterkMaxOutput = 1; 
     public static final double shooterkMinOutput = -1;
     //Shooter Encoder

@@ -114,7 +114,7 @@ public class Shooter {
                         shooterStates = ShooterStates.FIRE_BALL_AUTO;
                     }
                 }
-            } else if(counter >= 500){
+            } else if(counter >= 200){
                 shooterStates = ShooterStates.DONE;
             }
             counter++;
@@ -177,6 +177,7 @@ public class Shooter {
         SmartDashboard.putNumber("Shooter RPM Desired", targetShooterRPM);
         SmartDashboard.putNumber("Shooter RPM Tolerance Desired", shooterRPMTolerance);
         SmartDashboard.putNumber("Queuing Belt Speed", queuingBeltSpeed);
+        SmartDashboard.putNumber("Gyro Tolerance" , gyroTolerance);
         shooterStates = ShooterStates.PREPARE;
     }
     public boolean getShooterStatus() {
