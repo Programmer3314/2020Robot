@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
@@ -42,6 +41,7 @@ public class DrivetrainFalcon implements IDriveTrain{
 
     }
 
+    // TODO: Review: changed to use Constants... 
     public void setMotors(TalonFX fx){
         TalonFXConfiguration fxconfig = new TalonFXConfiguration();
 
@@ -55,22 +55,22 @@ public class DrivetrainFalcon implements IDriveTrain{
         fxconfig.nominalOutputForward = 0; // minimum forward output
         fxconfig.nominalOutputReverse = 0; // minimum reverse output
         fxconfig.openloopRamp = 0.1; // seconds to go from 0 to full in "power" mode
-        fxconfig.peakOutputForward = 1; // [0,1]
-        fxconfig.peakOutputReverse = -1; // [-1, 0]
+        fxconfig.peakOutputForward = Constants.falconDrivetrainKMaxOutput; // [0,1]
+        fxconfig.peakOutputReverse = Constants.falconDrivetrainKMinOutput; // [-1, 0]
 
         SupplyCurrentLimitConfiguration supplyLimit = new SupplyCurrentLimitConfiguration(true, 23.1, 25, 1.4);
         fxconfig.supplyCurrLimit = supplyLimit;
         //StatorCurrentLimitConfiguration statorLimit = new StatorCurrentLimitConfiguration(true, 12.1, 87.4, 0.4);
         //fxconfig.statorCurrLimit = statorLimit;
 
-        fxconfig.slot0.kP = 0.00300;//5.000000; //
-        fxconfig.slot0.kI = 0.000000; //
-        fxconfig.slot0.kD = 0;//0.020000; //
-        fxconfig.slot0.kF = 0.050000; //
-        //fxconfig.slot0.integralZone = 900; //
+        fxconfig.slot0.kP = Constants.drivetrainKP;//5.000000; //
+        fxconfig.slot0.kI = Constants.drivetrainKI; //
+        fxconfig.slot0.kD = Constants.drivetrainKD;//0.020000; //
+        fxconfig.slot0.kF = Constants.drivetrainKFF; //
+        //fxconfig.slot0.integralZone = Constants.drivetrainKIz; //
         fxconfig.slot0.allowableClosedloopError = 217; //
         //fxconfig.slot0.maxIntegralAccumulator = 254.000000; //
-        fxconfig.slot0.closedLoopPeakOutput = 0.869990; //    
+        fxconfig.slot0.closedLoopPeakOutput = Constants.falconDrivetrainKMaxOutput; //    
 
         fx.configAllSettings(fxconfig);
     }

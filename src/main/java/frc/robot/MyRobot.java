@@ -11,10 +11,9 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public abstract class MyRobot extends AllRobots {
     IDriveTrain drivetrain;
@@ -62,9 +61,6 @@ public abstract class MyRobot extends AllRobots {
         try {
             CANSparkMax controllerCheck=new CANSparkMax(5, MotorType.kBrushless);
             SmartDashboard.putString("Controller Check1","Passed");
-            // if (controllerCheck==null) {
-            //     SmartDashboard.putString("Controller Check2","IS NULL");
-            // }
             ControllerVersion = controllerCheck.getFirmwareString();
             SmartDashboard.putString("Controller Check 4", ControllerVersion);
             controllerCheck.close();
@@ -85,17 +81,38 @@ public abstract class MyRobot extends AllRobots {
             hasControlPanel = true;
         }
 
-        if(isFalcon){
-            drivetrain = new DrivetrainFalcon(CANMcFalconFrontLeft, CANMcFalconBackLeft, CANMcFalconFrontRight, CANMcFalconBackRight);
+        // TODO: Review changes to the constants set here. 
+        // TODO: Review moved the drivetrain instantiation below setting constants
+        if(isFalcon) {
             SmartDashboard.putString("DriveTrain Type:", "Falcons");
-            Constants.maxCorrection = 0.4;
-            Constants.minCorrection = 0.04;
-        }else{
-            drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
+            Constants.drivetrainTrackingMaxCorrection = Constants.falconTrackingMaxCorrection;
+            Constants.drivetrainTrackingMinCorrection = Constants.falconTrackingMinCorrection;
+            Constants.encoderTicksToFeet = Constants.falconEncoderTicksToFeet;
+            Constants.maxRPM = Constants.falconMaxRPM;
+            Constants.drivetrainKP = Constants.falconDrivetrainKP;
+            Constants.drivetrainKI = Constants.falconDrivetrainKI;
+            Constants.drivetrainKD = Constants.falconDrivetrainKD; 
+            Constants.drivetrainKIz = Constants.falconDrivetrainKIz; 
+            Constants.drivetrainKFF = Constants.falconDrivetrainKFF; 
+            Constants.drivetrainKMaxOutput = Constants.falconDrivetrainKMaxOutput; 
+            Constants.drivetrainKMinOutput = Constants.falconDrivetrainKMinOutput;
+            drivetrain = new DrivetrainFalcon(CANMcFalconFrontLeft, CANMcFalconBackLeft, CANMcFalconFrontRight, CANMcFalconBackRight);
+        } else {
             SmartDashboard.putString("DriveTrain Type:", "Neos");
-            Constants.maxCorrection = 0.1;
-            Constants.minCorrection = 0.04;
+            Constants.drivetrainTrackingMaxCorrection = Constants.neoMaxTrackingCorrection;
+            Constants.drivetrainTrackingMinCorrection = Constants.neoTrackingMinCorrection;
+            Constants.encoderTicksToFeet = Constants.neoEncoderTicksToFeet;
+            Constants.maxRPM = Constants.neoMaxRPM;
+            Constants.drivetrainKP = Constants.neoDrivetrainKP;
+            Constants.drivetrainKI = Constants.neoDrivetrainKI;
+            Constants.drivetrainKD = Constants.neoDrivetrainKD; 
+            Constants.drivetrainKIz = Constants.neoDrivetrainKIz; 
+            Constants.drivetrainKFF = Constants.neoDrivetrainKFF; 
+            Constants.drivetrainKMaxOutput = Constants.neoDrivetrainKMaxOutput; 
+            Constants.drivetrainKMinOutput = Constants.neoDrivetrainKMinOutput;
+            drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
         }
+
         IRSensor = new AnalogInput(3);
         
         uSSensor = new UltraSonicSensor( Constants.USSensorMB1013ToInchFactor);

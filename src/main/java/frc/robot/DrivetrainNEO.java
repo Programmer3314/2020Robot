@@ -47,19 +47,19 @@ public class DrivetrainNEO implements IDriveTrain {
         leftPidController = spark1.getPIDController();
         rightPidController = spark4.getPIDController();
 
-        leftPidController.setP(Constants.driveTrainkP);
-        leftPidController.setI(Constants.driveTrainkI);
-        leftPidController.setD(Constants.driveTrainkD);
-        leftPidController.setIZone(Constants.driveTrainkIz);
-        leftPidController.setFF(Constants.driveTrainkFF);
-        leftPidController.setOutputRange(Constants.driveTrainkMinOutput, Constants.driveTrainkMaxOutput);
+        leftPidController.setP(Constants.drivetrainKP);
+        leftPidController.setI(Constants.drivetrainKI);
+        leftPidController.setD(Constants.drivetrainKD);
+        leftPidController.setIZone(Constants.drivetrainKIz);
+        leftPidController.setFF(Constants.drivetrainKFF);
+        leftPidController.setOutputRange(Constants.drivetrainKMinOutput, Constants.drivetrainKMaxOutput);
 
-        rightPidController.setP(Constants.driveTrainkP);
-        rightPidController.setI(Constants.driveTrainkI);
-        rightPidController.setD(Constants.driveTrainkD);
-        rightPidController.setIZone(Constants.driveTrainkIz);
-        rightPidController.setFF(Constants.driveTrainkFF);
-        rightPidController.setOutputRange(Constants.driveTrainkMinOutput, Constants.driveTrainkMaxOutput);
+        rightPidController.setP(Constants.drivetrainKP);
+        rightPidController.setI(Constants.drivetrainKI);
+        rightPidController.setD(Constants.drivetrainKD);
+        rightPidController.setIZone(Constants.drivetrainKIz);
+        rightPidController.setFF(Constants.drivetrainKFF);
+        rightPidController.setOutputRange(Constants.drivetrainKMinOutput, Constants.drivetrainKMaxOutput);
 
         leftEncoder = spark1.getEncoder();
         rightEncoder = spark4.getEncoder();
@@ -70,8 +70,8 @@ public class DrivetrainNEO implements IDriveTrain {
 
     @Override
     public void update(double leftSetPoint, double rightSetPoint){
-        leftPidController.setReference(leftSetPoint * Constants.maxRPMNeo, ControlType.kVelocity);
-        rightPidController.setReference(rightSetPoint * Constants.maxRPMNeo, ControlType.kVelocity);
+        leftPidController.setReference(leftSetPoint * Constants.maxRPM, ControlType.kVelocity);
+        rightPidController.setReference(rightSetPoint * Constants.maxRPM, ControlType.kVelocity);
 
         Robot.ntInst.getEntry("RPM Left").setDouble(leftEncoder.getVelocity());
         Robot.ntInst.getEntry("Set Point Left").setDouble(leftSetPoint);

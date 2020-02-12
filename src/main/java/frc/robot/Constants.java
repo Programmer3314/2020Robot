@@ -11,21 +11,52 @@ package frc.robot;
  * Add your docs here.
  */
 public class Constants{
-    //Motor PID Control
-    public static final double driveTrainkP = 1.6e-5;//5e-5;
-    public static final double driveTrainkI = 0;
-    public static final double driveTrainkD = 0; 
-    public static final double driveTrainkIz = 0; 
-    public static final double driveTrainkFF = 1.9e-4; 
-    public static final double driveTrainkMaxOutput = 1; 
-    public static final double driveTrainkMinOutput = -1;
 
-    //Motors
-    public static final double maxRPMNeo = 5700;
-    public static final double maxRPMFX = 6380;
-    public static double maxCorrection = 0.1;
-    public static double minCorrection = 0.07;
-    public static final int encoderTicksToFeet = 12527;
+    //Motor Specific Constants
+    public static final int neoMaxRPM       = 5700;
+    public static final int falconMaxRPM    = 6380;
+    public static final int bagMaxRPM       = 13000;
+
+    // TODO: Review: change to constants below. 
+    // We had raised min correction for the falcons, but it did 
+    // nothing because the real values were being set in MyRobot.
+    // They still are being set there, but now they are set with 
+    // the additional constants below. 
+
+    // Drivetrain Specific Constants...
+    public static double drivetrainKP = 0;//5e-5;
+    public static double drivetrainKI = 0;
+    public static double drivetrainKD = 0; 
+    public static double drivetrainKIz = 0; 
+    public static double drivetrainKFF = 0; 
+    public static double drivetrainKMaxOutput = 0; 
+    public static double drivetrainKMinOutput = 0;
+    public static double drivetrainTrackingMaxCorrection = 0.0; // = 0.1;
+    public static double drivetrainTrackingMinCorrection = 0.0; // = 0.07;
+    public static int    maxRPM = 0;
+    public static int    encoderTicksToFeet = 1;
+    // Falcon chassis set
+    public static final double falconDrivetrainKP = 0.003000;//5e-5;
+    public static final double falconDrivetrainKI = 0.000000;
+    public static final double falconDrivetrainKD = 0; 
+    public static final double falconDrivetrainKIz = 0; 
+    public static final double falconDrivetrainKFF = 0.050000; 
+    public static final double falconDrivetrainKMaxOutput =  0.869990; 
+    public static final double falconDrivetrainKMinOutput = -0.869990;
+    public static final double falconTrackingMaxCorrection = 0.4; // = 0.1;
+    public static final double falconTrackingMinCorrection = 0.04; // = 0.07;
+    public static final int    falconEncoderTicksToFeet = 12527;
+    // Neo chassis set
+    public static final double neoDrivetrainKP = 1.6e-5;//5e-5;
+    public static final double neoDrivetrainKI = 0;
+    public static final double neoDrivetrainKD = 0; 
+    public static final double neoDrivetrainKIz = 0; 
+    public static final double neoDrivetrainKFF = 1.9e-4; 
+    public static final double neoDrivetrainKMaxOutput = 1; 
+    public static final double neoDrivetrainKMinOutput = -1;
+    public static final double neoMaxTrackingCorrection = 0.1;
+    public static final double neoTrackingMinCorrection = 0.04;
+    public static final int    neoEncoderTicksToFeet = 1; // this needs to be fixed...
 
     //Motor Controllers
     public static final int sparkDriveTrainStallLimit = 20;
@@ -52,7 +83,6 @@ public class Constants{
     public static final double shooterkIz = 50;
     public static final double shooterkIMax = 0.1;
     public static final double shooterkD = 0;
-    //no gays allowed on this computer, this includes you, mihir. this is what you get for not talking to me
     public static final double shooterkFF = 1.84e-4;
     public static final double shooterkMaxOutput = 1; 
     public static final double shooterkMinOutput = -1;

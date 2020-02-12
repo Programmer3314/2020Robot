@@ -132,7 +132,7 @@ public class Shooter {
 
         case DONE:
             shooterBusy = false;
-            shooterStates = shooterStates.IDLE;
+            shooterStates = ShooterStates.IDLE;
             break;
         }
 

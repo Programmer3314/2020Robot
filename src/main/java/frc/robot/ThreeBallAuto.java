@@ -7,11 +7,8 @@
 
 package frc.robot;
 
-import frc.robot.Shooter;
-
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.DriveController;
 import frc.robot.DriveController.DriveState;
 import frc.robot.DriveController.MoveParameters;
 

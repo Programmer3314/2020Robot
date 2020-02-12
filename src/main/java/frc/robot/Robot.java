@@ -1,10 +1,7 @@
 package frc.robot;
 
-import javax.swing.text.StyleContext.SmallAttributeSet;
-
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.DriveController.DriveState;
 
 public class Robot extends MyRobot {
   NetworkTable ballTargetTable;

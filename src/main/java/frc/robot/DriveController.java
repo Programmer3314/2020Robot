@@ -7,14 +7,9 @@
 
 package frc.robot;
 
-import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * Add your docs here.
- */
 public class DriveController {
     public class MoveParameters {
         public double forward = 0;
@@ -50,16 +45,16 @@ public class DriveController {
         this.retroTapeTable = retrotapeTable;
         powerPortTracking = new PDController(Constants.powerPortkP, Constants.powerPortkD);
         powerPortTracking.setToleranceValue(Constants.powerPortTolerance);
-        powerPortTracking.setMaxCorrectionValue(Constants.maxCorrection);
-        powerPortTracking.setMinCorrectionValue(Constants.minCorrection);
+        powerPortTracking.setMaxCorrectionValue(Constants.drivetrainTrackingMaxCorrection);
+        powerPortTracking.setMinCorrectionValue(Constants.drivetrainTrackingMinCorrection);
         ballTracking = new PDController(Constants.ballkP, Constants.ballkD);
         ballTracking.setToleranceValue(Constants.ballTolerance);
-        ballTracking.setMaxCorrectionValue(Constants.maxCorrection);
-        ballTracking.setMinCorrectionValue(Constants.minCorrection);
+        ballTracking.setMaxCorrectionValue(Constants.drivetrainTrackingMaxCorrection);
+        ballTracking.setMinCorrectionValue(Constants.drivetrainTrackingMinCorrection);
         trenchTracking = new PDController(Constants.trenchkP, Constants.trenchkD);
         trenchTracking.setToleranceValue(Constants.trenchTolerance);
-        trenchTracking.setMaxCorrectionValue(Constants.maxCorrection);
-        trenchTracking.setMinCorrectionValue(Constants.minCorrection);
+        trenchTracking.setMaxCorrectionValue(Constants.drivetrainTrackingMaxCorrection);
+        trenchTracking.setMinCorrectionValue(Constants.drivetrainTrackingMinCorrection);
     }
 
     public void update(MoveParameters mP) {
@@ -82,8 +77,6 @@ public class DriveController {
 
         switch (mP.currentState) {
         case MANUAL:
-            // mP.forward = HumanInput.forward;
-            // mP.turn = HumanInput.turn;
             break;
         case BALLCHASE:
             if (ballTargetTable == null)
@@ -142,23 +135,9 @@ public class DriveController {
 
             break;
         case TRENCHRUNALIGNMENT:
-            //mP.forward = HumanInput.forward;
             mP.turn = -trenchTracking.calculate(Robot.cleanGyro, mP.angle);
-            // if(Robot.cleanGyro > 15){
-            // turn = -0.5;
-            // }else if(Robot.cleanGyro < -15){
-            // turn = 0.5;
-            // }else if(Robot.cleanGyro > 0.5){
-            // turn = -0.05;
-            // }else if(Robot.cleanGyro < -0.5){
-            // turn = 0.05;
-            // }else{
-            // turn = 0;
-            // }
-
             break;
         case GYROLOCK:
-            //mP.forward = HumanInput.forward;
             mP.turn = -trenchTracking.calculate(Robot.cleanGyro, gyroLockAngle);
             break;
 
@@ -196,5 +175,4 @@ public class DriveController {
         lastDriveState = mP.currentState;
         drivetrain.update(leftSetPoint, rightSetPoint);
     }
-
 }
