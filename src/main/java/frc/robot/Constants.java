@@ -24,7 +24,7 @@ public class Constants{
     public static final double maxRPMNeo = 5700;
     public static final double maxRPMFX = 6380;
     public static double maxCorrection = 0.1;
-    public static double minCorrection = 0.05;
+    public static double minCorrection = 0.07;
     public static final int encoderTicksToFeet = 12527;
 
     //Motor Controllers
@@ -47,9 +47,12 @@ public class Constants{
 
     //Shooter Motor Controllers
     //public static final double shooterRPM = 3200;
-    public static final double shooterkP = 3.8e-4;
-    public static final double shooterkI = 0;
+    public static final double shooterkP = 7.0e-4;
+    public static final double shooterkI = 0.000001;
+    public static final double shooterkIz = 50;
+    public static final double shooterkIMax = 0.1;
     public static final double shooterkD = 0;
+    //no gays allowed on this computer, this includes you, mihir. this is what you get for not talking to me
     public static final double shooterkFF = 1.84e-4;
     public static final double shooterkMaxOutput = 1; 
     public static final double shooterkMinOutput = -1;

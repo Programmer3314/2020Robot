@@ -10,7 +10,7 @@ public class Robot extends MyRobot {
   NetworkTable ballTargetTable;
   NetworkTable portalTapeTargetTable;
   ControlPanelAlignment trenchAlignment;
-  ThreeBallAuto auto1;
+  AutoStateMachines auto1;
   boolean isForward = true;
   int camNum = 0;
   double targetShooterRPM, shooterRPMTolerance;
@@ -19,8 +19,8 @@ public class Robot extends MyRobot {
   double angleOffset;
   double gyroTolerance, gyroAngleDesired;
   DriveController.MoveParameters mP;
-  
-  //public static DriveController.DriveState currentDriveState;
+
+  // public static DriveController.DriveState currentDriveState;
 
   @Override
   public void RechargeRobotInit() {
@@ -50,17 +50,30 @@ public class Robot extends MyRobot {
     queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
     SmartDashboard.putNumber("Queuing Belt Speed", queuingBeltSpeed);
 
-
-
-     
   }
 
   @Override
   public void RechargeAutonomousInit() {
+    HumanInput.update();
+    if (HumanInput.autoNumber == 3) {
+      auto1 = new ThreeBallAuto();
+    }
+
+    mP = driveController.new MoveParameters();
+    shooter.resetState();
+    auto1.reset();
+    trenchAlignment.resetState();
+    
+    auto1.activate();
   }
 
   @Override
   public void RechargeAutonomousPeriodic() {
+    SensorInput.update();
+    
+    auto1.update(mP);
+    shooter.update();
+    driveController.update(mP);
   }
 
   @Override
@@ -71,51 +84,50 @@ public class Robot extends MyRobot {
     mP = driveController.new MoveParameters();
 
     mP.currentState = DriveController.DriveState.MANUAL;
-    auto1 = new ThreeBallAuto();
+    if (HumanInput.autoNumber == 3) {
+      auto1 = new ThreeBallAuto();
+    }
     trenchAlignment.resetState();
     shooter.resetState();
     auto1.reset();
   }
 
-  
   @Override
   public void RechargeTeleopPeriodic() {
     HumanInput.update();
     SensorInput.update();
-    
-    
 
     if (HumanInput.ballChaseButton) {
-        mP.currentState = DriveController.DriveState.BALLCHASE;
+      mP.currentState = DriveController.DriveState.BALLCHASE;
     } else if (HumanInput.shooterAllInTarget) {
-        targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
-        shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
-        queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
-        useGyro = false;
-        gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 3);
-        angleOffset = portalTapeTargetTable.getEntry("X Angle").getDouble(0);
-        portalTapeTargetTable.getEntry("gyro").setDouble(Robot.rawGyro);
-        angleOffset += Robot.rawGyro;
-        gyroAngleDesired = angleOffset; 
-        shooter.shootAll(targetShooterRPM, shooterRPMTolerance, queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
+      targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
+      shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+      queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
+      useGyro = false;
+      gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance", 3);
+      angleOffset = portalTapeTargetTable.getEntry("X Angle").getDouble(0);
+      portalTapeTargetTable.getEntry("gyro").setDouble(Robot.rawGyro);
+      angleOffset += Robot.rawGyro;
+      gyroAngleDesired = angleOffset;
+      shooter.shootAll(targetShooterRPM, shooterRPMTolerance, queuingBeltSpeed, useGyro, gyroAngleDesired,
+          gyroTolerance);
     } else if (HumanInput.trenchRunAlignment) {
-        mP.currentState = DriveController.DriveState.TRENCHRUNALIGNMENT;
+      mP.currentState = DriveController.DriveState.TRENCHRUNALIGNMENT;
     } else if (HumanInput.climbAlignmentButton) {
-        mP.currentState = DriveController.DriveState.CLIMBALIGNMENT;
+      mP.currentState = DriveController.DriveState.CLIMBALIGNMENT;
     } else if (HumanInput.gyroLock) {
-        mP.currentState = DriveController.DriveState.GYROLOCK;
+      mP.currentState = DriveController.DriveState.GYROLOCK;
     } else if (HumanInput.controlPanelAlignment) {
-        trenchAlignment.activate();
-    } else if(HumanInput.activateAuto){
+      trenchAlignment.activate();
+    } else if (HumanInput.activateAuto) {
       SmartDashboard.putString("In active Auto", "Yes");
-      auto1.activate();  
-      //auto1.update(mP);
-    }/*else if(HumanInput.shutDownAuto){
-      SmartDashboard.putString("In active Auto", "No");
-        mP.currentState = DriveState.NONE;
-        auto1.reset();
-    }*/else {
-        mP.currentState = DriveController.DriveState.MANUAL;
+      auto1.activate();
+      // auto1.update(mP);
+    } /*
+       * else if(HumanInput.shutDownAuto){ SmartDashboard.putString("In active Auto",
+       * "No"); mP.currentState = DriveState.NONE; auto1.reset(); }
+       */else {
+      mP.currentState = DriveController.DriveState.MANUAL;
     }
 
     mP.forward = HumanInput.forward;
@@ -125,15 +137,15 @@ public class Robot extends MyRobot {
       isForward = !isForward;
 
       if (isForward) {
-          camNum = 0;
-          //mP.forward *= 1;
+        camNum = 0;
+        // mP.forward *= 1;
       } else {
-          camNum = 1;
-          mP.forward *= -1;
+        camNum = 1;
+        mP.forward *= -1;
       }
 
       Robot.ntInst.getEntry("chooseCam").setNumber(camNum);
-  }
+    }
 
     mP.cameraToggle = HumanInput.cameraChangeButton;
     trenchAlignment.update(mP);
@@ -146,8 +158,7 @@ public class Robot extends MyRobot {
     if (hasShooter) {
       shooter.update();
     }
-
-    if(HumanInput.reset){
+    if (HumanInput.reset) {
       shooter.reset();
       auto1.reset();
     }

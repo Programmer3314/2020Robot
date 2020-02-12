@@ -59,6 +59,8 @@ public class Shooter {
         shooterPidController = shooterLeft.getPIDController();
         shooterPidController.setP(Constants.shooterkP);
         shooterPidController.setI(Constants.shooterkI);
+        shooterPidController.setIAccum(Constants.shooterkIMax);
+        shooterPidController.setIZone(Constants.shooterkIz);
         shooterPidController.setD(Constants.shooterkD);
         shooterPidController.setFF(Constants.shooterkFF);
         shooterPidController.setOutputRange(Constants.shooterkMinOutput, Constants.shooterkMaxOutput);
@@ -76,25 +78,25 @@ public class Shooter {
         beltQueuingEncoder = ballQueuing.getSelectedSensorPosition();
 
         shooterEncoder.setVelocityConversionFactor(Constants.sparkShooterVelocityConversionFactor);
-        
+
         counter = 0;
     }
 
     public void update() {
         hoodEncoder = hood.getSelectedSensorPosition();
         beltQueuingEncoder = ballQueuing.getSelectedSensorPosition();
-        if(HumanInput.hoodUp){
+        if (HumanInput.hoodUp) {
             hood.set(ControlMode.PercentOutput, -0.1);
-        }else if(HumanInput.hoodDown){
+        } else if (HumanInput.hoodDown) {
             hood.set(ControlMode.PercentOutput, 0.1);
-        }else{
+        } else {
             hood.set(ControlMode.PercentOutput, 0);
         }
-        if(HumanInput.buttonBox1.getRawButton(4)){
+        if (HumanInput.buttonBox1.getRawButton(4)) {
             ballQueuing.set(ControlMode.PercentOutput, 0.5);
-        }else if(HumanInput.buttonBox1.getRawButton(5)){
+        } else if (HumanInput.buttonBox1.getRawButton(5)) {
             ballQueuing.set(ControlMode.PercentOutput, -0.5);
-        }else{
+        } else {
             ballQueuing.set(ControlMode.PercentOutput, 0);
         }
 
@@ -108,13 +110,13 @@ public class Shooter {
             if (SensorInput.hasBall) {
                 shooterBusy = true;
                 if (Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) <= shooterRPMTolerance) {
-                    if(useGyro == false){
+                    if (useGyro == false) {
                         shooterStates = ShooterStates.FIRE_BALL_AUTO;
-                    }else if(Math.abs(Robot.cleanGyro - desiredGyroAngle) <= gyroTolerance){
+                    } else if (Math.abs(Robot.cleanGyro - desiredGyroAngle) <= gyroTolerance) {
                         shooterStates = ShooterStates.FIRE_BALL_AUTO;
                     }
                 }
-            } else if(counter >= 200){
+            } else if (counter >= 200) {
                 shooterStates = ShooterStates.DONE;
             }
             counter++;

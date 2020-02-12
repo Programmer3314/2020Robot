@@ -35,7 +35,7 @@ public class HumanInput {
         TalonFxTestSpeed = driverController.getRawAxis(3);
         turn = driverController.getRawAxis(4);
         throttle = stick.getRawAxis(2);
-        //autoNumber = (booleanToInt(buttonBox1.getRawButton(13)) * Math.pow(2, 0)) + 
+        autoNumber = (booleanToInt(buttonBox1.getRawButton(13)) * 1) + (booleanToInt(buttonBox1.getRawButton(14)) * 2) + (booleanToInt(buttonBox1.getRawButton(15)) * 4) + (booleanToInt(buttonBox1.getRawButton(16)) * 8);
         
         trenchRunAlignment = driverController.getRawButton(1);
         shooterAllInTarget = driverController.getRawButton(2);
@@ -51,15 +51,10 @@ public class HumanInput {
         activateAuto = buttonBox1.getRawButtonPressed(7);
         shutDownAuto  = buttonBox1.getRawButtonReleased(7);
     }
-    public int booleanToInt(boolean gate){
+    public static int booleanToInt(boolean gate){
         if(gate){
             return 1;
         }
         return 0;
-    }
-
-    public int binaryToDecimal(boolean[] gate){
-        int num = 0;
-        return num;
     }
 }
