@@ -56,8 +56,8 @@ public abstract class MyRobot extends AllRobots {
         
         navx = new AHRS(SPI.Port.kMXP);
         navx.reset();
-        String ControllerVersion="";
 
+        String ControllerVersion="";
         try {
             CANSparkMax controllerCheck=new CANSparkMax(5, MotorType.kBrushless);
             SmartDashboard.putString("Controller Check1","Passed");
@@ -73,16 +73,15 @@ public abstract class MyRobot extends AllRobots {
             hasShooter = true;
             isTalonFXTest = false;
             hasControlPanel = false;
-        }
-        else {
+        } else {
             isFalcon = false;
             hasShooter = true;
             isTalonFXTest = true;
             hasControlPanel = true;
         }
 
-        // TODO: Review changes to the constants set here. 
-        // TODO: Review moved the drivetrain instantiation below setting constants
+        // TODO: Review: changes to the constants set here. 
+        // TODO: Review: moved the drivetrain instantiation below setting constants
         if(isFalcon) {
             SmartDashboard.putString("DriveTrain Type:", "Falcons");
             Constants.drivetrainTrackingMaxCorrection = Constants.falconTrackingMaxCorrection;

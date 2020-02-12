@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-//TODO: Add maxCorrectionVal functionallity
-
 public class PDController {
     private double kP;
     private double kD;

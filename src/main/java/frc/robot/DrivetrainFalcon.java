@@ -76,7 +76,7 @@ public class DrivetrainFalcon implements IDriveTrain{
     }
 
 
-    // TODO: I think the "maxSpeed" for the falcons should be 
+    // The "maxSpeed" for the falcons should be 
     // calculated as follows:
     // (from docs:  https://github.com/CrossTheRoadElec/Phoenix-Documentation/blob/master/source/ch14_MCSensor.rst#sensor-resolution)
     // maxSpeed = (kMaxRPM  / 600) * (kSensorUnitsPerRotation / kGearRatio)
@@ -89,7 +89,6 @@ public class DrivetrainFalcon implements IDriveTrain{
     //      the sensor and the motor. 
     // Please adjust the below and test. 
     // 
-    // TODO: use parameters instead of HumanInput...
     @Override
     public void update(double leftSetPoint, double rightSetPoint) {
         //talon1.set(TalonFXControlMode.Velocity, leftSetPoint * 21777);
