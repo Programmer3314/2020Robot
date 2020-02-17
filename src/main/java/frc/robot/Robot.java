@@ -47,6 +47,8 @@ public class Robot extends MyRobot {
     queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
     SmartDashboard.putNumber("Queuing Belt Speed", queuingBeltSpeed);
 
+    Solenoids.startCompressor();
+
   }
 
   @Override
@@ -75,6 +77,7 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeTeleopInit() {
+    /*
     if (hasControlPanel) {
       controlPanel = new ControlPanel(CANMcctrlPanel);
     }
@@ -87,91 +90,111 @@ public class Robot extends MyRobot {
     trenchAlignment.resetState();
     shooter.resetState();
     auto1.reset();
+    */
   }
 
   @Override
   public void RechargeTeleopPeriodic() {
     HumanInput.update();
-    SensorInput.update();
+    
+    // SensorInput.update();
 
-    if (HumanInput.ballChaseButton) {
-      mP.currentState = DriveController.DriveState.BALLCHASE;
-    } else if (HumanInput.shooterAllInTarget) {
-      targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
-      shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
-      queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
-      useGyro = false;
-      gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance", 3);
-      angleOffset = portalTapeTargetTable.getEntry("X Angle").getDouble(0);
-      portalTapeTargetTable.getEntry("gyro").setDouble(Robot.rawGyro);
-      angleOffset += Robot.rawGyro;
-      gyroAngleDesired = angleOffset;
-      shooter.shootAll(targetShooterRPM, shooterRPMTolerance, queuingBeltSpeed, useGyro, gyroAngleDesired,
-          gyroTolerance);
-    } else if (HumanInput.trenchRunAlignment) {
-      mP.currentState = DriveController.DriveState.TRENCHRUNALIGNMENT;
-    } else if (HumanInput.climbAlignmentButton) {
-      mP.currentState = DriveController.DriveState.CLIMBALIGNMENT;
-    } else if (HumanInput.gyroLock) {
-      mP.currentState = DriveController.DriveState.GYROLOCK;
-    } else if (HumanInput.controlPanelAlignment) {
-      trenchAlignment.activate();
-    } else if (HumanInput.activateAuto) {
-      SmartDashboard.putString("In active Auto", "Yes");
-      auto1.activate();
-      // auto1.update(mP);
-    } /*
-       * else if(HumanInput.shutDownAuto){ SmartDashboard.putString("In active Auto",
-       * "No"); mP.currentState = DriveState.NONE; auto1.reset(); }
-       */else {
-      mP.currentState = DriveController.DriveState.MANUAL;
-    }
+    // if (HumanInput.ballChaseButton) {
+    //   mP.currentState = DriveController.DriveState.BALLCHASE;
+    // } else if (HumanInput.shooterAllInTarget) {
+    //   targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
+    //   shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+    //   queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
+    //   useGyro = false;
+    //   gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance", 3);
+    //   angleOffset = portalTapeTargetTable.getEntry("X Angle").getDouble(0);
+    //   portalTapeTargetTable.getEntry("gyro").setDouble(Robot.rawGyro);
+    //   angleOffset += Robot.rawGyro;
+    //   gyroAngleDesired = angleOffset;
+    //   shooter.shootAll(targetShooterRPM, shooterRPMTolerance, queuingBeltSpeed, useGyro, gyroAngleDesired,
+    //       gyroTolerance);
+    // } else if (HumanInput.trenchRunAlignment) {
+    //   mP.currentState = DriveController.DriveState.TRENCHRUNALIGNMENT;
+    // } else if (HumanInput.climbAlignmentButton) {
+    //   mP.currentState = DriveController.DriveState.CLIMBALIGNMENT;
+    // } else if (HumanInput.gyroLock) {
+    //   mP.currentState = DriveController.DriveState.GYROLOCK;
+    // } else if (HumanInput.controlPanelAlignment) {
+    //   trenchAlignment.activate();
+    // } else if (HumanInput.activateAuto) {
+    //   SmartDashboard.putString("In active Auto", "Yes");
+    //   auto1.activate();
+    //   // auto1.update(mP);
+    // } /*
+    //    * else if(HumanInput.shutDownAuto){ SmartDashboard.putString("In active Auto",
+    //    * "No"); mP.currentState = DriveState.NONE; auto1.reset(); }
+    //    */else {
+    //   mP.currentState = DriveController.DriveState.MANUAL;
+    // }
 
-    mP.forward = HumanInput.forward;
-    mP.turn = HumanInput.turn;
+    // mP.forward = HumanInput.forward;
+    // mP.turn = HumanInput.turn;
 
-    if (mP.cameraToggle) {
-      isForward = !isForward;
+    // if (mP.cameraToggle) {
+    //   isForward = !isForward;
 
-      if (isForward) {
-        camNum = 0;
-        // mP.forward *= 1;
-      } else {
-        camNum = 1;
-        mP.forward *= -1;
-      }
+    //   if (isForward) {
+    //     camNum = 0;
+    //     // mP.forward *= 1;
+    //   } else {
+    //     camNum = 1;
+    //     mP.forward *= -1;
+    //   }
 
-      Robot.ntInst.getEntry("chooseCam").setNumber(camNum);
-    }
+    //   Robot.ntInst.getEntry("chooseCam").setNumber(camNum);
+    // }
 
-    mP.cameraToggle = HumanInput.cameraChangeButton;
-    trenchAlignment.update(mP);
-    auto1.update(mP);
+    // mP.cameraToggle = HumanInput.cameraChangeButton;
+    // trenchAlignment.update(mP);
+    // auto1.update(mP);
 
-    if (hasControlPanel) {
-      controlPanel.update();
-    }
+    // if (hasControlPanel) {
+    //   controlPanel.update();
+    // }
 
-    if (hasShooter) {
-      shooter.update();
-    }
-    if (HumanInput.reset) {
-      shooter.reset();
-      auto1.reset();
-    }
+    // if (hasShooter) {
+    //   shooter.update();
+    // }
+    // if (HumanInput.reset) {
+    //   shooter.reset();
+    //   auto1.reset();
+    // }
 
-    driveController.update(mP);
+    // driveController.update(mP);
+    
   }
 
   @Override
   public void RechargeTestInit() {
-    controlPanel.talon31.setSelectedSensorPosition(0);
+    //controlPanel.talon31.setSelectedSensorPosition(0);
+    Solenoids.startCompressor();
+    Solenoids.init();
   }
 
   @Override
   public void RechargeTestPeriodic() {
     HumanInput.update();
     SensorInput.update();
-    fxTest.Update();
+    Solenoids.update();
+    //fxTest.Update();
+    SmartDashboard.putString("Stage 1: ", "No");
+    SmartDashboard.putString("Stage 2: ", "No");
+    SmartDashboard.putString("Stage 3: ", "No");
+    SmartDashboard.putString("Stage 4: ", "No");
+
+    if(!(HumanInput.leftSwitch) && !(HumanInput.rightSwitch)){ //ball + intake
+      SmartDashboard.putString("Stage 1: ", "Yes");
+    } else if(!(HumanInput.leftSwitch) && HumanInput.rightSwitch){ //shooter
+      SmartDashboard.putString("Stage 2: ", "Yes");
+    } else if(HumanInput.leftSwitch && !(HumanInput.rightSwitch)){ //control panel
+      SmartDashboard.putString("Stage 3: ", "Yes");
+    } else if(HumanInput.leftSwitch && HumanInput.rightSwitch){ //climber + autos
+      SmartDashboard.putString("Stage 4: ", "Yes");
+    }
   }
 }

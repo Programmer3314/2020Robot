@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -23,6 +24,8 @@ public abstract class MyRobot extends AllRobots {
     ControlPanel controlPanel;
     public static UltraSonicSensor uSSensor;
     AnalogInput IRSensor;
+    AnalogInput AInput;
+    DigitalInput DInput;
     
 
     public static AHRS navx;
@@ -82,6 +85,7 @@ public abstract class MyRobot extends AllRobots {
 
         // TODO: Review: changes to the constants set here. 
         // TODO: Review: moved the drivetrain instantiation below setting constants
+        /*
         if(isFalcon) {
             SmartDashboard.putString("DriveTrain Type:", "Falcons");
             Constants.drivetrainTrackingMaxCorrection = Constants.falconTrackingMaxCorrection;
@@ -111,9 +115,11 @@ public abstract class MyRobot extends AllRobots {
             Constants.drivetrainKMinOutput = Constants.neoDrivetrainKMinOutput;
             drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
         }
-
+        */
         IRSensor = new AnalogInput(3);
-        
+        DInput = new DigitalInput(1);
+        AInput = new AnalogInput(0);
+
         uSSensor = new UltraSonicSensor( Constants.USSensorMB1013ToInchFactor);
         RechargeRobotInit();
     }
@@ -174,7 +180,8 @@ public abstract class MyRobot extends AllRobots {
         SmartDashboard.putNumber("IR Sensor Value", IRSensor.getValue());
         SmartDashboard.putNumber("Counter For Rich", counter++);
         SmartDashboard.putBoolean("New IR Sensor is blocked", SensorInput.hasBall);
-        
+        SmartDashboard.putBoolean("Digital Input test: ", DInput.get());
+        SmartDashboard.putNumber("Analog Input test: ", AInput.getValue());
     }
 
     public abstract void RechargeRobotInit();

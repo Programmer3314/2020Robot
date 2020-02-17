@@ -92,9 +92,9 @@ public class Shooter {
         } else {
             hood.set(ControlMode.PercentOutput, 0);
         }
-        if (HumanInput.buttonBox1.getRawButton(4)) {
+        if (HumanInput.spinBallQueue) {
             ballQueuing.set(ControlMode.PercentOutput, 0.5);
-        } else if (HumanInput.buttonBox1.getRawButton(5)) {
+        } else if (HumanInput.reverseBallQueue) {
             ballQueuing.set(ControlMode.PercentOutput, -0.5);
         } else {
             ballQueuing.set(ControlMode.PercentOutput, 0);
