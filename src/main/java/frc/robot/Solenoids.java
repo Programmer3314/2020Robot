@@ -83,6 +83,10 @@ public class Solenoids {
             sol7.set(true);
         }
 
+        if(HumanInput.intakePosition){
+            //solenoids
+        }
+
         SmartDashboard.putBoolean("Solenoid 0:", sol0.get());
         SmartDashboard.putBoolean("Solenoid 1:", sol1.get());
         SmartDashboard.putBoolean("Solenoid 2:", sol2.get());

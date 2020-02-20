@@ -27,7 +27,7 @@ public class Robot extends MyRobot {
     driveController = new DriveController(drivetrain, ballTargetTable, portalTapeTargetTable);
 
     if (hasShooter) {
-      shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight, CANMcBallQueuing, CANMcHood);
+      shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight, CANMcBallQueuing, CANMcHood, CANMcIndexer, CANMcIntake);
     }
 
     if (isTalonFXTest) {
@@ -196,5 +196,6 @@ public class Robot extends MyRobot {
     } else if(HumanInput.leftSwitch && HumanInput.rightSwitch){ //climber + autos
       SmartDashboard.putString("Stage 4: ", "Yes");
     }
+
   }
 }

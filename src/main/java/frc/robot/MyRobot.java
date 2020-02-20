@@ -53,7 +53,11 @@ public abstract class MyRobot extends AllRobots {
     final int CANMcctrlPanel = 31;
     final int CANMcBallQueuing = 11;
     final int CANMcHood = 9;
+    final int CANMcIndexer = 12;
+    final int CANMcIntake = 10;
+
     public int counter = 0;
+    public int balls = 0;
     @Override
     public void MyRobotInit() {
         
@@ -179,7 +183,7 @@ public abstract class MyRobot extends AllRobots {
         SmartDashboard.putBoolean("IR Sensor is blocked", IRSensorValue);
         SmartDashboard.putNumber("IR Sensor Value", IRSensor.getValue());
         SmartDashboard.putNumber("Counter For Rich", counter++);
-        SmartDashboard.putBoolean("New IR Sensor is blocked", SensorInput.hasBall);
+        SmartDashboard.putBoolean("New IR Sensor is blocked", SensorInput.queuedShooter);
         SmartDashboard.putBoolean("Digital Input test: ", DInput.get());
         SmartDashboard.putNumber("Analog Input test: ", AInput.getValue());
     }

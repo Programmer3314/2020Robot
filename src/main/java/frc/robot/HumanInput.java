@@ -59,7 +59,8 @@ public class HumanInput {
             hoodDown = buttonBox1.getRawButton(3);
             spinBallQueue = buttonBox1.getRawButton(4);
             reverseBallQueue = buttonBox1.getRawButton(5);
-            
+            // spinIntake = buttonBox1.getRawButton(6);
+            // reverseIntake = buttonBox1.getRawButton(7);
         } else if(!(leftSwitch) && rightSwitch){ //shooter
             sol0 = buttonBox1.getRawButtonReleased(1);
             sol1 = buttonBox1.getRawButtonReleased(2);

@@ -14,13 +14,18 @@ import edu.wpi.first.wpilibj.DigitalInput;
  * Add your docs here.
  */
 public class SensorInput {
-    public static DigitalInput IRSensor2 = new DigitalInput(0);
+    public static DigitalInput IRSensor2 = new DigitalInput(9);
     public static AnalogInput m_ultrasonic = new AnalogInput(Constants.AIControlPanelSensor);
-    public static boolean hasBall;
+    public static boolean queuedShooter, queuedTrack1, queuedTrack2;
     public static double sensor1Distance;
 
+    public static DigitalInput IRSensor3 = new DigitalInput(7);
+    public static DigitalInput IRSensor4 = new DigitalInput(8);
+
     public static void update(){
-        hasBall = !IRSensor2.get();
+        queuedShooter = !IRSensor2.get();
+        queuedTrack1 = !IRSensor3.get();
+        queuedTrack2 = !IRSensor4.get();
         sensor1Distance = m_ultrasonic.getValue();
     }
 }
