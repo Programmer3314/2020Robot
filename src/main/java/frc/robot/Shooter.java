@@ -130,6 +130,7 @@ public class Shooter {
                 }
                 break;
 
+
             case GAP_BALL:
             break;
             case PREPARE:
@@ -167,13 +168,15 @@ public class Shooter {
         switch (shooterStates) {
             case IDLE:
                 shooterLeft.set(0);
+                HumanInput.ejectIntake = false;
+
+                intake.set(ControlMode.PercentOutput, 0);
+                indexer.set(ControlMode.PercentOutput, 0);
+                ballQueuing.set(ControlMode.PercentOutput, 0);
 
                 break;
             case GET_BALL:
                 HumanInput.ejectIntake = true;
-
-                intake.set(ControlMode.PercentOutput,0.75);
-                indexer.set(ControlMode.PercentOutput,0.25);
 
                 // if(SensorInput.queuedTrack1){
                 //     intake.set(ControlMode.PercentOutput, 0);
@@ -186,22 +189,34 @@ public class Shooter {
                 
                 break;
             case GOT_BALL:
-                intake.set(ControlMode.PercentOutput,0);
-                indexer.set(ControlMode.PercentOutput,0);
+                intake.set(ControlMode.PercentOutput, 0);
+                indexer.set(ControlMode.PercentOutput, 0);
+
                 if (SensorInput.queuedShooter){
                     ballQueuing.set(ControlMode.PercentOutput, 0);
-                    shooterStates = ShooterStates.PREPARE;
+                    shooterStates = ShooterStates.IDLE;
                 }
 
-                if (SensorInput.queuedTrack2){
+                if (SensorInput.queuedTrack1){
                     ballQueuing.set(ControlMode.PercentOutput, 0);
-                    shooterStates = ShooterStates.GET_BALL;
-                } else if(!SensorInput.queuedTrack2){
+                    shooterStates = ShooterStates.GAP_BALL;
+                } else {
                     ballQueuing.set(ControlMode.PercentOutput, 0.5);
                 }
 
                 break;
             case GAP_BALL:
+                if (SensorInput.queuedShooter){
+                    ballQueuing.set(ControlMode.PercentOutput, 0);
+                    shooterStates = ShooterStates.IDLE;
+                }
+
+                if (SensorInput.queuedTrack2){
+                    ballQueuing.set(ControlMode.PercentOutput, 0);
+                    shooterStates = ShooterStates.GAP_BALL;
+                } else {
+                    ballQueuing.set(ControlMode.PercentOutput, 0.5);
+                }
             break;
             case PREPARE:
                 // shooterLeft.set(-HumanInput.throttle);

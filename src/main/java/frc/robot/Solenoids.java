@@ -83,7 +83,7 @@ public class Solenoids {
             sol7.set(true);
         }
 
-        if(HumanInput.intakePosition){
+        if(HumanInput.ejectIntake){
             //solenoids
         }
 
