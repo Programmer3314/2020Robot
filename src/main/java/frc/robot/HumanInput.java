@@ -41,9 +41,9 @@ public class HumanInput {
     }
 
     public static void update(){
-        forward = driverController.getRawAxis(1);
+        forward = driverController.getRawAxis(1) * 0.6;
         TalonFxTestSpeed = driverController.getRawAxis(3);
-        turn = driverController.getRawAxis(4);
+        turn = driverController.getRawAxis(4) * 0.5;
         throttle = stick.getRawAxis(2);
         autoNumber = (booleanToInt(buttonBox1.getRawButton(13)) * 1) + (booleanToInt(buttonBox1.getRawButton(14)) * 2) + (booleanToInt(buttonBox1.getRawButton(15)) * 4) + (booleanToInt(buttonBox1.getRawButton(16)) * 8);
         leftSwitch = buttonBox1.getRawButton(11);

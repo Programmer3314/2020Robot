@@ -78,12 +78,12 @@ public class Constants{
 
     //Shooter Motor Controllers
     //public static final double shooterRPM = 3200;
-    public static final double shooterkP = 7.0e-4;
+    public static final double shooterkP = 0.0007;
     public static final double shooterkI = 0.000001;
     public static final double shooterkIz = 50;
     public static final double shooterkIMax = 0.1;
     public static final double shooterkD = 0;
-    public static final double shooterkFF = 1.84e-4;
+    public static final double shooterkFF = 1.9e-4;
     public static final double shooterkMaxOutput = 1; 
     public static final double shooterkMinOutput = -1;
     //Shooter Encoder
@@ -92,7 +92,7 @@ public class Constants{
     //Hood Encoder
     public static final double hoodkP = 0.0025;
     public static final double hoodkD = 0.00005;
-    public static final double hoodkMinCorrection = 0.04;
+    public static final double hoodkMinCorrection = 0.06;
     public static final double hoodkMaxCorrection = 0.2;
     public static final double hoodkTolerance = 10.0;
 

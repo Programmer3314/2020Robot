@@ -27,6 +27,8 @@ public class Robot extends MyRobot {
     ntInst.getEntry("chooseCam").setNumber(0);
     driveController = new DriveController(drivetrain, ballTargetTable, portalTapeTargetTable);
 
+    shooterRPMTolerance = 50;
+
     if (hasShooter) {
       shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight, CANMcBallQueuing, CANMcHood, CANMcIndexer,
           CANMcIntake);
@@ -42,7 +44,7 @@ public class Robot extends MyRobot {
     trenchAlignment = new ControlPanelAlignment();
 
     // targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
-    shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+    // shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
     // SmartDashboard.putNumber("Shooter RPM Desired", targetShooterRPM);
     SmartDashboard.putNumber("Shooter RPM Tolerance Desired", shooterRPMTolerance);
 
@@ -58,25 +60,37 @@ public class Robot extends MyRobot {
     Solenoids.lightRing(true);
 
     HumanInput.update();
+
+    auto1 = null;
     if (HumanInput.autoNumber == 3) {
       auto1 = new ThreeBallAuto(shooter);
     }
 
     mP = driveController.new MoveParameters();
     shooter.resetState();
-    auto1.reset();
+
+    if(auto1 != null){
+      auto1.reset();
+    }
+
     trenchAlignment.resetState();
 
     shooter.setHoodSetpoint(0.0);
 
-    auto1.activate();
+    if(auto1 != null){
+      auto1.activate();
+    }
+
   }
 
   @Override
   public void RechargeAutonomousPeriodic() {
     SensorInput.update();
 
-    auto1.update(mP);
+    if(auto1 != null){
+      auto1.update(mP);
+    }
+
     shooter.update(mP);
     driveController.update(mP);
   }
@@ -94,12 +108,19 @@ public class Robot extends MyRobot {
     // if (HumanInput.autoNumber == 3) {
     //   auto1 = new ThreeBallAuto();
     // }
-    auto1 = new ThreeBallAuto(shooter);
+    if(auto1 != null){
+      auto1 = new ThreeBallAuto(shooter);
+    }
+
     trenchAlignment.resetState();
     shooter.resetState();
-    auto1.reset();
+
+    if(auto1 != null){
+      auto1.reset();
+    }
 
     Solenoids.disengagePTO();
+    Solenoids.startCompressor();
 
     shooter.setHoodSetpoint(0.0);
     shooter.homedHood = false;
@@ -132,7 +153,7 @@ public class Robot extends MyRobot {
     if (HumanInput.ballChaseButton) {
       mP.currentState = DriveController.DriveState.BALLCHASE;
     } else if (HumanInput.shooterAllInTarget) {
-      shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+      // shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
       queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
       useGyro = false;
       gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance", 3);
@@ -156,12 +177,23 @@ public class Robot extends MyRobot {
       trenchAlignment.activate();
     } else if (HumanInput.activateAuto) {
       SmartDashboard.putString("In active Auto", "Yes");
-      auto1.activate();
-      auto1.update(mP);
+
+      if(auto1 != null){
+        auto1.activate();
+      }
+
+      if(auto1 != null){
+        auto1.update(mP);
+      }
+
     } else if (HumanInput.shutDownAuto) {
       SmartDashboard.putString("In active Auto", "No");
       mP.currentState = DriveController.DriveState.NONE;
-      auto1.reset();
+
+      if(auto1 != null){
+        auto1.reset();
+      }
+
     } else if(HumanInput.abortIntake){
       shooter.abortIntake();
     } else if(HumanInput.lightRing){
@@ -174,23 +206,27 @@ public class Robot extends MyRobot {
     mP.forward = HumanInput.forward;
     mP.turn = HumanInput.turn;
 
+    mP.cameraToggle = HumanInput.cameraChangeButton;
+
     if (mP.cameraToggle) {
       isForward = !isForward;
-
-      if (isForward) {
-        camNum = 0;
-        // mP.forward *= 1;
-      } else {
-        camNum = 1;
-        mP.forward *= -1;
-      }
 
       Robot.ntInst.getEntry("chooseCam").setNumber(camNum);
     }
 
-    mP.cameraToggle = HumanInput.cameraChangeButton;
+    if (isForward) {
+      camNum = 0;
+      // mP.forward *= 1;
+    } else {
+      camNum = 1;
+      mP.forward *= -1;
+    } 
+
     trenchAlignment.update(mP);
-    auto1.update(mP);
+
+    if(auto1 != null){
+      auto1.update(mP);
+    }
 
     if(HumanInput.activateGroundIntake){
       shooter.groundIntakeAll();
@@ -209,7 +245,9 @@ public class Robot extends MyRobot {
     }
     if (HumanInput.reset) {
       shooter.reset();
-      auto1.reset();
+      if(auto1 != null){
+        auto1.reset();
+      }
     }
 
     driveController.update(mP);
@@ -228,6 +266,7 @@ public class Robot extends MyRobot {
     HumanInput.update();
     SensorInput.update();
     Solenoids.update();
+    Solenoids.startCompressor();
     // fxTest.Update();
     SmartDashboard.putString("Shooter & Intake: ", "Inactive");
     SmartDashboard.putString("Solenoids: ", "Inactive");

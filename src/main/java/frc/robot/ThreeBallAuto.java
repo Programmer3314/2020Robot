@@ -18,6 +18,7 @@ import frc.robot.DriveController.MoveParameters;
 public class ThreeBallAuto implements AutoStateMachines{
     public enum AutoStates {
         IDLE,
+        DELAY,
         START,
         ALIGN, //Align to power port
         SHOOT, // Shoot 3 balls
@@ -43,7 +44,7 @@ public class ThreeBallAuto implements AutoStateMachines{
     Shooter shooter;
 
     public ThreeBallAuto(Shooter shooter){
-        autoStates = AutoStates.START;
+        autoStates = AutoStates.IDLE;
         //shooter = new Shooter(7, 8, 11, 9);
         counter = 0;
         portalTapeTargetTable = Robot.ntInst.getTable("Retroreflective Tape Target");
@@ -65,6 +66,14 @@ public class ThreeBallAuto implements AutoStateMachines{
         switch(autoStates){
             case IDLE:
                 
+            break;
+
+            case DELAY:
+                counter++;
+                if(counter >= 50){
+                    autoStates = AutoStates.START;
+                }
+
             break;
 
             case START:
@@ -90,6 +99,7 @@ public class ThreeBallAuto implements AutoStateMachines{
                 queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
                 gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 5);
                 Robot.shooter.shootAll(targetShooterRPM, shooterRPMTolerance, queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
+
                 autoStates = AutoStates.SHOOT;
             break;
 
@@ -137,7 +147,8 @@ public class ThreeBallAuto implements AutoStateMachines{
     }
     @Override
     public void activate(){
-        autoStates = AutoStates.START;
+        counter = 0;
+        autoStates = AutoStates.DELAY;
     }
 
     public void reset(){

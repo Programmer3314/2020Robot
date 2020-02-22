@@ -331,14 +331,14 @@ public class Shooter {
             case PREPARE:
                 if (SensorInput.queuedShooter) {
                     shooterBusy = true;
-                    if (Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) <= shooterRPMTolerance) {
+                    if (Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) <= shooterRPMTolerance && Math.abs(hoodEncoder - hoodSetpoint) <= Constants.hoodkTolerance) {
                         if (useGyro == false) {
                             shooterStates = ShooterStates.FIRE_BALL_AUTO;
                         } else if (Math.abs(Robot.cleanGyro - desiredGyroAngle) <= gyroTolerance) {
                             shooterStates = ShooterStates.FIRE_BALL_AUTO;
                         }
                     }
-                } else if (counter >= 200) {
+                } else if (counter >= 100) {
                     shooterStates = ShooterStates.DONE;
                 }
                 counter++;
