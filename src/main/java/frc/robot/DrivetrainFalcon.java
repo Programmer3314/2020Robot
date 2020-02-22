@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
@@ -34,6 +35,9 @@ public class DrivetrainFalcon implements IDriveTrain{
 
         talon2.follow(talon1);
         talon4.follow(talon3);
+
+        talon2.setNeutralMode(NeutralMode.Brake);
+        talon4.setNeutralMode(NeutralMode.Brake);
 
         // for safety... let's be explicit
         talon2.setInverted(TalonFXInvertType.FollowMaster);

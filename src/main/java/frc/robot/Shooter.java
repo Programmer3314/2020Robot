@@ -10,6 +10,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXPIDSetConfiguration;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
@@ -18,13 +19,14 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.DriveController.MoveParameters;
 
 /**
  * Add your docs here.
  */
 public class Shooter {
     public enum ShooterStates {
-        IDLE, GET_BALL, GOT_BALL, GAP_BALL,PREPARE, FIRE_BALL_AUTO, DONE
+        IDLE, GET_HALF_BALL, GET_BALL, GOT_BALL, GAP_BALL, GROUND_GET_HALF_BALL, GROUND_GOT_BALL, GROUND_GAP_BALL, INTAKE_DONE, PREPARE, FIRE_BALL_AUTO, DONE
     }
 
     double targetShooterRPM, shooterRPMTolerance;
@@ -33,17 +35,22 @@ public class Shooter {
     public CANSparkMax shooterLeft, shooterRight;
     public TalonSRX ballQueuing, hood, indexer, intake;
     public CANEncoder shooterEncoder;
+    public double hoodSetpoint;
     int hoodEncoder, beltQueuingEncoder;
     double lastEncoderVal;
     boolean shooterBusy;
+    boolean homedHood;
     boolean useGyro;
     double desiredGyroAngle;
     double gyroTolerance;
     int counter;
     CANPIDController shooterPidController;
+    PDController hoodPDController;
 
     public Shooter(int CANMcshooterLeft, int CANMcshooterRight, int CANMcBallQueuing, int CANMcHood, int CANMcIndexer,
             int CANMcIntake) {
+        hoodPDController = new PDController(Constants.hoodkP, Constants.hoodkD);
+
         shooterStates = ShooterStates.IDLE;
 
         shooterLeft = new CANSparkMax(CANMcshooterLeft, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -61,6 +68,8 @@ public class Shooter {
         intake.configFactoryDefault();
         hood.setSelectedSensorPosition(0);
 
+        indexer.setInverted(true);
+
         shooterPidController = shooterLeft.getPIDController();
         shooterPidController.setP(Constants.shooterkP);
         shooterPidController.setI(Constants.shooterkI);
@@ -70,14 +79,18 @@ public class Shooter {
         shooterPidController.setFF(Constants.shooterkFF);
         shooterPidController.setOutputRange(Constants.shooterkMinOutput, Constants.shooterkMaxOutput);
 
+        hoodPDController.setMinCorrectionValue(Constants.hoodkMinCorrection);
+        hoodPDController.setMaxCorrectionValue(Constants.hoodkMaxCorrection);
+        hoodPDController.setToleranceValue(Constants.hoodkTolerance);
+
         shooterRight.follow(shooterLeft, true);
 
         shooterLeft.setSmartCurrentLimit(Constants.sparkShooterStallLimit, Constants.sparkShooterFreeLimit);
 
         shooterLeft.setIdleMode(IdleMode.kCoast);
         hood.setNeutralMode(NeutralMode.Brake);
-        ballQueuing.setNeutralMode(NeutralMode.Brake);
-        indexer.setNeutralMode(NeutralMode.Brake);
+        ballQueuing.setNeutralMode(NeutralMode.Coast);
+        indexer.setNeutralMode(NeutralMode.Coast);
         intake.setNeutralMode(NeutralMode.Brake);
 
         shooterEncoder = shooterLeft.getEncoder();
@@ -89,17 +102,42 @@ public class Shooter {
         counter = 0;
     }
 
-    public void update() {
+    public void update(MoveParameters mP) {
         hoodEncoder = hood.getSelectedSensorPosition();
         beltQueuingEncoder = ballQueuing.getSelectedSensorPosition();
+
+        //mP.currentState = DriveController.DriveState.SHOOTERPOWERPORTALIGNMENT;
+
+        if(SensorInput.queuedHood){
+            hood.setSelectedSensorPosition(0);
+            if(!homedHood){
+                hood.set(ControlMode.PercentOutput, 0.0);
+            }
+            homedHood = true;
+        } 
+        
+        if(!homedHood) {
+            resetHood();
+        } else {
+            double hoodCalculated = hoodPDController.calculate(hoodSetpoint, hoodEncoder);
+            hood.set(ControlMode.PercentOutput, hoodCalculated);
+
+            SmartDashboard.putNumber("Hood Calculated: ", hoodCalculated);
+        }
+
+            SmartDashboard.putNumber("Hood SetPoint: ", hoodSetpoint);
+            SmartDashboard.putNumber("Hood Encoder: ", hoodEncoder);
 
         if (HumanInput.hoodUp) {
             hood.set(ControlMode.PercentOutput, -0.1);
         } else if (HumanInput.hoodDown) {
             hood.set(ControlMode.PercentOutput, 0.1);
-        } else {
+        } else if (HumanInput.hoodUpReleased || HumanInput.hoodDownReleased){
             hood.set(ControlMode.PercentOutput, 0);
-        }
+            hoodSetpoint = hoodEncoder;
+
+        } 
+
         if (HumanInput.spinBallQueue) {
             ballQueuing.set(ControlMode.PercentOutput, 0.5);
         } else if (HumanInput.reverseBallQueue) {
@@ -108,31 +146,188 @@ public class Shooter {
             ballQueuing.set(ControlMode.PercentOutput, 0);
         }
 
+        
+        switch (shooterStates) {
+        case IDLE:
+            shooterLeft.set(0);
+
+            intake.set(ControlMode.PercentOutput, 0);
+            indexer.set(ControlMode.PercentOutput, 0);
+            //ballQueuing.set(ControlMode.PercentOutput, 0);
+
+            break;
+        case GET_HALF_BALL:
+            //Solenoids.ejectIntake(true); //Comment 1 of 2 when test loading station intake
+
+            intake.set(ControlMode.PercentOutput, 0);
+            indexer.set(ControlMode.PercentOutput, 0.5);
+            ballQueuing.set(ControlMode.PercentOutput, 0.0);
+
+            break;
+        case GET_BALL:
+            intake.set(ControlMode.PercentOutput, 0.25);
+            indexer.set(ControlMode.PercentOutput, 0.5);
+            Solenoids.ejectIntake(false);
+
+            // if(SensorInput.queuedTrack1){
+            // intake.set(ControlMode.PercentOutput, 0);
+            // indexer.set(ControlMode.PercentOutput, 0);
+            // //shooterStates = ShooterStates.BALL_QUEUING;
+            // } else if(!SensorInput.queuedTrack1){
+            // intake.set(ControlMode.PercentOutput, 0.75);
+            // indexer.set(ControlMode.PercentOutput, 0.25);
+            // }
+
+            break;
+        case GOT_BALL:
+            //Solenoids.ejectIntake(true); //Comment 2 of 2 when test loading station intake
+            intake.set(ControlMode.PercentOutput, 0);
+            indexer.set(ControlMode.PercentOutput, 0.5);
+            ballQueuing.set(ControlMode.PercentOutput, 0.5);
+
+            break;
+        case GAP_BALL:
+            intake.set(ControlMode.PercentOutput, 0);
+            indexer.set(ControlMode.PercentOutput, 0);
+            ballQueuing.set(ControlMode.PercentOutput, 0.5);
+
+            break;
+        case GROUND_GET_HALF_BALL:
+            Solenoids.ejectIntake(true); //Comment 1 of 2 when test loading station intake
+
+            intake.set(ControlMode.PercentOutput, 0.5);
+            indexer.set(ControlMode.PercentOutput, 0.5);
+            ballQueuing.set(ControlMode.PercentOutput, 0.0);
+            break;
+        case GROUND_GOT_BALL:
+            Solenoids.ejectIntake(false); //Comment 2 of 2 when test loading station intake
+            intake.set(ControlMode.PercentOutput, 0);
+            indexer.set(ControlMode.PercentOutput, 0.5);
+            ballQueuing.set(ControlMode.PercentOutput, 0.5);
+            break;
+        case GROUND_GAP_BALL:
+            intake.set(ControlMode.PercentOutput, 0);
+            indexer.set(ControlMode.PercentOutput, 0);
+            ballQueuing.set(ControlMode.PercentOutput, 0.5);
+            break;
+        case INTAKE_DONE:
+            intake.set(ControlMode.PercentOutput, 0);
+            indexer.set(ControlMode.PercentOutput, 0);
+            ballQueuing.set(ControlMode.PercentOutput, 0);
+            Solenoids.ejectIntake(false);
+            break;
+        case PREPARE:
+            // shooterLeft.set(-HumanInput.throttle);
+            shooterPidController.setReference(targetShooterRPM, ControlType.kVelocity);
+
+            if (SensorInput.queuedShooter) {
+                ballQueuing.set(ControlMode.PercentOutput, 0);
+                
+            } else {
+                ballQueuing.set(ControlMode.PercentOutput, 0.5);
+                // intake.set(ControlMode.PercentOutput, 0.25);
+                // indexer.set(ControlMode.PercentOutput, 0.5);
+            }
+
+            break;
+        case FIRE_BALL_AUTO:
+            // shooterLeft.set(-HumanInput.throttle);
+            shooterPidController.setReference(targetShooterRPM, ControlType.kVelocity);
+            ballQueuing.set(ControlMode.PercentOutput, queuingBeltSpeed);
+            // intake.set(ControlMode.PercentOutput, 0.25);
+            // indexer.set(ControlMode.PercentOutput, 0.5);
+            break;
+        case DONE:
+
+            break;
+        }
+
         switch (shooterStates) {
             case IDLE:
                 shooterBusy = false;
                 counter = 0;
                 break;
-            case GET_BALL:
+            case GET_HALF_BALL:
+                // if (SensorInput.queuedIntake && counter >= 25) {
+                //     shooterStates = ShooterStates.GET_BALL;
+                //     counter = 0;
+                // }else if(SensorInput.queuedIntake){
+                //     counter++;
+                // }else{
+                //     counter = 0;
+                // }
+
                 if(SensorInput.queuedTrack1){
                     shooterStates = ShooterStates.GOT_BALL;
                 }
                 // if(SensorInput.queuedTrack1){
-                //     shooterStates = ShooterStates.BALL_QUEUING;
+                // shooterStates = ShooterStates.BALL_QUEUING;
                 // } else if(!SensorInput.queuedTrack1){
-                //     intake.set(ControlMode.PercentOutput, 0.75);
-                //     indexer.set(ControlMode.PercentOutput, 0.25);
+                // intake.set(ControlMode.PercentOutput, 0.75);
+                // indexer.set(ControlMode.PercentOutput, 0.25);
                 // }
                 break;
+            case GET_BALL:
+                if (SensorInput.queuedTrack1){
+                    shooterStates = ShooterStates.GOT_BALL;
+                }
+
+                if (SensorInput.queuedShooter) {
+                    shooterStates = ShooterStates.INTAKE_DONE;
+                }
+
+                break;
             case GOT_BALL:
-                if(SensorInput.queuedTrack2){
+                if (SensorInput.queuedTrack2) {
                     shooterStates = ShooterStates.GAP_BALL;
                 }
+
+                if (SensorInput.queuedShooter) {
+                    shooterStates = ShooterStates.INTAKE_DONE;
+                }
+
                 break;
-
-
             case GAP_BALL:
-            break;
+                if (!SensorInput.queuedTrack2) {
+                    shooterStates = shooterStates.GET_HALF_BALL;
+                }
+    
+                if (SensorInput.queuedShooter) {
+                    shooterStates = ShooterStates.INTAKE_DONE;
+                }
+    
+                break;
+            case GROUND_GET_HALF_BALL:
+                if(SensorInput.queuedIntake && counter >= 25){
+                    shooterStates = ShooterStates.GROUND_GOT_BALL;
+                    counter = 0;
+                }else if(SensorInput.queuedIntake){
+                    counter++;
+                }else{
+                    counter = 0;
+                }
+                break;
+            case GROUND_GOT_BALL:
+                if (SensorInput.queuedTrack1) {
+                    shooterStates = ShooterStates.GROUND_GAP_BALL;
+                }
+
+                if (SensorInput.queuedShooter) {
+                    shooterStates = ShooterStates.INTAKE_DONE;
+                }
+                break;
+            case GROUND_GAP_BALL:
+                if (!SensorInput.queuedTrack2) {
+                    shooterStates = shooterStates.GROUND_GET_HALF_BALL;
+                }
+
+                if (SensorInput.queuedShooter) {
+                    shooterStates = ShooterStates.INTAKE_DONE;
+                }
+                break;
+            case INTAKE_DONE:
+                shooterStates = ShooterStates.IDLE;
+                break;
             case PREPARE:
                 if (SensorInput.queuedShooter) {
                     shooterBusy = true;
@@ -147,98 +342,22 @@ public class Shooter {
                     shooterStates = ShooterStates.DONE;
                 }
                 counter++;
-
+    
                 break;
-
+    
             case FIRE_BALL_AUTO:
                 if (Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) > shooterRPMTolerance) {
                     shooterStates = ShooterStates.PREPARE;
                 }
                 counter = 0;
                 break;
-
+    
             case DONE:
                 shooterBusy = false;
                 shooterStates = ShooterStates.IDLE;
                 break;
-        }
-
-
-
-        switch (shooterStates) {
-            case IDLE:
-                shooterLeft.set(0);
-                HumanInput.ejectIntake = false;
-
-                intake.set(ControlMode.PercentOutput, 0);
-                indexer.set(ControlMode.PercentOutput, 0);
-                ballQueuing.set(ControlMode.PercentOutput, 0);
-
-                break;
-            case GET_BALL:
-                HumanInput.ejectIntake = true;
-
-                // if(SensorInput.queuedTrack1){
-                //     intake.set(ControlMode.PercentOutput, 0);
-                //     indexer.set(ControlMode.PercentOutput, 0);
-                //     //shooterStates = ShooterStates.BALL_QUEUING;
-                // } else if(!SensorInput.queuedTrack1){
-                //     intake.set(ControlMode.PercentOutput, 0.75);
-                //     indexer.set(ControlMode.PercentOutput, 0.25);
-                // } 
-                
-                break;
-            case GOT_BALL:
-                intake.set(ControlMode.PercentOutput, 0);
-                indexer.set(ControlMode.PercentOutput, 0);
-
-                if (SensorInput.queuedShooter){
-                    ballQueuing.set(ControlMode.PercentOutput, 0);
-                    shooterStates = ShooterStates.IDLE;
-                }
-
-                if (SensorInput.queuedTrack1){
-                    ballQueuing.set(ControlMode.PercentOutput, 0);
-                    shooterStates = ShooterStates.GAP_BALL;
-                } else {
-                    ballQueuing.set(ControlMode.PercentOutput, 0.5);
-                }
-
-                break;
-            case GAP_BALL:
-                if (SensorInput.queuedShooter){
-                    ballQueuing.set(ControlMode.PercentOutput, 0);
-                    shooterStates = ShooterStates.IDLE;
-                }
-
-                if (SensorInput.queuedTrack2){
-                    ballQueuing.set(ControlMode.PercentOutput, 0);
-                    shooterStates = ShooterStates.GAP_BALL;
-                } else {
-                    ballQueuing.set(ControlMode.PercentOutput, 0.5);
-                }
-            break;
-            case PREPARE:
-                // shooterLeft.set(-HumanInput.throttle);
-                shooterPidController.setReference(targetShooterRPM, ControlType.kVelocity);
-
-                // if (SensorInput.hasBall) {
-                //     ballQueuing.set(ControlMode.PercentOutput, 0);
-                // } else {
-                //     ballQueuing.set(ControlMode.PercentOutput, 0.5);
-                // }
-
-                break;
-            case FIRE_BALL_AUTO:
-                // shooterLeft.set(-HumanInput.throttle);
-                shooterPidController.setReference(targetShooterRPM, ControlType.kVelocity);
-                ballQueuing.set(ControlMode.PercentOutput, queuingBeltSpeed);
-                break;
-            case DONE:
-
-                break;
-        }
-
+            }
+    
         SmartDashboard.putNumber("Current RPM of the Shooter Motors", shooterEncoder.getVelocity());
         SmartDashboard.putNumber("Belt Queue Value", beltQueuingEncoder);
         SmartDashboard.putNumber("Hood value", hoodEncoder);
@@ -261,22 +380,43 @@ public class Shooter {
         shooterStates = ShooterStates.PREPARE;
     }
 
-    public void intakeAll(){
-        shooterStates = ShooterStates.GET_BALL;
+    public void groundIntakeAll() {
+        shooterStates = ShooterStates.GROUND_GET_HALF_BALL;
     }
 
+    public void intakeAll(){
+        shooterStates = ShooterStates.GET_HALF_BALL;
+    }
     public boolean getShooterStatus() {
         return shooterBusy;
     }
 
+    public void setHoodSetpoint(double hoodSetpoint){
+        this.hoodSetpoint = hoodSetpoint;
+    }
+
+    public void abortIntake(){
+        shooterStates = ShooterStates.INTAKE_DONE;
+    }
+
+    
     public void reset() {
         shooterStates = ShooterStates.IDLE;
         ballQueuing.set(ControlMode.PercentOutput, 0);
         shooterLeft.set(0);
-        hood.setSelectedSensorPosition(0);
+        // hood.setSelectedSensorPosition(0);
     }
 
     public void resetState() {
         shooterStates = ShooterStates.IDLE;
+    }
+
+    public void resetHood(){
+        if(SensorInput.queuedHood){
+            hoodEncoder = 0;
+            hood.set(ControlMode.PercentOutput, 0);
+        }else{
+            hood.set(ControlMode.PercentOutput, 0.125);
+        }
     }
 }

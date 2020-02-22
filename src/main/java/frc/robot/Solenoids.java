@@ -16,40 +16,42 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Solenoids {
     public static Compressor compressor = new Compressor();
-    public static Solenoid sol0 = new Solenoid(0, 0);
-    public static Solenoid sol1 = new Solenoid(0, 1);
+    public static Solenoid intakeOut = new Solenoid(0, 0);
+    public static Solenoid intakeIn = new Solenoid(0, 1);
     public static Solenoid sol2 = new Solenoid(0, 2);
     public static Solenoid sol3 = new Solenoid(0, 3);
-    public static Solenoid sol4 = new Solenoid(0, 4);
-    public static Solenoid sol5 = new Solenoid(0, 5);
-    public static Solenoid sol6 = new Solenoid(0, 6);
-    public static Solenoid sol7 = new Solenoid(0, 7);
+    public static Solenoid PTODisengage = new Solenoid(0, 4);
+    public static Solenoid PTOEngage = new Solenoid(0, 5);
+    public static Solenoid CPManipulatorDown = new Solenoid(0, 6);
+    public static Solenoid CPManipulatorUp = new Solenoid(0, 7);
+    public static Solenoid lightRingOn = new Solenoid(1, 0);
+    public static Solenoid lightRingOff = new Solenoid(1, 1);
     
 
     public Solenoids() {
     }
 
     public static void init(){
-        sol0.set(true);
-        sol1.set(false);
+        intakeOut.set(true);
+        intakeIn.set(false);
         sol2.set(true);
         sol3.set(false);
-        sol4.set(true);
-        sol5.set(false);
-        sol6.set(true);
-        sol7.set(false);
+        PTODisengage.set(true);
+        PTOEngage.set(false);
+        CPManipulatorDown.set(true);
+        CPManipulatorUp.set(false);
     }
 
     public static void update() {
 
-        if (HumanInput.sol0) {
-            sol0.set(true);
-            sol1.set(false);
+        if (HumanInput.intakeOut) {
+            intakeOut.set(true);
+            intakeIn.set(false);
         }
 
-        if (HumanInput.sol1) {
-            sol0.set(false);
-            sol1.set(true);
+        if (HumanInput.intakeIn) {
+            intakeOut.set(false);
+            intakeIn.set(true);
         }
 
         if (HumanInput.sol2) {
@@ -62,44 +64,64 @@ public class Solenoids {
             sol3.set(true);
         }
 
-        if (HumanInput.sol4) {
-            sol4.set(true);
-            sol5.set(false);
+        if (HumanInput.PTODisengage) {
+            PTODisengage.set(true);
+            PTOEngage.set(false);
         }
 
-        if (HumanInput.sol5) {
-            sol4.set(false);
-            sol5.set(true);
+        if (HumanInput.PTOEngage) {
+            PTODisengage.set(false);
+            PTOEngage.set(true);
         }
 
-        if (HumanInput.sol6) {
-            sol6.set(true);
-            sol7.set(false);
+        if (HumanInput.CPManipulatorDown) {
+            CPManipulatorDown.set(true);
+            CPManipulatorUp.set(false);
 
         }
 
-        if (HumanInput.sol7) {
-            sol6.set(false);
-            sol7.set(true);
+        if (HumanInput.CPManipulatorUp) {
+            CPManipulatorDown.set(false);
+            CPManipulatorUp.set(true);
         }
 
-        if(HumanInput.ejectIntake){
-            //solenoids
-        }
+        // if(HumanInput.lightRing){
+        //     lightRingOn.set(true);
+        //     lightRingOff.set(false);
+        // }
 
-        SmartDashboard.putBoolean("Solenoid 0:", sol0.get());
-        SmartDashboard.putBoolean("Solenoid 1:", sol1.get());
+        // if(HumanInput.lightRingOff){
+        //     lightRingOn.set(false);
+        //     lightRingOff.set(true);
+        // }
+
+        SmartDashboard.putBoolean("Solenoid 0:", intakeOut.get());
+        SmartDashboard.putBoolean("Solenoid 1:", intakeIn.get());
         SmartDashboard.putBoolean("Solenoid 2:", sol2.get());
         SmartDashboard.putBoolean("Solenoid 3:", sol3.get());
-        SmartDashboard.putBoolean("Solenoid 4:", sol4.get());
-        SmartDashboard.putBoolean("Solenoid 5:", sol5.get());
-        SmartDashboard.putBoolean("Solenoid 6:", sol6.get());
-        SmartDashboard.putBoolean("Solenoid 7:", sol7.get());
+        SmartDashboard.putBoolean("Solenoid 4:", PTODisengage.get());
+        SmartDashboard.putBoolean("Solenoid 5:", PTOEngage.get());
+        SmartDashboard.putBoolean("Solenoid 6:", CPManipulatorDown.get());
+        SmartDashboard.putBoolean("Solenoid 7:", CPManipulatorUp.get());
 
+    }
+
+    public static void lightRing(boolean toggle){
+        lightRingOn.set(toggle);
+        lightRingOff.set(!toggle);
     }
 
     public static void startCompressor() {
         compressor.start();
     }
 
+    public static void ejectIntake(boolean eject){
+        intakeOut.set(eject);
+        intakeIn.set(!eject);
+    }
+
+    public static void disengagePTO(){
+        PTODisengage.set(true);
+        PTOEngage.set(false);
+    }
 }

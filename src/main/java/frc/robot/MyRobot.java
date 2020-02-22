@@ -26,14 +26,12 @@ public abstract class MyRobot extends AllRobots {
     AnalogInput IRSensor;
     AnalogInput AInput;
     DigitalInput DInput;
-    
 
     public static AHRS navx;
     public static double rawGyro, cleanGyro, ultraSonicDistance;
     public boolean isFalcon, hasShooter, hasControlPanel, isTalonFXTest;
 
-
-    //Sprak Max CAN IDs NEO
+    // Sprak Max CAN IDs NEO
     final int CANMcleftDriveFront = 1;
     final int CANMcleftDriveMiddle = 2;
     final int CANMcleftDriveBack = 3;
@@ -43,39 +41,38 @@ public abstract class MyRobot extends AllRobots {
     final int CANMcshooterLeft = 7;
     final int CANMcshooterRight = 8;
 
-    //Talon FX CAN IDs Falcons
+    // Talon FX CAN IDs Falcons
     final int CANMcFalconFrontLeft = 1;
     final int CANMcFalconBackLeft = 2;
     final int CANMcFalconFrontRight = 3;
     final int CANMcFalconBackRight = 4;
-    
-    //Talon SRX CAN IDs Bag Motors
+
+    // Talon SRX CAN IDs Bag Motors
     final int CANMcctrlPanel = 31;
-    final int CANMcBallQueuing = 11;
+    final int CANMcBallQueuing = 12;
     final int CANMcHood = 9;
-    final int CANMcIndexer = 12;
+    final int CANMcIndexer = 11;
     final int CANMcIntake = 10;
 
     public int counter = 0;
-    public int balls = 0;
+
     @Override
     public void MyRobotInit() {
-        
+
         navx = new AHRS(SPI.Port.kMXP);
         navx.reset();
 
-        String ControllerVersion="";
+        String ControllerVersion = "";
         try {
-            CANSparkMax controllerCheck=new CANSparkMax(5, MotorType.kBrushless);
-            SmartDashboard.putString("Controller Check1","Passed");
+            CANSparkMax controllerCheck = new CANSparkMax(5, MotorType.kBrushless);
+            SmartDashboard.putString("Controller Check1", "Passed");
             ControllerVersion = controllerCheck.getFirmwareString();
             SmartDashboard.putString("Controller Check 4", ControllerVersion);
             controllerCheck.close();
+        } catch (Exception cc) {
+            SmartDashboard.putString("Controller Check 3", "CATCH");
         }
-        catch(Exception cc) {
-            SmartDashboard.putString("Controller Check 3","CATCH");
-        }
-        if(ControllerVersion.equalsIgnoreCase("v0.0.0")) {
+        if (ControllerVersion.equalsIgnoreCase("v0.0.0")) {
             isFalcon = true;
             hasShooter = true;
             isTalonFXTest = false;
@@ -87,10 +84,10 @@ public abstract class MyRobot extends AllRobots {
             hasControlPanel = true;
         }
 
-        // TODO: Review: changes to the constants set here. 
+        // TODO: Review: changes to the constants set here.
         // TODO: Review: moved the drivetrain instantiation below setting constants
-        /*
-        if(isFalcon) {
+
+        if (isFalcon) {
             SmartDashboard.putString("DriveTrain Type:", "Falcons");
             Constants.drivetrainTrackingMaxCorrection = Constants.falconTrackingMaxCorrection;
             Constants.drivetrainTrackingMinCorrection = Constants.falconTrackingMinCorrection;
@@ -98,12 +95,13 @@ public abstract class MyRobot extends AllRobots {
             Constants.maxRPM = Constants.falconMaxRPM;
             Constants.drivetrainKP = Constants.falconDrivetrainKP;
             Constants.drivetrainKI = Constants.falconDrivetrainKI;
-            Constants.drivetrainKD = Constants.falconDrivetrainKD; 
-            Constants.drivetrainKIz = Constants.falconDrivetrainKIz; 
-            Constants.drivetrainKFF = Constants.falconDrivetrainKFF; 
-            Constants.drivetrainKMaxOutput = Constants.falconDrivetrainKMaxOutput; 
+            Constants.drivetrainKD = Constants.falconDrivetrainKD;
+            Constants.drivetrainKIz = Constants.falconDrivetrainKIz;
+            Constants.drivetrainKFF = Constants.falconDrivetrainKFF;
+            Constants.drivetrainKMaxOutput = Constants.falconDrivetrainKMaxOutput;
             Constants.drivetrainKMinOutput = Constants.falconDrivetrainKMinOutput;
-            drivetrain = new DrivetrainFalcon(CANMcFalconFrontLeft, CANMcFalconBackLeft, CANMcFalconFrontRight, CANMcFalconBackRight);
+            drivetrain = new DrivetrainFalcon(CANMcFalconFrontLeft, CANMcFalconBackLeft, CANMcFalconFrontRight,
+                    CANMcFalconBackRight);
         } else {
             SmartDashboard.putString("DriveTrain Type:", "Neos");
             Constants.drivetrainTrackingMaxCorrection = Constants.neoMaxTrackingCorrection;
@@ -112,19 +110,20 @@ public abstract class MyRobot extends AllRobots {
             Constants.maxRPM = Constants.neoMaxRPM;
             Constants.drivetrainKP = Constants.neoDrivetrainKP;
             Constants.drivetrainKI = Constants.neoDrivetrainKI;
-            Constants.drivetrainKD = Constants.neoDrivetrainKD; 
-            Constants.drivetrainKIz = Constants.neoDrivetrainKIz; 
-            Constants.drivetrainKFF = Constants.neoDrivetrainKFF; 
-            Constants.drivetrainKMaxOutput = Constants.neoDrivetrainKMaxOutput; 
+            Constants.drivetrainKD = Constants.neoDrivetrainKD;
+            Constants.drivetrainKIz = Constants.neoDrivetrainKIz;
+            Constants.drivetrainKFF = Constants.neoDrivetrainKFF;
+            Constants.drivetrainKMaxOutput = Constants.neoDrivetrainKMaxOutput;
             Constants.drivetrainKMinOutput = Constants.neoDrivetrainKMinOutput;
-            drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack, CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
+            drivetrain = new DrivetrainNEO(CANMcleftDriveFront, CANMcleftDriveMiddle, CANMcleftDriveBack,
+                    CANMcrightDriveFront, CANMcrightDriveMiddle, CANMcrightDriveBack);
         }
-        */
+
         IRSensor = new AnalogInput(3);
         DInput = new DigitalInput(1);
         AInput = new AnalogInput(0);
 
-        uSSensor = new UltraSonicSensor( Constants.USSensorMB1013ToInchFactor);
+        uSSensor = new UltraSonicSensor(Constants.USSensorMB1013ToInchFactor);
         RechargeRobotInit();
     }
 
@@ -150,7 +149,7 @@ public abstract class MyRobot extends AllRobots {
     public void MyTeleopPeriodic() {
         periodicInit();
 
-        //SmartDashboard.putBoolean("useFixedSpeed", shooter.useFixedSpeed);
+        // SmartDashboard.putBoolean("useFixedSpeed", shooter.useFixedSpeed);
         RechargeTeleopPeriodic();
     }
 
@@ -167,11 +166,11 @@ public abstract class MyRobot extends AllRobots {
         RechargeTestPeriodic();
     }
 
-    private void periodicInit(){
+    private void periodicInit() {
         boolean IRSensorValue;
-        if(IRSensor.getValue() > 3500){
+        if (IRSensor.getValue() > 3500) {
             IRSensorValue = false;
-        }else{
+        } else {
             IRSensorValue = true;
         }
         rawGyro = navx.getAngle();
@@ -186,6 +185,12 @@ public abstract class MyRobot extends AllRobots {
         SmartDashboard.putBoolean("New IR Sensor is blocked", SensorInput.queuedShooter);
         SmartDashboard.putBoolean("Digital Input test: ", DInput.get());
         SmartDashboard.putNumber("Analog Input test: ", AInput.getValue());
+        SmartDashboard.putBoolean("Track 1 Sensor", SensorInput.queuedTrack1);
+        SmartDashboard.putBoolean("Track 2 Sensor", SensorInput.queuedTrack2);
+        SmartDashboard.putBoolean("Shooter Sensor", SensorInput.queuedShooter);
+        SmartDashboard.putBoolean("Hood Sensor", SensorInput.queuedHood);
+        SmartDashboard.putBoolean("Intake Sensor", SensorInput.queuedIntake);
+        SmartDashboard.putNumber("Operator POV Degrees: ", HumanInput.operatorController.getPOV());
     }
 
     public abstract void RechargeRobotInit();

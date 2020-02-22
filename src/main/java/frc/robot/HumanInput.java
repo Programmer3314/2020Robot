@@ -19,19 +19,22 @@ public class HumanInput {
     public static Joystick buttonBox2 = new Joystick(3);
     public static Joystick stick = new Joystick(1);
     public static double forward, turn, throttle;
-    public static boolean trenchRunAlignment, shooterAllInTarget, powerPortAlignmentButtonPressed, ballChaseButton, climbAlignmentButton, cameraChangeButton, controlPanelAlignment, reset, hoodUp, hoodDown;
+    public static boolean trenchRunAlignment, shooterAllInTarget, powerPortAlignment, ballChaseButton, climbAlignmentButton, cameraChangeButton, controlPanelAlignment, reset, hoodUp, hoodDown, hoodUpReleased, hoodDownReleased;
     public static double TalonFxTestSpeed;
-    public static boolean gyroLock;
+    public static boolean gyroLock, gyroReset;
     public static int autoNumber;
     public static boolean activateAuto;
     public static boolean shutDownAuto;
     public static boolean leftSwitch, rightSwitch;
-    public static boolean ejectIntake, spinIntake, reverseIntake; //
+    public static boolean activateIntake, activateGroundIntake, spinIntake, reverseIntake; //
     public static boolean spinBallQueue, reverseBallQueue;
     public static boolean lightRing; //
     public static boolean fourSpins, spinToColor, manualControlPanel, putUpControlPanelManipulator;
     public static boolean winchItDown, creepOnBar, stopCreep, abortClimb;
-    public static boolean sol0, sol1, sol2, sol3, sol4, sol5, sol6, sol7;
+    public static boolean intakeOut, intakeIn, sol2, sol3, PTODisengage, PTOEngage, CPManipulatorDown, CPManipulatorUp, lightRingOn, lightRingOff;
+    public static boolean abortIntake;
+    public static boolean testButton;
+    public static boolean closeShot, lineShot, trenchShot;
 
     public HumanInput(){
     
@@ -47,32 +50,44 @@ public class HumanInput {
         rightSwitch = buttonBox1.getRawButton(12);
 
         trenchRunAlignment = driverController.getRawButton(1);
-        shooterAllInTarget = driverController.getRawButton(2);
-        powerPortAlignmentButtonPressed = driverController.getRawButtonPressed(2);       
+        shooterAllInTarget = driverController.getRawButton(2);  
         ballChaseButton = driverController.getRawButton(3);
-        climbAlignmentButton = driverController.getRawButton(4);
+        //climbAlignmentButton = driverController.getRawButton(4);
+        powerPortAlignment = driverController.getRawButton(4);
         cameraChangeButton = driverController.getRawButtonReleased(6);
         gyroLock = driverController.getRawAxis(2) > 0.5;
 
+        closeShot = operatorController.getPOV() == 180;
+        lineShot = operatorController.getPOV() == 90;
+        trenchShot = operatorController.getPOV() == 0;
+
         if(!(leftSwitch) && !(rightSwitch)){ //ball + intake
-            hoodUp = buttonBox1.getRawButton(2);
-            hoodDown = buttonBox1.getRawButton(3);
+            hoodUp = buttonBox1.getRawButtonPressed(2);
+            hoodDown = buttonBox1.getRawButtonPressed(3);
+            hoodUpReleased = buttonBox1.getRawButtonReleased(2);
+            hoodUpReleased = buttonBox1.getRawButtonReleased(3);
             spinBallQueue = buttonBox1.getRawButton(4);
             reverseBallQueue = buttonBox1.getRawButton(5);
             // spinIntake = buttonBox1.getRawButton(6);
             // reverseIntake = buttonBox1.getRawButton(7);
+            activateIntake = buttonBox1.getRawButtonReleased(8);
+            activateGroundIntake = buttonBox1.getRawButtonReleased(9);
+            abortIntake = buttonBox1.getRawButtonReleased(10);
         } else if(!(leftSwitch) && rightSwitch){ //shooter
-            sol0 = buttonBox1.getRawButtonReleased(1);
-            sol1 = buttonBox1.getRawButtonReleased(2);
+            intakeOut = buttonBox1.getRawButtonReleased(1);
+            intakeIn = buttonBox1.getRawButtonReleased(2);
             sol2 = buttonBox1.getRawButtonReleased(3);
             sol3 = buttonBox1.getRawButtonReleased(4);
-            sol4 = buttonBox1.getRawButtonReleased(5);
-            sol5 = buttonBox1.getRawButtonReleased(6);
-            sol6 = buttonBox1.getRawButtonReleased(7);
-            sol7 = buttonBox1.getRawButtonReleased(8);
+            lightRing = buttonBox1.getRawButtonReleased(9);
+            // lightRingOff = buttonBox1.getRawButtonReleased(10);
         } else if(leftSwitch && !(rightSwitch)){ //control panel
             controlPanelAlignment = buttonBox1.getRawButtonPressed(1);
+            CPManipulatorDown = buttonBox1.getRawButtonReleased(7);
+            CPManipulatorUp = buttonBox1.getRawButtonReleased(8);
         } else if(leftSwitch && rightSwitch){ //climber + autos
+            gyroReset = buttonBox1.getRawButtonReleased(1);
+            PTODisengage = buttonBox1.getRawButtonReleased(5);
+            PTOEngage = buttonBox1.getRawButtonReleased(6);
             activateAuto = buttonBox1.getRawButtonPressed(7);
             shutDownAuto  = buttonBox1.getRawButtonReleased(7);
             reset = buttonBox1.getRawButton(10);

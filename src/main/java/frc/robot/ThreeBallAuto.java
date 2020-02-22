@@ -40,18 +40,22 @@ public class ThreeBallAuto implements AutoStateMachines{
     double encoderPos;
     double lastEncoderPos;
 
-    public ThreeBallAuto(){
+    Shooter shooter;
+
+    public ThreeBallAuto(Shooter shooter){
         autoStates = AutoStates.START;
         //shooter = new Shooter(7, 8, 11, 9);
         counter = 0;
         portalTapeTargetTable = Robot.ntInst.getTable("Retroreflective Tape Target");
         //mP = driveController.new MoveParameters();
-        targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
+        // targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
         shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
         queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
         gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 1);
         
         useGyro = true;
+
+        this.shooter = shooter;
     }
 
     @Override
@@ -64,6 +68,9 @@ public class ThreeBallAuto implements AutoStateMachines{
             break;
 
             case START:
+                shooter.setHoodSetpoint(-1400);
+                targetShooterRPM = 3600;
+
                 counter = 0;
                 if(portalTapeTargetTable.getEntry("Retroreflective Target Found").getBoolean(false)){
                     angleOffset = portalTapeTargetTable.getEntry("X Angle").getDouble(0);
@@ -78,7 +85,7 @@ public class ThreeBallAuto implements AutoStateMachines{
                 //mP.currentState = DriveState.POWERPORTALIGNMENT;
                 mP.angle = angleOffset;
                 mP.currentState = DriveState.TURN_TO_GYRO;
-                targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
+                // targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
                 shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
                 queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
                 gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 5);
@@ -115,7 +122,7 @@ public class ThreeBallAuto implements AutoStateMachines{
                 //go 2 - 5 inches forward or something
                 mP.currentState = DriveState.GYROLOCK;
                 mP.forward = -0.2;
-                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet>=2){
+                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet>=4){
                     autoStates = AutoStates.DONE;
                 }
             break;

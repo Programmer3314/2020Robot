@@ -36,7 +36,7 @@ public class Constants{
     public static int    maxRPM = 0;
     public static int    encoderTicksToFeet = 1;
     // Falcon chassis set
-    public static final double falconDrivetrainKP = 0.003000;//5e-5;
+    public static final double falconDrivetrainKP = 0.002500;//5e-5;
     public static final double falconDrivetrainKI = 0.000000;
     public static final double falconDrivetrainKD = 0; 
     public static final double falconDrivetrainKIz = 0; 
@@ -88,6 +88,13 @@ public class Constants{
     public static final double shooterkMinOutput = -1;
     //Shooter Encoder
     public static final double sparkShooterVelocityConversionFactor = 1.0;
+
+    //Hood Encoder
+    public static final double hoodkP = 0.0025;
+    public static final double hoodkD = 0.00005;
+    public static final double hoodkMinCorrection = 0.04;
+    public static final double hoodkMaxCorrection = 0.2;
+    public static final double hoodkTolerance = 10.0;
 
     //trench
     public static final double trenchTolerance = 1;
