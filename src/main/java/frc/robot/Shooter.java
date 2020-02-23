@@ -47,9 +47,9 @@ public class Shooter {
     CANPIDController shooterPidController;
     PDController hoodPDController;
 
-    public Shooter(int CANMcshooterLeft, int CANMcshooterRight, int CANMcBallQueuing, int CANMcHood, int CANMcIndexer,
-            int CANMcIntake) {
-        hoodPDController = new PDController(Constants.hoodkP, Constants.hoodkD);
+    public Shooter(int CANMcshooterLeft, int CANMcshooterRight, int CANMcBallQueuing, 
+        int CANMcHood, int CANMcIndexer, int CANMcIntake) {
+
 
         shooterStates = ShooterStates.IDLE;
 
@@ -79,6 +79,7 @@ public class Shooter {
         shooterPidController.setFF(Constants.shooterkFF);
         shooterPidController.setOutputRange(Constants.shooterkMinOutput, Constants.shooterkMaxOutput);
 
+        hoodPDController = new PDController(Constants.hoodkP, Constants.hoodkD);
         hoodPDController.setMinCorrectionValue(Constants.hoodkMinCorrection);
         hoodPDController.setMaxCorrectionValue(Constants.hoodkMaxCorrection);
         hoodPDController.setToleranceValue(Constants.hoodkTolerance);
@@ -103,11 +104,15 @@ public class Shooter {
     }
 
     public void update(MoveParameters mP) {
-        hoodEncoder = hood.getSelectedSensorPosition();
         beltQueuingEncoder = ballQueuing.getSelectedSensorPosition();
 
         //mP.currentState = DriveController.DriveState.SHOOTERPOWERPORTALIGNMENT;
 
+        // Hood Control:
+        // if the hood has not been homed, do so
+        // if the hood is currently homed reset the encoder position
+        // otherwise move to setpoint
+        // TODO: please clean this up some... 
         if(SensorInput.queuedHood){
             hood.setSelectedSensorPosition(0);
             if(!homedHood){
@@ -115,6 +120,7 @@ public class Shooter {
             }
             homedHood = true;
         } 
+        hoodEncoder = hood.getSelectedSensorPosition();
         
         if(!homedHood) {
             resetHood();
@@ -124,9 +130,9 @@ public class Shooter {
 
             SmartDashboard.putNumber("Hood Calculated: ", hoodCalculated);
         }
+        SmartDashboard.putNumber("Hood SetPoint: ", hoodSetpoint);
+        SmartDashboard.putNumber("Hood Encoder: ", hoodEncoder);
 
-            SmartDashboard.putNumber("Hood SetPoint: ", hoodSetpoint);
-            SmartDashboard.putNumber("Hood Encoder: ", hoodEncoder);
 
         if (HumanInput.hoodUp) {
             hood.set(ControlMode.PercentOutput, -0.1);
@@ -135,9 +141,9 @@ public class Shooter {
         } else if (HumanInput.hoodUpReleased || HumanInput.hoodDownReleased){
             hood.set(ControlMode.PercentOutput, 0);
             hoodSetpoint = hoodEncoder;
-
         } 
 
+        // Manual Ball Queue Control:
         if (HumanInput.spinBallQueue) {
             ballQueuing.set(ControlMode.PercentOutput, 0.5);
         } else if (HumanInput.reverseBallQueue) {
@@ -146,77 +152,69 @@ public class Shooter {
             ballQueuing.set(ControlMode.PercentOutput, 0);
         }
 
-        
+        // Ball Management: (Intake, Queue, and Shoot)
         switch (shooterStates) {
-        case IDLE:
+            case IDLE:
             shooterLeft.set(0);
-
             intake.set(ControlMode.PercentOutput, 0);
             indexer.set(ControlMode.PercentOutput, 0);
             //ballQueuing.set(ControlMode.PercentOutput, 0);
-
             break;
-        case GET_HALF_BALL:
-            //Solenoids.ejectIntake(true); //Comment 1 of 2 when test loading station intake
 
+            case GET_HALF_BALL:
+            //Solenoids.ejectIntake(true); //Comment 1 of 2 when test loading station intake
             intake.set(ControlMode.PercentOutput, 0);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.0);
-
             break;
-        case GET_BALL:
+
+            case GET_BALL:
             intake.set(ControlMode.PercentOutput, 0.25);
             indexer.set(ControlMode.PercentOutput, 0.5);
             Solenoids.ejectIntake(false);
-
-            // if(SensorInput.queuedTrack1){
-            // intake.set(ControlMode.PercentOutput, 0);
-            // indexer.set(ControlMode.PercentOutput, 0);
-            // //shooterStates = ShooterStates.BALL_QUEUING;
-            // } else if(!SensorInput.queuedTrack1){
-            // intake.set(ControlMode.PercentOutput, 0.75);
-            // indexer.set(ControlMode.PercentOutput, 0.25);
-            // }
-
             break;
-        case GOT_BALL:
+
+            case GOT_BALL:
             //Solenoids.ejectIntake(true); //Comment 2 of 2 when test loading station intake
             intake.set(ControlMode.PercentOutput, 0);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.5);
-
             break;
-        case GAP_BALL:
+
+            case GAP_BALL:
             intake.set(ControlMode.PercentOutput, 0);
             indexer.set(ControlMode.PercentOutput, 0);
             ballQueuing.set(ControlMode.PercentOutput, 0.5);
-
             break;
-        case GROUND_GET_HALF_BALL:
-            Solenoids.ejectIntake(true); //Comment 1 of 2 when test loading station intake
 
+            case GROUND_GET_HALF_BALL:
+            Solenoids.ejectIntake(true); //Comment 1 of 2 when test loading station intake
             intake.set(ControlMode.PercentOutput, 0.5);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.0);
             break;
-        case GROUND_GOT_BALL:
+    
+            case GROUND_GOT_BALL:
             Solenoids.ejectIntake(false); //Comment 2 of 2 when test loading station intake
             intake.set(ControlMode.PercentOutput, 0);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.5);
             break;
-        case GROUND_GAP_BALL:
+
+            case GROUND_GAP_BALL:
             intake.set(ControlMode.PercentOutput, 0);
             indexer.set(ControlMode.PercentOutput, 0);
             ballQueuing.set(ControlMode.PercentOutput, 0.5);
             break;
-        case INTAKE_DONE:
+
+            case INTAKE_DONE:
             intake.set(ControlMode.PercentOutput, 0);
             indexer.set(ControlMode.PercentOutput, 0);
             ballQueuing.set(ControlMode.PercentOutput, 0);
             Solenoids.ejectIntake(false);
             break;
-        case PREPARE:
+
+            case PREPARE:
             // shooterLeft.set(-HumanInput.throttle);
             shooterPidController.setReference(targetShooterRPM, ControlType.kVelocity);
 
@@ -242,31 +240,19 @@ public class Shooter {
             break;
         }
 
+        // Calc State Changes...
         switch (shooterStates) {
             case IDLE:
                 shooterBusy = false;
                 counter = 0;
                 break;
-            case GET_HALF_BALL:
-                // if (SensorInput.queuedIntake && counter >= 25) {
-                //     shooterStates = ShooterStates.GET_BALL;
-                //     counter = 0;
-                // }else if(SensorInput.queuedIntake){
-                //     counter++;
-                // }else{
-                //     counter = 0;
-                // }
 
+            case GET_HALF_BALL:
                 if(SensorInput.queuedTrack1){
                     shooterStates = ShooterStates.GOT_BALL;
                 }
-                // if(SensorInput.queuedTrack1){
-                // shooterStates = ShooterStates.BALL_QUEUING;
-                // } else if(!SensorInput.queuedTrack1){
-                // intake.set(ControlMode.PercentOutput, 0.75);
-                // indexer.set(ControlMode.PercentOutput, 0.25);
-                // }
                 break;
+
             case GET_BALL:
                 if (SensorInput.queuedTrack1){
                     shooterStates = ShooterStates.GOT_BALL;
@@ -289,7 +275,7 @@ public class Shooter {
                 break;
             case GAP_BALL:
                 if (!SensorInput.queuedTrack2) {
-                    shooterStates = shooterStates.GET_HALF_BALL;
+                    shooterStates = ShooterStates.GET_HALF_BALL;
                 }
     
                 if (SensorInput.queuedShooter) {
@@ -318,25 +304,28 @@ public class Shooter {
                 break;
             case GROUND_GAP_BALL:
                 if (!SensorInput.queuedTrack2) {
-                    shooterStates = shooterStates.GROUND_GET_HALF_BALL;
+                    shooterStates = ShooterStates.GROUND_GET_HALF_BALL;
                 }
 
                 if (SensorInput.queuedShooter) {
                     shooterStates = ShooterStates.INTAKE_DONE;
                 }
                 break;
+
             case INTAKE_DONE:
                 shooterStates = ShooterStates.IDLE;
                 break;
+
             case PREPARE:
                 if (SensorInput.queuedShooter) {
                     shooterBusy = true;
-                    if (Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) <= shooterRPMTolerance && Math.abs(hoodEncoder - hoodSetpoint) <= Constants.hoodkTolerance) {
-                        if (useGyro == false) {
-                            shooterStates = ShooterStates.FIRE_BALL_AUTO;
-                        } else if (Math.abs(Robot.cleanGyro - desiredGyroAngle) <= gyroTolerance) {
-                            shooterStates = ShooterStates.FIRE_BALL_AUTO;
-                        }
+
+                    // Confirm Firing Solution
+                    // (consolidated conditions)
+                    if ((Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) <= shooterRPMTolerance) 
+                        && (Math.abs(hoodEncoder - hoodSetpoint) <= Constants.hoodkTolerance) 
+                        && (useGyro == false || (Math.abs(Robot.cleanGyro - desiredGyroAngle) <= gyroTolerance))) {
+                        shooterStates = ShooterStates.FIRE_BALL_AUTO;
                     }
                 } else if (counter >= 100) {
                     shooterStates = ShooterStates.DONE;
@@ -346,7 +335,8 @@ public class Shooter {
                 break;
     
             case FIRE_BALL_AUTO:
-                if (Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) > shooterRPMTolerance) {
+                if ((Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) > shooterRPMTolerance)
+                    && (Math.abs(hoodEncoder - hoodSetpoint) > Constants.hoodkTolerance) ) {
                     shooterStates = ShooterStates.PREPARE;
                 }
                 counter = 0;

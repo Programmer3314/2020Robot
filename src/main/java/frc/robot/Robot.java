@@ -22,16 +22,22 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeRobotInit() {
+
+    // TODO: Get Tracking Info from PI's - Should this be here? how about init periodic???
     ballTargetTable = ntInst.getTable("Ball Target");
     portalTapeTargetTable = ntInst.getTable("Retroreflective Tape Target");
+    
+    // Ensure that switched camera entry exists
     ntInst.getEntry("chooseCam").setNumber(0);
+    
     driveController = new DriveController(drivetrain, ballTargetTable, portalTapeTargetTable);
 
+    // TODO: Move to Constants
     shooterRPMTolerance = 50;
 
     if (hasShooter) {
-      shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight, CANMcBallQueuing, CANMcHood, CANMcIndexer,
-          CANMcIntake);
+      shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight, CANMcBallQueuing, 
+          CANMcHood, CANMcIndexer, CANMcIntake);
     }
 
     if (isTalonFXTest) {
@@ -48,6 +54,7 @@ public class Robot extends MyRobot {
     // SmartDashboard.putNumber("Shooter RPM Desired", targetShooterRPM);
     SmartDashboard.putNumber("Shooter RPM Tolerance Desired", shooterRPMTolerance);
 
+    // TODO: Convert to constant - this is set again below
     queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
     SmartDashboard.putNumber("Queuing Belt Speed", queuingBeltSpeed);
 
@@ -61,6 +68,7 @@ public class Robot extends MyRobot {
 
     HumanInput.update();
 
+    // set auto 
     auto1 = null;
     if (HumanInput.autoNumber == 3) {
       auto1 = new ThreeBallAuto(shooter);
@@ -105,6 +113,12 @@ public class Robot extends MyRobot {
     mP = driveController.new MoveParameters();
 
     mP.currentState = DriveController.DriveState.MANUAL;
+
+    // TODO: This is wrong... 
+    // if Auto1 is set to some auto, then set it to TBA
+    // otherwise leave it as null... Not right.
+    // probably should be simply setting auto1 to TBA.
+
     // if (HumanInput.autoNumber == 3) {
     //   auto1 = new ThreeBallAuto();
     // }
@@ -148,12 +162,13 @@ public class Robot extends MyRobot {
       targetShooterRPM = 3600;
     }
 
-    SmartDashboard.putNumber("Shooter RPM: ", targetShooterRPM);
+    SmartDashboard.putNumber("Target Shooter RPM:", targetShooterRPM);
 
     if (HumanInput.ballChaseButton) {
       mP.currentState = DriveController.DriveState.BALLCHASE;
     } else if (HumanInput.shooterAllInTarget) {
       // shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+      // TODO: Convert to constant
       queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
       useGyro = false;
       gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance", 3);

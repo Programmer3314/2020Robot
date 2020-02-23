@@ -17,8 +17,8 @@ public class HumanInput {
     public static Joystick operatorController = new Joystick(4);
     public static Joystick buttonBox1 = new Joystick(2);
     public static Joystick buttonBox2 = new Joystick(3);
-    public static Joystick stick = new Joystick(1);
-    public static double forward, turn, throttle;
+    //public static Joystick stick = new Joystick(1);
+    public static double forward, turn; //, throttle;
     public static boolean trenchRunAlignment, shooterAllInTarget, powerPortAlignment, ballChaseButton, climbAlignmentButton, cameraChangeButton, controlPanelAlignment, reset, hoodUp, hoodDown, hoodUpReleased, hoodDownReleased;
     public static double TalonFxTestSpeed;
     public static boolean gyroLock, gyroReset;
@@ -41,35 +41,58 @@ public class HumanInput {
     }
 
     public static void update(){
-        forward = driverController.getRawAxis(1) * 0.6;
-        TalonFxTestSpeed = driverController.getRawAxis(3);
-        turn = driverController.getRawAxis(4) * 0.5;
-        throttle = stick.getRawAxis(2);
-        autoNumber = (booleanToInt(buttonBox1.getRawButton(13)) * 1) + (booleanToInt(buttonBox1.getRawButton(14)) * 2) + (booleanToInt(buttonBox1.getRawButton(15)) * 4) + (booleanToInt(buttonBox1.getRawButton(16)) * 8);
-        leftSwitch = buttonBox1.getRawButton(11);
-        rightSwitch = buttonBox1.getRawButton(12);
+        //throttle = stick.getRawAxis(2);
 
-        trenchRunAlignment = driverController.getRawButton(1);
-        shooterAllInTarget = driverController.getRawButton(2);  
-        ballChaseButton = driverController.getRawButton(3);
+        // Xbox Controller Mapping
+        // The buttons on the controller follow this mapping
+        // 1: A
+        // 2: B
+        // 3: X
+        // 4: Y
+        // 5: Left Bumper
+        // 6: Right Bumper
+        // 7: Back
+        // 8: Start
+        // 9: Left Joystick
+        // 10: Right Joystick
+      
+        // Drive Controller
+        forward = driverController.getRawAxis(1) * 0.6;
+        turn = driverController.getRawAxis(4) * 0.5;
+
+        trenchRunAlignment = driverController.getRawButton(1); // A
+        shooterAllInTarget = driverController.getRawButton(2); // B 
+        ballChaseButton = driverController.getRawButton(3);    // X
+        powerPortAlignment = driverController.getRawButton(4); // Y
+        cameraChangeButton = driverController.getRawButtonReleased(6); // right bumper
+        gyroLock = driverController.getRawAxis(2) > 0.5; // ???
+
+        //TalonFxTestSpeed = driverController.getRawAxis(3);
         //climbAlignmentButton = driverController.getRawButton(4);
-        powerPortAlignment = driverController.getRawButton(4);
-        cameraChangeButton = driverController.getRawButtonReleased(6);
-        gyroLock = driverController.getRawAxis(2) > 0.5;
+
+        // Operator Controller
+        // TODO: Should this be on the driver's stick????
 
         closeShot = operatorController.getPOV() == 180;
         lineShot = operatorController.getPOV() == 90;
         trenchShot = operatorController.getPOV() == 0;
 
+        // Button Box
+        autoNumber = (booleanToInt(buttonBox1.getRawButton(13)) * 1) + (booleanToInt(buttonBox1.getRawButton(14)) * 2) + (booleanToInt(buttonBox1.getRawButton(15)) * 4) + (booleanToInt(buttonBox1.getRawButton(16)) * 8);
+        leftSwitch = buttonBox1.getRawButton(11);
+        rightSwitch = buttonBox1.getRawButton(12);
+
         if(!(leftSwitch) && !(rightSwitch)){ //ball + intake
             hoodUp = buttonBox1.getRawButtonPressed(2);
-            hoodDown = buttonBox1.getRawButtonPressed(3);
             hoodUpReleased = buttonBox1.getRawButtonReleased(2);
+            hoodDown = buttonBox1.getRawButtonPressed(3);
             hoodUpReleased = buttonBox1.getRawButtonReleased(3);
             spinBallQueue = buttonBox1.getRawButton(4);
             reverseBallQueue = buttonBox1.getRawButton(5);
             // spinIntake = buttonBox1.getRawButton(6);
             // reverseIntake = buttonBox1.getRawButton(7);
+            // TODO: Review if these two could be on the driver's stick
+            // to improve coordination 
             activateIntake = buttonBox1.getRawButtonReleased(8);
             activateGroundIntake = buttonBox1.getRawButtonReleased(9);
             abortIntake = buttonBox1.getRawButtonReleased(10);

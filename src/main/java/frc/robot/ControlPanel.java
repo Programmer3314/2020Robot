@@ -92,16 +92,20 @@ public class ControlPanel {
     nextState = currentState;
     switch (currentState) {
     case START:
-      if (HumanInput.operatorController.getRawButton(1)) {
+    // TODO: Move operator controller access to HumanInput
+    if (HumanInput.operatorController.getRawButton(1)) {
         desiredColor = "Yellow";
         destinationColor = 3;
-      } else if (HumanInput.operatorController.getRawButton(2)) {
+    // TODO: Move operator controller access to HumanInput
+  } else if (HumanInput.operatorController.getRawButton(2)) {
         desiredColor = "Blue";
         destinationColor = 2;
-      } else if (HumanInput.operatorController.getRawButton(3)) {
+    // TODO: Move operator controller access to HumanInput
+  } else if (HumanInput.operatorController.getRawButton(3)) {
         desiredColor = "Red";
         destinationColor = 0;
-      } else if (HumanInput.operatorController.getRawButton(4)) {
+    // TODO: Move operator controller access to HumanInput
+  } else if (HumanInput.operatorController.getRawButton(4)) {
         desiredColor = "Green";
         destinationColor = 1;
       } else {
@@ -165,6 +169,7 @@ public class ControlPanel {
 
     // Rotation four times
     SmartDashboard.putNumber("Bag Talon 31 speed", 0);
+    // TODO: Move operator controller access to HumanInput
     if (HumanInput.operatorController.getRawButtonReleased(6)) {
       inFourSpins = true;
       talon31.setSelectedSensorPosition(0);
