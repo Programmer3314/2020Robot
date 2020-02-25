@@ -13,6 +13,7 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -29,9 +30,11 @@ public class ControlPanel {
   public SetColor currentState, nextState;
   public int destinationColor, currentColor;
   public int scale, colorCounter, tickMax;
+  String gameData;
+  private String FMSColor, wantedColor;
 
   public enum SetColor {
-    START, SPINTOCOLOR, SPININCOLOR, DONE
+    IDLE, START, SPINTOCOLOR, SPININCOLOR, DONE
   }
 
   // Color Sensor
@@ -56,13 +59,22 @@ public class ControlPanel {
     m_colorMatcher.addColorMatch(kRedTarget);
     m_colorMatcher.addColorMatch(kYellowTarget);
 
-    currentState = SetColor.START;
+    currentState = SetColor.IDLE;
     colorCounter = 0;
+    desiredColor = "";
   }
 
   public void update() {
-    // Color Sensor
+    gameData = DriverStation.getInstance().getGameSpecificMessage();
 
+    if(HumanInput.CPManipulatorUp){
+      talon31.set(ControlMode.PercentOutput, HumanInput.spinCP * 0.25);
+    } else {
+      currentState = SetColor.DONE;
+      talon31.set(ControlMode.PercentOutput, 0.0);
+    }
+
+    // Color Sensor
     Color detectedColor = m_colorSensor.getColor();
     ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
 
@@ -91,27 +103,32 @@ public class ControlPanel {
 
     nextState = currentState;
     switch (currentState) {
+    case IDLE:
+      desiredColor = "null";
+      destinationColor = -1;
+    break;
+     
     case START:
     // TODO: Move operator controller access to HumanInput
-    if (HumanInput.operatorController.getRawButton(1)) {
-        desiredColor = "Yellow";
-        destinationColor = 3;
-    // TODO: Move operator controller access to HumanInput
-  } else if (HumanInput.operatorController.getRawButton(2)) {
-        desiredColor = "Blue";
-        destinationColor = 2;
-    // TODO: Move operator controller access to HumanInput
-  } else if (HumanInput.operatorController.getRawButton(3)) {
-        desiredColor = "Red";
-        destinationColor = 0;
-    // TODO: Move operator controller access to HumanInput
-  } else if (HumanInput.operatorController.getRawButton(4)) {
-        desiredColor = "Green";
-        destinationColor = 1;
-      } else {
-        desiredColor = "null";
-        destinationColor = -1;
-      }
+  //   if (HumanInput.operatorController.getRawButton(1)) {
+  //       desiredColor = "Yellow";
+  //       destinationColor = 3;
+  //   // TODO: Move operator controller access to HumanInput
+  // } else if (HumanInput.operatorController.getRawButton(2)) {
+  //       desiredColor = "Blue";
+  //       destinationColor = 2;
+  //   // TODO: Move operator controller access to HumanInput
+  // } else if (HumanInput.operatorController.getRawButton(3)) {
+  //       desiredColor = "Red";
+  //       destinationColor = 0;
+  //   // TODO: Move operator controller access to HumanInput
+  // } else if (HumanInput.operatorController.getRawButton(4)) {
+  //       desiredColor = "Green";
+  //       destinationColor = 1;
+  //     } else {
+  //       desiredColor = "null";
+  //       destinationColor = -1;
+  //     }
 
       // if (!colorString.equalsIgnoreCase(desiredColor) &&
       // !desiredColor.equalsIgnoreCase("null")) {
@@ -163,17 +180,41 @@ public class ControlPanel {
       talon31.set(ControlMode.PercentOutput, 0.0);
       destinationColor = -1;
       talon31.setSelectedSensorPosition(0);
-      nextState = SetColor.START;
+      nextState = SetColor.IDLE;
       break;
     }
+
+    FMSColor = "";
+    wantedColor = "";
+
+    if(gameData.length() > 0){
+    switch (gameData.charAt(0)){
+      case 'B':
+        FMSColor = "Blue";
+        wantedColor = "Red";
+        break;
+      case 'G':
+        FMSColor = "Green";
+        wantedColor = "Yellow";
+        break;
+      case 'R':
+        FMSColor = "Red";
+        wantedColor = "Blue";
+        break;
+      case 'Y':
+        FMSColor = "Yellow";
+        wantedColor = "Green";
+        break;
+    }
+  }
 
     // Rotation four times
     SmartDashboard.putNumber("Bag Talon 31 speed", 0);
     // TODO: Move operator controller access to HumanInput
-    if (HumanInput.operatorController.getRawButtonReleased(6)) {
-      inFourSpins = true;
-      talon31.setSelectedSensorPosition(0);
-    }
+    // if (HumanInput.operatorController.getRawButtonReleased(6)) {
+    //   inFourSpins = true;
+    //   talon31.setSelectedSensorPosition(0);
+    // }
     if (inFourSpins) {
       if (talon31.getSelectedSensorPosition() <= 412000) {
         talon31.set(ControlMode.PercentOutput, 0.4);
@@ -183,14 +224,50 @@ public class ControlPanel {
         inFourSpins = false;
         SmartDashboard.putNumber("Bag Talon 31 speed", -1);
       }
+
     }
+    if (HumanInput.CPManipulatorDown) {
+      talon31.set(ControlMode.PercentOutput, 0);
+  }
 
     SmartDashboard.putNumber("Encoder Value", talon31.getSelectedSensorPosition());
     SmartDashboard.putString("Control Panel State", currentState.toString());
     SmartDashboard.putString("Desired Color", desiredColor);
-    SmartDashboard.putNumber("scale", scale);
-    SmartDashboard.putNumber("color counter", colorCounter);
+    SmartDashboard.putNumber("Scale", scale);
+    SmartDashboard.putNumber("Color Counter", colorCounter);
+    SmartDashboard.putString("FMS Color", FMSColor);
+    SmartDashboard.putString("Wanted Color", wantedColor);
     currentState = nextState;
   }
 
+  public void spinFourTimes(){
+      inFourSpins = true;
+      talon31.setSelectedSensorPosition(0);
+  }
+
+  public void spinToGreen(){
+    desiredColor = "Yellow";
+    destinationColor = 3;
+    currentState = SetColor.START;  
+  }
+
+  public void spinToRed(){
+    desiredColor = "Blue";
+    destinationColor = 2;
+    currentState = SetColor.START; 
+  }
+
+  public void spinToBlue(){
+    desiredColor = "Red";
+    destinationColor = 0;
+    currentState = SetColor.START;   
+  }
+
+  public void spinToYellow(){
+    desiredColor = "Green";
+    destinationColor = 1;
+    currentState = SetColor.START; 
+  }
+
+  
 }

@@ -76,16 +76,13 @@ public abstract class MyRobot extends AllRobots {
             isFalcon = true;
             hasShooter = true;
             isTalonFXTest = false;
-            hasControlPanel = false;
+            hasControlPanel = true;
         } else {
             isFalcon = false;
             hasShooter = true;
             isTalonFXTest = true;
             hasControlPanel = true;
         }
-
-        // TODO: Review: changes to the constants set here.
-        // TODO: Review: moved the drivetrain instantiation below setting constants
 
         if (isFalcon) {
             SmartDashboard.putString("DriveTrain Type:", "Falcons");

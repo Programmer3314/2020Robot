@@ -17,7 +17,7 @@ public class DriveController {
         public double angle = 0;
         public double distance = 0;
         public DriveState currentState = DriveState.NONE;
-        public boolean cameraToggle = false;
+        public boolean driverCameraToggle = false;
     }
 
     NetworkTable ballTargetTable, retroTapeTable;

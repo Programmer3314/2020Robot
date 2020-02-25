@@ -45,7 +45,6 @@ public class DrivetrainFalcon implements IDriveTrain{
 
     }
 
-    // TODO: Review: changed to use Constants... 
     public void setMotors(TalonFX fx){
         TalonFXConfiguration fxconfig = new TalonFXConfiguration();
 
@@ -95,8 +94,6 @@ public class DrivetrainFalcon implements IDriveTrain{
     // 
     @Override
     public void update(double leftSetPoint, double rightSetPoint) {
-        //talon1.set(TalonFXControlMode.Velocity, leftSetPoint * 21777);
-        //talon3.set(TalonFXControlMode.Velocity, rightSetPoint * 21777);
         SmartDashboard.putNumber("Left Set Point", leftSetPoint);
         SmartDashboard.putNumber("Right Set Point", rightSetPoint);
         SmartDashboard.putNumber("velocity of left", talon1.getSelectedSensorVelocity());
@@ -105,6 +102,7 @@ public class DrivetrainFalcon implements IDriveTrain{
         talon3.set(TalonFXControlMode.PercentOutput, rightSetPoint);
         
     }
+    
     @Override
     public double getEncoderVal(){
         return talon1.getSelectedSensorPosition();

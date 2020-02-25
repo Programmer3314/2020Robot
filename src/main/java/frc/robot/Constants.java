@@ -17,7 +17,6 @@ public class Constants{
     public static final int falconMaxRPM    = 6380;
     public static final int bagMaxRPM       = 13000;
 
-    // TODO: Review: change to constants below. 
     // We had raised min correction for the falcons, but it did 
     // nothing because the real values were being set in MyRobot.
     // They still are being set there, but now they are set with 
@@ -89,6 +88,10 @@ public class Constants{
     //Shooter Encoder
     public static final double sparkShooterVelocityConversionFactor = 1.0;
 
+    // Shooter, Queuer, Intake General
+    public static final double queuingBeltSpeed = .5;
+    public static final int    shooterRPMTolerance = 50;
+
     //Hood Encoder
     public static final double hoodkP = 0.0025;
     public static final double hoodkD = 0.00005;
@@ -111,4 +114,5 @@ public class Constants{
     //Ultra Sonic Sensor
     public static final int AIControlPanelSensor = 2;
     public static final double USSensorMB1013ToInchFactor = 0.0492126;
+
 }

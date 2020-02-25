@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Climber.ClimbStates;
 
 public class Robot extends MyRobot {
   NetworkTable ballTargetTable;
@@ -9,7 +10,7 @@ public class Robot extends MyRobot {
   ControlPanelAlignment trenchAlignment;
   AutoStateMachines auto1;
   boolean isForward = true;
-  int camNum = 0;
+  int driverCamNum = 0;
   double targetShooterRPM, shooterRPMTolerance;
   double queuingBeltSpeed;
   boolean useGyro;
@@ -17,23 +18,25 @@ public class Robot extends MyRobot {
   double gyroTolerance, gyroAngleDesired;
   DriveController.MoveParameters mP;
   boolean toggleLightRing = false;
+  Climber climber = new Climber();
+  boolean operatorCameraToggle = false;
+  int operatorCamNum = 0;
 
   // public static DriveController.DriveState currentDriveState;
 
   @Override
   public void RechargeRobotInit() {
 
-    // TODO: Get Tracking Info from PI's - Should this be here? how about init periodic???
     ballTargetTable = ntInst.getTable("Ball Target");
     portalTapeTargetTable = ntInst.getTable("Retroreflective Tape Target");
     
     // Ensure that switched camera entry exists
     ntInst.getEntry("chooseCam").setNumber(0);
+    ntInst.getEntry("PumpkinSwitch").setNumber(1);
     
     driveController = new DriveController(drivetrain, ballTargetTable, portalTapeTargetTable);
 
-    // TODO: Move to Constants
-    shooterRPMTolerance = 50;
+    shooterRPMTolerance = Constants.shooterRPMTolerance;
 
     if (hasShooter) {
       shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight, CANMcBallQueuing, 
@@ -54,8 +57,7 @@ public class Robot extends MyRobot {
     // SmartDashboard.putNumber("Shooter RPM Desired", targetShooterRPM);
     SmartDashboard.putNumber("Shooter RPM Tolerance Desired", shooterRPMTolerance);
 
-    // TODO: Convert to constant - this is set again below
-    queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
+    queuingBeltSpeed = Constants.queuingBeltSpeed; //SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
     SmartDashboard.putNumber("Queuing Belt Speed", queuingBeltSpeed);
 
     Solenoids.startCompressor();
@@ -107,23 +109,16 @@ public class Robot extends MyRobot {
   public void RechargeTeleopInit() {
     Solenoids.lightRing(true);
 
-    if (hasControlPanel) {
-      controlPanel = new ControlPanel(CANMcctrlPanel);
-    }
+    // if (hasControlPanel) {
+    //   controlPanel = new ControlPanel(CANMcctrlPanel);
+    // }
+
     mP = driveController.new MoveParameters();
 
     mP.currentState = DriveController.DriveState.MANUAL;
 
-    // TODO: This is wrong... 
-    // if Auto1 is set to some auto, then set it to TBA
-    // otherwise leave it as null... Not right.
-    // probably should be simply setting auto1 to TBA.
-
-    // if (HumanInput.autoNumber == 3) {
-    //   auto1 = new ThreeBallAuto();
-    // }
-    if(auto1 != null){
-      auto1 = new ThreeBallAuto(shooter);
+    if (HumanInput.autoNumber == 3) {
+       auto1 = new ThreeBallAuto(shooter);
     }
 
     trenchAlignment.resetState();
@@ -168,8 +163,7 @@ public class Robot extends MyRobot {
       mP.currentState = DriveController.DriveState.BALLCHASE;
     } else if (HumanInput.shooterAllInTarget) {
       // shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
-      // TODO: Convert to constant
-      queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
+      //queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
       useGyro = false;
       gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance", 3);
       angleOffset = portalTapeTargetTable.getEntry("X Angle").getDouble(0);
@@ -221,21 +215,38 @@ public class Robot extends MyRobot {
     mP.forward = HumanInput.forward;
     mP.turn = HumanInput.turn;
 
-    mP.cameraToggle = HumanInput.cameraChangeButton;
+    mP.driverCameraToggle = HumanInput.driverCameraChange;
 
-    if (mP.cameraToggle) {
+    if (mP.driverCameraToggle) {
       isForward = !isForward;
 
-      Robot.ntInst.getEntry("chooseCam").setNumber(camNum);
+      if (isForward) {
+        driverCamNum = 1;
+        // mP.forward *= 1;
+      } else {
+        driverCamNum = 0;
+      } 
+
+      Robot.ntInst.getEntry("chooseCam").setNumber(driverCamNum);
+      // Robot.ntInst.getEntry("PumpkinSwitch").setNumber(1);
     }
 
-    if (isForward) {
-      camNum = 0;
-      // mP.forward *= 1;
-    } else {
-      camNum = 1;
+    if (!isForward) {
       mP.forward *= -1;
     } 
+
+    if (operatorCameraToggle) {
+
+      if (operatorCamNum == 0) {
+          operatorCamNum = 1;
+        // mP.forward *= 1;
+      } else {
+        operatorCamNum = 0;
+      } 
+
+      Robot.ntInst.getEntry("PumpkinSwitch").setNumber(operatorCamNum);
+      // Robot.ntInst.getEntry("PumpkinSwitch").setNumber(1);
+    }
 
     trenchAlignment.update(mP);
 
@@ -251,10 +262,6 @@ public class Robot extends MyRobot {
       shooter.intakeAll();
     }
 
-    if (hasControlPanel) {
-      controlPanel.update();
-    }
-
     if (hasShooter) {
       shooter.update(mP);
     }
@@ -265,6 +272,47 @@ public class Robot extends MyRobot {
       }
     }
 
+    if (HumanInput.gyroReset){
+      navx.reset();
+    }
+
+    if(HumanInput.CPManipulatorUp){
+      if(HumanInput.fourSpins){
+        controlPanel.spinFourTimes();
+      }
+
+      if(HumanInput.spinToYellow){
+        controlPanel.spinToYellow();
+      }
+
+      if(HumanInput.spinToGreen){
+        controlPanel.spinToGreen();
+      }
+
+      if(HumanInput.spinToBlue){
+        controlPanel.spinToBlue();
+      }
+
+      if(HumanInput.spinToRed){
+        controlPanel.spinToRed();
+      }
+        
+    }
+
+   
+    if (hasControlPanel) {
+      controlPanel.update();
+    }
+
+    if(HumanInput.operatorBack && HumanInput.operatorStart && climber.climbStates == ClimbStates.IDLE){
+      climber.activate();
+    }
+
+    if(HumanInput.abortClimb){
+      climber.abortClimb();
+    }
+
+    climber.update(mP);
     driveController.update(mP);
 
   }

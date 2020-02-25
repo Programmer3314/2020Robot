@@ -8,6 +8,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Solenoid;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -18,8 +21,8 @@ public class Solenoids {
     public static Compressor compressor = new Compressor();
     public static Solenoid intakeOut = new Solenoid(0, 0);
     public static Solenoid intakeIn = new Solenoid(0, 1);
-    public static Solenoid sol2 = new Solenoid(0, 2);
-    public static Solenoid sol3 = new Solenoid(0, 3);
+    public static Solenoid engageRatchet = new Solenoid(0, 2);
+    public static Solenoid disengageRatchet = new Solenoid(0, 3);
     public static Solenoid PTODisengage = new Solenoid(0, 4);
     public static Solenoid PTOEngage = new Solenoid(0, 5);
     public static Solenoid CPManipulatorDown = new Solenoid(0, 6);
@@ -34,8 +37,8 @@ public class Solenoids {
     public static void init(){
         intakeOut.set(true);
         intakeIn.set(false);
-        sol2.set(true);
-        sol3.set(false);
+        disengageRatchet.set(true);
+        engageRatchet.set(false);
         PTODisengage.set(true);
         PTOEngage.set(false);
         CPManipulatorDown.set(true);
@@ -54,14 +57,14 @@ public class Solenoids {
             intakeIn.set(true);
         }
 
-        if (HumanInput.sol2) {
-            sol2.set(true);
-            sol3.set(false);
+        if (HumanInput.engageRatchet) {
+            engageRatchet.set(true);
+            disengageRatchet.set(false);
         }
 
-        if (HumanInput.sol3) {
-            sol2.set(false);
-            sol3.set(true);
+        if (HumanInput.disengageRatchet) {
+            engageRatchet.set(false);
+            disengageRatchet.set(true);
         }
 
         if (HumanInput.PTODisengage) {
@@ -77,7 +80,7 @@ public class Solenoids {
         if (HumanInput.CPManipulatorDown) {
             CPManipulatorDown.set(true);
             CPManipulatorUp.set(false);
-
+        
         }
 
         if (HumanInput.CPManipulatorUp) {
@@ -97,8 +100,8 @@ public class Solenoids {
 
         SmartDashboard.putBoolean("Solenoid 0:", intakeOut.get());
         SmartDashboard.putBoolean("Solenoid 1:", intakeIn.get());
-        SmartDashboard.putBoolean("Solenoid 2:", sol2.get());
-        SmartDashboard.putBoolean("Solenoid 3:", sol3.get());
+        SmartDashboard.putBoolean("Solenoid 2:", engageRatchet.get());
+        SmartDashboard.putBoolean("Solenoid 3:", disengageRatchet.get());
         SmartDashboard.putBoolean("Solenoid 4:", PTODisengage.get());
         SmartDashboard.putBoolean("Solenoid 5:", PTOEngage.get());
         SmartDashboard.putBoolean("Solenoid 6:", CPManipulatorDown.get());
