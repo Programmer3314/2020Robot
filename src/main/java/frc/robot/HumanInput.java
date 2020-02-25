@@ -75,11 +75,13 @@ public class HumanInput {
 
 
         // Operator's Controller
-        powerPortAlignment = (driverController.getRawButton(1) && HumanInput.operatorController.getRawAxis(2) < 0.5); // A
+        // Opps!!! Can you find the error in the commented line below? (no peeking at the line below that)
+        //powerPortAlignment = (driverController.getRawButton(1) && HumanInput.operatorController.getRawAxis(2) < 0.5); // A
+        powerPortAlignment = (operatorController.getRawButton(1) && operatorController.getRawAxis(2) < 0.5); // A
         closeShot = operatorController.getPOV() == 0;
         lineShot = operatorController.getPOV() == 90;
         trenchShot = operatorController.getPOV() == 180;
-        shooterAllInTarget = (operatorController.getRawButton(2) && HumanInput.operatorController.getRawAxis(2) < 0.5); // B 
+        shooterAllInTarget = (operatorController.getRawButton(2) && operatorController.getRawAxis(2) < 0.5); // B 
         operatorCameraChange = operatorController.getRawButtonReleased(6);
         operatorBack = operatorController.getRawButton(7);
         operatorStart = operatorController.getRawButton(8);

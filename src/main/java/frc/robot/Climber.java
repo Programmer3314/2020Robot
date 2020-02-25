@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.DriveController.DriveState;
 import frc.robot.DriveController.MoveParameters;
 
 /**
@@ -74,6 +75,11 @@ public class Climber {
             break;
 
             case ENGAGE_PTO:
+                // TODO: Review Climber Change - Safety Change
+                mP.currentState = DriveState.MANUAL;
+                mP.forward = 0.0;
+                mP.turn = 0.0;
+
                 counter++;
                 Solenoids.PTOEngage.set(true);
                 Solenoids.PTODisengage.set(false);
@@ -88,11 +94,15 @@ public class Climber {
 
             case DRIVE:
                 counter++;
+                // TODO: Review Climber Change - Safety Change
+                mP.currentState = DriveState.MANUAL;
                 mP.forward = 0.4;
+                mP.turn = 0.0;
 
-                 if(counter >= 100){
-                     climbStates = ClimbStates.ENGAGE_RATCHET;
-                 }
+                // delay engaging ratchet
+                if(counter >= 100){
+                    climbStates = ClimbStates.ENGAGE_RATCHET;
+                }
 
                 if(!HumanInput.operatorBack || !HumanInput.operatorStart){
                     climbStates = ClimbStates.DONE;
@@ -100,18 +110,33 @@ public class Climber {
             break;
 
             case ENGAGE_RATCHET:
+                // TODO: Review Climber Change - Safety Change
+                mP.currentState = DriveState.MANUAL;
+                mP.forward = 0.4;
+                mP.turn = 0.0;
+
                 Solenoids.engageRatchet.set(true);
                 Solenoids.disengageRatchet.set(false);
 
                 if(!HumanInput.operatorBack || !HumanInput.operatorStart){
                     climbStates = ClimbStates.DONE;
                 }
-
-                // climbStates = ClimbStates.DONE;
+                // TODO: Review Climber Change
+                // Add climb limit
+                if(Math.abs(encoderPos - originalEncoderPos)>200000) {
+                    climbStates = ClimbStates.DONE;
+                }
             break;
 
             case DONE:
+                // TODO: Review Climber Change - Safety Change
+                mP.currentState = DriveState.MANUAL;
                 mP.forward = 0.0;
+                mP.turn = 0.0;
+                // Disengage the PTO in case the driver hits the sticks
+                Solenoids.PTOEngage.set(false);
+                Solenoids.PTODisengage.set(true);
+
                 climbStates = ClimbStates.IDLE;
             break;
         }

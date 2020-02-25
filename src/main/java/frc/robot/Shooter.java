@@ -221,26 +221,45 @@ public class Shooter {
             break;
 
             case PREPARE:
-            // shooterLeft.set(-HumanInput.throttle);
-            shooterPidController.setReference(targetShooterRPM, ControlType.kVelocity);
+                // shooterLeft.set(-HumanInput.throttle);
+                shooterPidController.setReference(targetShooterRPM, ControlType.kVelocity);
 
-            if (SensorInput.queuedShooter) {
-                ballQueuing.set(ControlMode.PercentOutput, 0);
-                
-            } else {
-                ballQueuing.set(ControlMode.PercentOutput, 0.5);
-                // intake.set(ControlMode.PercentOutput, 0.25);
-                // indexer.set(ControlMode.PercentOutput, 0.5);
-            }
+                if (SensorInput.queuedShooter) {
+                    ballQueuing.set(ControlMode.PercentOutput, 0);
+                } else {
+                    ballQueuing.set(ControlMode.PercentOutput, 0.5);
+                }
 
-            break;
+                // TODO: Review this change and the similar one below
+                // I don't like this, but it may be the quick way to make this work
+                if(!SensorInput.queuedTrack1 && !SensorInput.queuedTrack2) {
+                    indexer.set(ControlMode.PercentOutput, 0.5);
+                } else {
+                    indexer.set(ControlMode.PercentOutput, 0);
+                }
+                // TODO: Review Change
+                // not sure why we'd run this here
+                //intake.set(ControlMode.PercentOutput, 0.25);
+                intake.set(ControlMode.PercentOutput, 0);
+
+                break;
         case FIRE_BALL_AUTO:
             // shooterLeft.set(-HumanInput.throttle);
             shooterPidController.setReference(targetShooterRPM, ControlType.kVelocity);
             ballQueuing.set(ControlMode.PercentOutput, queuingBeltSpeed);
-            intake.set(ControlMode.PercentOutput, 0.25);
-            indexer.set(ControlMode.PercentOutput, 0.5);
+            // TODO: Review this change and the similar one above
+            // I don't like this, but it may be the quick way to make this work
+            if(!SensorInput.queuedTrack1 && !SensorInput.queuedTrack2) {
+                indexer.set(ControlMode.PercentOutput, 0.5);
+            } else {
+                indexer.set(ControlMode.PercentOutput, 0);
+            }
+                // TODO: Review Change
+                // not sure why we'd run this here
+                //intake.set(ControlMode.PercentOutput, 0.25);
+                intake.set(ControlMode.PercentOutput, 0);
             break;
+
         case DONE:
 
             break;
@@ -336,8 +355,8 @@ public class Shooter {
                 break;
 
             case INTAKE_DONE2:
-            shooterStates = ShooterStates.IDLE;
-            break;
+                shooterStates = ShooterStates.IDLE;
+                break;
 
             case PREPARE:
                 if (SensorInput.queuedShooter) {
@@ -358,11 +377,25 @@ public class Shooter {
                 break;
     
             case FIRE_BALL_AUTO:
+                counter = 0;
                 if ((Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) > shooterRPMTolerance)
                     && (Math.abs(hoodEncoder - hoodSetpoint) > Constants.hoodkTolerance) ) {
                     shooterStates = ShooterStates.PREPARE;
                 }
-                counter = 0;
+                // TODO: Review Change
+                // I believe that the shooter wasn't spinning down 
+                // because the RPM didn't fall enough to trigger the above 
+                // state change. So the counter is never checked and we just sit here. 
+                // But, this state's job is to inject a ball into the shooting wheels. 
+                // We should check that by seeing the sensor loose the ball. Once that 
+                // happens we should go back to queue the next ball. Therefore if the 
+                // SensorInput.queuedShooter is false, we should go back and prepare. 
+                // (Actually, this is the start of a bigger change that will split Prepare
+                // into two states... Queue_Ball and Prepare. The first should queue the ball
+                // and the second should simply hold until the shooter is in the right condition.)
+                if (!SensorInput.queuedShooter) {
+                    shooterStates = ShooterStates.PREPARE;
+                }
                 break;
     
             case DONE:
