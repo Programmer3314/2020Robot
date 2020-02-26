@@ -165,12 +165,13 @@ public class Shooter {
             intake.set(ControlMode.PercentOutput, 0);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.0);
+            Solenoids.ejectIntake(false);
             break;
 
             case GET_BALL:
             intake.set(ControlMode.PercentOutput, 0.25);
             indexer.set(ControlMode.PercentOutput, 0.5);
-            Solenoids.ejectIntake(false);
+            // Solenoids.ejectIntake(false);
             break;
 
             case GOT_BALL:
@@ -194,7 +195,7 @@ public class Shooter {
             break;
     
             case GROUND_GOT_BALL:
-            //Solenoids.ejectIntake(false); //Comment 2 of 2 when test loading station intake
+            // Solenoids.ejectIntake(false); //Comment 2 of 2 when test loading station intake
             intake.set(ControlMode.PercentOutput, 0.5);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.5);
@@ -446,6 +447,10 @@ public class Shooter {
         counter = 0;
     }
 
+    public void abortShooter(){
+        shooterStates = ShooterStates.DONE;
+        counter = 0;
+    }
     
     public void reset() {
         shooterStates = ShooterStates.IDLE;

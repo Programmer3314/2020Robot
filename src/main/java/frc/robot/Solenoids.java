@@ -23,8 +23,8 @@ public class Solenoids {
     public static Solenoid intakeIn = new Solenoid(0, 1);
     public static Solenoid engageRatchet = new Solenoid(0, 2);
     public static Solenoid disengageRatchet = new Solenoid(0, 3);
-    public static Solenoid PTODisengage = new Solenoid(0, 4);
-    public static Solenoid PTOEngage = new Solenoid(0, 5);
+    public static Solenoid disengagePTO = new Solenoid(0, 4);
+    public static Solenoid engagePTO = new Solenoid(0, 5);
     public static Solenoid CPManipulatorDown = new Solenoid(0, 6);
     public static Solenoid CPManipulatorUp = new Solenoid(0, 7);
     public static Solenoid lightRingOn = new Solenoid(1, 0);
@@ -37,10 +37,10 @@ public class Solenoids {
     public static void init(){
         intakeOut.set(true);
         intakeIn.set(false);
-        disengageRatchet.set(true);
-        engageRatchet.set(false);
-        PTODisengage.set(true);
-        PTOEngage.set(false);
+        disengageRatchet.set(false);
+        engageRatchet.set(true);
+        disengagePTO.set(true);
+        engagePTO.set(false);
         CPManipulatorDown.set(true);
         CPManipulatorUp.set(false);
     }
@@ -67,14 +67,14 @@ public class Solenoids {
             disengageRatchet.set(true);
         }
 
-        if (HumanInput.PTODisengage) {
-            PTODisengage.set(true);
-            PTOEngage.set(false);
+        if (HumanInput.disengagePTO) {
+            disengagePTO.set(true);
+            engagePTO.set(false);
         }
 
-        if (HumanInput.PTOEngage) {
-            PTODisengage.set(false);
-            PTOEngage.set(true);
+        if (HumanInput.engagePTO) {
+            disengagePTO.set(false);
+            engagePTO.set(true);
         }
 
         if (HumanInput.CPManipulatorDown) {
@@ -102,8 +102,8 @@ public class Solenoids {
         SmartDashboard.putBoolean("Solenoid 1:", intakeIn.get());
         SmartDashboard.putBoolean("Solenoid 2:", engageRatchet.get());
         SmartDashboard.putBoolean("Solenoid 3:", disengageRatchet.get());
-        SmartDashboard.putBoolean("Solenoid 4:", PTODisengage.get());
-        SmartDashboard.putBoolean("Solenoid 5:", PTOEngage.get());
+        SmartDashboard.putBoolean("Solenoid 4:", disengagePTO.get());
+        SmartDashboard.putBoolean("Solenoid 5:", engagePTO.get());
         SmartDashboard.putBoolean("Solenoid 6:", CPManipulatorDown.get());
         SmartDashboard.putBoolean("Solenoid 7:", CPManipulatorUp.get());
 
@@ -124,7 +124,7 @@ public class Solenoids {
     }
 
     public static void disengagePTO(){
-        PTODisengage.set(true);
-        PTOEngage.set(false);
+        disengagePTO.set(true);
+        engagePTO.set(false);
     }
 }

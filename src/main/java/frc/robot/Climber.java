@@ -81,8 +81,8 @@ public class Climber {
                 mP.turn = 0.0;
 
                 counter++;
-                Solenoids.PTOEngage.set(true);
-                Solenoids.PTODisengage.set(false);
+                Solenoids.engagePTO.set(true);
+                Solenoids.disengagePTO.set(false);
 
                 if(counter >= 50){
                     encoderPos = 0;
@@ -134,8 +134,8 @@ public class Climber {
                 mP.forward = 0.0;
                 mP.turn = 0.0;
                 // Disengage the PTO in case the driver hits the sticks
-                Solenoids.PTOEngage.set(false);
-                Solenoids.PTODisengage.set(true);
+                Solenoids.engagePTO.set(false);
+                Solenoids.disengagePTO.set(true);
 
                 climbStates = ClimbStates.IDLE;
             break;

@@ -1,10 +1,10 @@
 TODOs
-Fix Target Align Button - probably fixed, must test
+- DONE - Fix Target Align Button - probably fixed, must test
 Take in 5th Ball Sitting on Indexer - maybe fixed, must test
-Shooter not spinning down after timer - hopefully fixed, must test
-Climber stopping by itself - not sure why... I made other changes though
+- DONE - Shooter not spinning down after timer - hopefully fixed, must test
+- DONE - Climber stopping by itself - not sure why... I made other changes though
 Init isForward and driverCamNum in both auto and periodic init - done, please check
->>>Please add a shooter abort, I don't see one. 
+- DONE - >>>Please add a shooter abort, I don't see one. 
 
 ***Actions***
 Control Panel | revolutions 3 - 5 | color sensor | Camera

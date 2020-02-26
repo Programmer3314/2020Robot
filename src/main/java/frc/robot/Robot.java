@@ -185,7 +185,7 @@ public class Robot extends MyRobot {
       mP.currentState = DriveController.DriveState.TRENCHRUNALIGNMENT;
     } else if(HumanInput.powerPortAlignment){
       mP.currentState = DriveController.DriveState.POWERPORTALIGNMENT;
-      //mP.currentState = DriveController.DriveState.SHOOTERPOWERPORTALIGNMENT;
+      // mP.currentState = DriveController.DriveState.SHOOTERPOWERPORTALIGNMENT;
     }else if (HumanInput.climbAlignmentButton) {
       mP.currentState = DriveController.DriveState.CLIMBALIGNMENT;
     } else if (HumanInput.gyroLock) {
@@ -318,6 +318,10 @@ public class Robot extends MyRobot {
 
     if(HumanInput.abortClimb){
       climber.abortClimb();
+    }
+
+    if(HumanInput.abortShooter){
+      shooter.abortShooter();
     }
 
     climber.update(mP);
