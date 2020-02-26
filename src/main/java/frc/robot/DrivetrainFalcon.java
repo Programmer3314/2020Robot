@@ -96,8 +96,8 @@ public class DrivetrainFalcon implements IDriveTrain{
     public void update(double leftSetPoint, double rightSetPoint) {
         SmartDashboard.putNumber("Left Set Point", leftSetPoint);
         SmartDashboard.putNumber("Right Set Point", rightSetPoint);
-        SmartDashboard.putNumber("velocity of left", talon1.getSelectedSensorVelocity());
-        SmartDashboard.putNumber("velocity of right", talon3.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("Velocity of Left", talon1.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("Velocity of Right", talon3.getSelectedSensorVelocity());
         talon1.set(TalonFXControlMode.PercentOutput, leftSetPoint);
         talon3.set(TalonFXControlMode.PercentOutput, rightSetPoint);
         

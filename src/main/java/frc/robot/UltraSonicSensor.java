@@ -45,13 +45,13 @@ public class UltraSonicSensor {
 
 
         SmartDashboard.putNumber("Get Distance", distance);
-        SmartDashboard.putNumber("Gyro Angle For Sensor",gyro);
-        SmartDashboard.putNumber("Inside length", insideTriangleLength);
-        SmartDashboard.putNumber("Outside length", perpDistanceFromSensorToWall);
-        SmartDashboard.putNumber("Sensor Hyp. form center",sensorHypFromCenter);
-        SmartDashboard.putNumber("Theta2",theta2);
-        SmartDashboard.putNumber("Thata3",theta3);
-        SmartDashboard.putNumber("Melvin's number for distance", (distance * Math.cos(gyro * Robot.degtorad) + (Math.sqrt(174.25) * Math.cos(Math.atan(8 / 10.5) - (gyro * Robot.degtorad)))));
+        SmartDashboard.putNumber("Gyro Angle for Sensor",gyro);
+        SmartDashboard.putNumber("Inside Length", insideTriangleLength);
+        SmartDashboard.putNumber("Outside Length", perpDistanceFromSensorToWall);
+        SmartDashboard.putNumber("Sensor Hyp. from Center",sensorHypFromCenter);
+        SmartDashboard.putNumber("Theta 2",theta2);
+        SmartDashboard.putNumber("Theta 3",theta3);
+        SmartDashboard.putNumber("Melvin's Number for Distance", (distance * Math.cos(gyro * Robot.degtorad) + (Math.sqrt(174.25) * Math.cos(Math.atan(8 / 10.5) - (gyro * Robot.degtorad)))));
         return distanceFromRobotCenterToWall;
     }
    

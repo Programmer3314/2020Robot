@@ -107,7 +107,7 @@ public class DriveController {
             // ballTracking.reset();
             // }
 
-            SmartDashboard.putNumber("Turn output Value: ", mP.turn);
+            SmartDashboard.putNumber("Turn Output Value", mP.turn);
 
             break;
         case POWERPORTALIGNMENT:
@@ -129,7 +129,7 @@ public class DriveController {
                 powerPortTracking.reset();
             }
 
-            SmartDashboard.putNumber("Turn output Value: ", mP.turn);
+            SmartDashboard.putNumber("Turn Output Value", mP.turn);
 
             break;
         case SHOOTERPOWERPORTALIGNMENT:
@@ -150,7 +150,7 @@ public class DriveController {
                 mP.turn = 0;
             }
 
-            SmartDashboard.putNumber("Turn output Value: ", mP.turn);
+            SmartDashboard.putNumber("Turn Output Value", mP.turn);
             break;
         case CLIMBALIGNMENT:
 
@@ -184,7 +184,7 @@ public class DriveController {
             break;
         }
 
-        retroTapeTable.getEntry("Turn value").setDouble(mP.turn);
+        retroTapeTable.getEntry("Turn Value").setDouble(mP.turn);
         SmartDashboard.putNumber("Turn", mP.turn);
         SmartDashboard.putNumber("Forward Value", mP.forward);
         SmartDashboard.putNumber("Set Gyro Value", gyroLockAngle);

@@ -213,11 +213,11 @@ public class ControlPanel {
     if (inFourSpins) {
       if (talon31.getSelectedSensorPosition() <= 412000) {
         talon31.set(ControlMode.PercentOutput, 0.4);
-        SmartDashboard.putNumber("Bag Talon 31 speed", 0.4);
+        SmartDashboard.putNumber("Bag Talon 31 Speed", 0.4);
       } else {
         talon31.set(ControlMode.PercentOutput, 0.0);
         inFourSpins = false;
-        SmartDashboard.putNumber("Bag Talon 31 speed", -1);
+        SmartDashboard.putNumber("Bag Talon 31 Speed", -1);
       }
 
     }

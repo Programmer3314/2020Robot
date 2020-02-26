@@ -85,7 +85,7 @@ public abstract class MyRobot extends AllRobots {
         }
 
         if (isFalcon) {
-            SmartDashboard.putString("DriveTrain Type:", "Falcons");
+            SmartDashboard.putString("DriveTrain Type", "Falcons");
             Constants.drivetrainTrackingMaxCorrection = Constants.falconTrackingMaxCorrection;
             Constants.drivetrainTrackingMinCorrection = Constants.falconTrackingMinCorrection;
             Constants.encoderTicksToFeet = Constants.falconEncoderTicksToFeet;
@@ -100,7 +100,7 @@ public abstract class MyRobot extends AllRobots {
             drivetrain = new DrivetrainFalcon(CANMcFalconFrontLeft, CANMcFalconBackLeft, CANMcFalconFrontRight,
                     CANMcFalconBackRight);
         } else {
-            SmartDashboard.putString("DriveTrain Type:", "Neos");
+            SmartDashboard.putString("DriveTrain Type", "Neos");
             Constants.drivetrainTrackingMaxCorrection = Constants.neoMaxTrackingCorrection;
             Constants.drivetrainTrackingMinCorrection = Constants.neoTrackingMinCorrection;
             Constants.encoderTicksToFeet = Constants.neoEncoderTicksToFeet;
@@ -173,21 +173,21 @@ public abstract class MyRobot extends AllRobots {
         rawGyro = navx.getAngle();
         cleanGyro = (rawGyro + 180 * Math.signum(rawGyro)) % 360 - 180 * Math.signum(rawGyro);
         ultraSonicDistance = uSSensor.getDistance();
-        SmartDashboard.putNumber("Gyro value:", Robot.cleanGyro);
-        SmartDashboard.putNumber("Ultra Sonic Distance in inches", ultraSonicDistance);
-        SmartDashboard.putNumber("Center of Robot to wall", uSSensor.getDistanceFromWall2());
-        SmartDashboard.putBoolean("IR Sensor is blocked", IRSensorValue);
+        SmartDashboard.putNumber("Gyro Value", Robot.cleanGyro);
+        SmartDashboard.putNumber("Ultra Sonic Distance in Inches", ultraSonicDistance);
+        SmartDashboard.putNumber("Center of Robot to Wall", uSSensor.getDistanceFromWall2());
+        SmartDashboard.putBoolean("IR Sensor is Blocked", IRSensorValue);
         SmartDashboard.putNumber("IR Sensor Value", IRSensor.getValue());
-        SmartDashboard.putNumber("Counter For Rich", counter++);
-        SmartDashboard.putBoolean("New IR Sensor is blocked", SensorInput.queuedShooter);
-        SmartDashboard.putBoolean("Digital Input test: ", DInput.get());
-        SmartDashboard.putNumber("Analog Input test: ", AInput.getValue());
+        SmartDashboard.putNumber("Counter for Rich", counter++);
+        SmartDashboard.putBoolean("New IR Sensor is Blocked", SensorInput.queuedShooter);
+        SmartDashboard.putBoolean("Digital Input Test", DInput.get());
+        SmartDashboard.putNumber("Analog Input Test", AInput.getValue());
         SmartDashboard.putBoolean("Track 1 Sensor", SensorInput.queuedTrack1);
         SmartDashboard.putBoolean("Track 2 Sensor", SensorInput.queuedTrack2);
         SmartDashboard.putBoolean("Shooter Sensor", SensorInput.queuedShooter);
         SmartDashboard.putBoolean("Hood Sensor", SensorInput.queuedHood);
         SmartDashboard.putBoolean("Intake Sensor", SensorInput.queuedIntake);
-        SmartDashboard.putNumber("Operator POV Degrees: ", HumanInput.operatorController.getPOV());
+        SmartDashboard.putNumber("Operator POV Degrees", HumanInput.operatorController.getPOV());
     }
 
     public abstract void RechargeRobotInit();

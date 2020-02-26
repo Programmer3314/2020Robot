@@ -145,7 +145,7 @@ public class Climber {
         //     climbStates = ClimbStates.[NAME];
         // }
 
-        SmartDashboard.putString("Climb State:", climbStates.toString());
+        SmartDashboard.putString("Climb State", climbStates.toString());
         SmartDashboard.putNumber("Climb Encoder", Math.abs(encoderPos - originalEncoderPos));
     }
 

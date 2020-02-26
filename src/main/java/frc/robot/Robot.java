@@ -203,7 +203,7 @@ public class Robot extends MyRobot {
       }
 
     } else if (HumanInput.shutDownAuto) {
-      SmartDashboard.putString("In active Auto", "No");
+      SmartDashboard.putString("In Active Auto", "No");
       mP.currentState = DriveController.DriveState.NONE;
 
       if(auto1 != null){
@@ -326,6 +326,20 @@ public class Robot extends MyRobot {
     climber.update(mP);
     driveController.update(mP);
 
+    SmartDashboard.putString("Ball & Intake Config", "Inactive");
+    SmartDashboard.putString("Shooter Config", "Inactive");
+    SmartDashboard.putString("Control Panel Config", "Inactive");
+    SmartDashboard.putString("Climber Config", "Inactive");
+
+    if (!(HumanInput.leftSwitch) && !(HumanInput.rightSwitch)) { // ball + intake
+      SmartDashboard.putString("Ball & Intake Config", "Active");
+    } else if (!(HumanInput.leftSwitch) && HumanInput.rightSwitch) { // shooter
+      SmartDashboard.putString("Shooter Config", "Active");
+    } else if (HumanInput.leftSwitch && !(HumanInput.rightSwitch)) { // control panel
+      SmartDashboard.putString("Control Panel Config", "Active");
+    } else if (HumanInput.leftSwitch && HumanInput.rightSwitch) { // climber + autos
+      SmartDashboard.putString("Climber Config", "Active");
+
   }
 
   @Override
@@ -342,19 +356,19 @@ public class Robot extends MyRobot {
     Solenoids.update();
     Solenoids.startCompressor();
     // fxTest.Update();
-    SmartDashboard.putString("Shooter & Intake: ", "Inactive");
-    SmartDashboard.putString("Solenoids: ", "Inactive");
-    SmartDashboard.putString("Control Panel: ", "Inactive");
-    SmartDashboard.putString("Climber: ", "Inactive");
+    SmartDashboard.putString("Ball & Intake Config: ", "Inactive");
+    SmartDashboard.putString("Shooter Config: ", "Inactive");
+    SmartDashboard.putString("Control Panel Config: ", "Inactive");
+    SmartDashboard.putString("Climber Config: ", "Inactive");
 
     if (!(HumanInput.leftSwitch) && !(HumanInput.rightSwitch)) { // ball + intake
-      SmartDashboard.putString("Shooter & Intake: ", "Active");
+      SmartDashboard.putString("Ball & Intake Config: ", "Active");
     } else if (!(HumanInput.leftSwitch) && HumanInput.rightSwitch) { // shooter
-      SmartDashboard.putString("Solenoids: ", "Active");
+      SmartDashboard.putString("Shooter Config: ", "Active");
     } else if (HumanInput.leftSwitch && !(HumanInput.rightSwitch)) { // control panel
-      SmartDashboard.putString("Control Panel: ", "Active");
+      SmartDashboard.putString("Control Panel Config: ", "Active");
     } else if (HumanInput.leftSwitch && HumanInput.rightSwitch) { // climber + autos
-      SmartDashboard.putString("Climber: ", "Active");
+      SmartDashboard.putString("Climber Config: ", "Active");
     }
 
   }

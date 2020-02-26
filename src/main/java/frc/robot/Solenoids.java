@@ -98,14 +98,14 @@ public class Solenoids {
         //     lightRingOff.set(true);
         // }
 
-        SmartDashboard.putBoolean("Solenoid 0:", intakeOut.get());
-        SmartDashboard.putBoolean("Solenoid 1:", intakeIn.get());
-        SmartDashboard.putBoolean("Solenoid 2:", engageRatchet.get());
-        SmartDashboard.putBoolean("Solenoid 3:", disengageRatchet.get());
-        SmartDashboard.putBoolean("Solenoid 4:", disengagePTO.get());
-        SmartDashboard.putBoolean("Solenoid 5:", engagePTO.get());
-        SmartDashboard.putBoolean("Solenoid 6:", CPManipulatorDown.get());
-        SmartDashboard.putBoolean("Solenoid 7:", CPManipulatorUp.get());
+        SmartDashboard.putBoolean("Solenoid 0", intakeOut.get());
+        SmartDashboard.putBoolean("Solenoid 1", intakeIn.get());
+        SmartDashboard.putBoolean("Solenoid 2", engageRatchet.get());
+        SmartDashboard.putBoolean("Solenoid 3", disengageRatchet.get());
+        SmartDashboard.putBoolean("Solenoid 4", disengagePTO.get());
+        SmartDashboard.putBoolean("Solenoid 5", engagePTO.get());
+        SmartDashboard.putBoolean("Solenoid 6", CPManipulatorDown.get());
+        SmartDashboard.putBoolean("Solenoid 7", CPManipulatorUp.get());
 
     }
 

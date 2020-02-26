@@ -128,9 +128,9 @@ public class Shooter {
             hoodCalculated = hoodPDController.calculate(hoodSetpoint, hoodEncoder);
             hood.set(ControlMode.PercentOutput, hoodCalculated);
         }
-        SmartDashboard.putNumber("Hood Calculated: ", hoodCalculated);
-        SmartDashboard.putNumber("Hood SetPoint: ", hoodSetpoint);
-        SmartDashboard.putNumber("Hood Encoder: ", hoodEncoder);
+        SmartDashboard.putNumber("Hood Calculated", hoodCalculated);
+        SmartDashboard.putNumber("Hood Set Point", hoodSetpoint);
+        SmartDashboard.putNumber("Hood Encoder", hoodEncoder);
 
 
         if (HumanInput.hoodUp) {
@@ -407,7 +407,7 @@ public class Shooter {
     
         SmartDashboard.putNumber("Current RPM of the Shooter Motors", shooterEncoder.getVelocity());
         SmartDashboard.putNumber("Belt Queue Value", beltQueuingEncoder);
-        SmartDashboard.putNumber("Hood value", hoodEncoder);
+        SmartDashboard.putNumber("Hood Value", hoodEncoder);
         SmartDashboard.putString("Shoot All State", shooterStates.toString());
     }
 
