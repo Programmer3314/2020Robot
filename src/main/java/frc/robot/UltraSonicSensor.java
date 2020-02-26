@@ -51,7 +51,7 @@ public class UltraSonicSensor {
         SmartDashboard.putNumber("Sensor Hyp. from Center",sensorHypFromCenter);
         SmartDashboard.putNumber("Theta 2",theta2);
         SmartDashboard.putNumber("Theta 3",theta3);
-        SmartDashboard.putNumber("Melvin's Number for Distance", (distance * Math.cos(gyro * Robot.degtorad) + (Math.sqrt(174.25) * Math.cos(Math.atan(8 / 10.5) - (gyro * Robot.degtorad)))));
+        // SmartDashboard.putNumber("Melvin's Number for Distance", (distance * Math.cos(gyro * Robot.degtorad) + (Math.sqrt(174.25) * Math.cos(Math.atan(8 / 10.5) - (gyro * Robot.degtorad)))));
         return distanceFromRobotCenterToWall;
     }
    

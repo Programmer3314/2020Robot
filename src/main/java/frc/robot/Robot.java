@@ -339,7 +339,7 @@ public class Robot extends MyRobot {
       SmartDashboard.putString("Control Panel Config", "Active");
     } else if (HumanInput.leftSwitch && HumanInput.rightSwitch) { // climber + autos
       SmartDashboard.putString("Climber Config", "Active");
-
+    }
   }
 
   @Override
@@ -356,19 +356,19 @@ public class Robot extends MyRobot {
     Solenoids.update();
     Solenoids.startCompressor();
     // fxTest.Update();
-    SmartDashboard.putString("Ball & Intake Config: ", "Inactive");
-    SmartDashboard.putString("Shooter Config: ", "Inactive");
-    SmartDashboard.putString("Control Panel Config: ", "Inactive");
-    SmartDashboard.putString("Climber Config: ", "Inactive");
+    SmartDashboard.putString("Ball & Intake Config", "Inactive");
+    SmartDashboard.putString("Shooter Config", "Inactive");
+    SmartDashboard.putString("Control Panel Config", "Inactive");
+    SmartDashboard.putString("Climber Config", "Inactive");
 
     if (!(HumanInput.leftSwitch) && !(HumanInput.rightSwitch)) { // ball + intake
-      SmartDashboard.putString("Ball & Intake Config: ", "Active");
+      SmartDashboard.putString("Ball & Intake Config", "Active");
     } else if (!(HumanInput.leftSwitch) && HumanInput.rightSwitch) { // shooter
-      SmartDashboard.putString("Shooter Config: ", "Active");
+      SmartDashboard.putString("Shooter Config", "Active");
     } else if (HumanInput.leftSwitch && !(HumanInput.rightSwitch)) { // control panel
-      SmartDashboard.putString("Control Panel Config: ", "Active");
+      SmartDashboard.putString("Control Panel Config", "Active");
     } else if (HumanInput.leftSwitch && HumanInput.rightSwitch) { // climber + autos
-      SmartDashboard.putString("Climber Config: ", "Active");
+      SmartDashboard.putString("Climber Config", "Active");
     }
 
   }

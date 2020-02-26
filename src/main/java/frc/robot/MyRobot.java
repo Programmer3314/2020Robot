@@ -65,7 +65,7 @@ public abstract class MyRobot extends AllRobots {
         String ControllerVersion = "";
         try {
             CANSparkMax controllerCheck = new CANSparkMax(5, MotorType.kBrushless);
-            SmartDashboard.putString("Controller Check1", "Passed");
+            SmartDashboard.putString("Controller Check 1", "Passed");
             ControllerVersion = controllerCheck.getFirmwareString();
             SmartDashboard.putString("Controller Check 4", ControllerVersion);
             controllerCheck.close();
@@ -178,7 +178,7 @@ public abstract class MyRobot extends AllRobots {
         SmartDashboard.putNumber("Center of Robot to Wall", uSSensor.getDistanceFromWall2());
         SmartDashboard.putBoolean("IR Sensor is Blocked", IRSensorValue);
         SmartDashboard.putNumber("IR Sensor Value", IRSensor.getValue());
-        SmartDashboard.putNumber("Counter for Rich", counter++);
+        // SmartDashboard.putNumber("Counter for Rich", counter++);
         SmartDashboard.putBoolean("New IR Sensor is Blocked", SensorInput.queuedShooter);
         SmartDashboard.putBoolean("Digital Input Test", DInput.get());
         SmartDashboard.putNumber("Analog Input Test", AInput.getValue());
