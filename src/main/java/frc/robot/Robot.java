@@ -11,6 +11,7 @@ public class Robot extends MyRobot {
   AutoStateMachines auto1;
   boolean isForward = true;
   int driverCamNum = 0;
+  int operatorCamNum = 0;
   double targetShooterRPM, shooterRPMTolerance;
   double queuingBeltSpeed;
   boolean useGyro;
@@ -19,8 +20,6 @@ public class Robot extends MyRobot {
   DriveController.MoveParameters mP;
   boolean toggleLightRing = false;
   Climber climber = new Climber();
-  boolean operatorCameraToggle = false;
-  int operatorCamNum = 0;
 
   // public static DriveController.DriveState currentDriveState;
 
@@ -32,7 +31,7 @@ public class Robot extends MyRobot {
     
     // Ensure that switched camera entry exists
     ntInst.getEntry("chooseCam").setNumber(0);
-    ntInst.getEntry("PumpkinSwitch").setNumber(1);
+    ntInst.getEntry("PumpkinSwitch").setNumber(0);
     
     driveController = new DriveController(drivetrain, ballTargetTable, portalTapeTargetTable);
 
@@ -91,7 +90,7 @@ public class Robot extends MyRobot {
       auto1.activate();
     }
 
-    // TODO: Reveiw Change
+    
     isForward = true;
     driverCamNum = 1;
 
@@ -141,7 +140,7 @@ public class Robot extends MyRobot {
     // TODO: Reveiw Change
     isForward = true;
     driverCamNum = 1;
-    
+    operatorCamNum = 0;
   }
 
   @Override
@@ -236,14 +235,14 @@ public class Robot extends MyRobot {
       } 
 
       Robot.ntInst.getEntry("chooseCam").setNumber(driverCamNum);
-      // Robot.ntInst.getEntry("PumpkinSwitch").setNumber(1);
+      //Robot.ntInst.getEntry("PumpkinSwitch").setNumber(1);
     }
 
     if (!isForward) {
       mP.forward *= -1;
     } 
 
-    if (operatorCameraToggle) {
+    if (HumanInput.operatorCameraChange) {
 
       if (operatorCamNum == 0) {
           operatorCamNum = 1;

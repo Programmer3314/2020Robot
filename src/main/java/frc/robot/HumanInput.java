@@ -123,20 +123,20 @@ public class HumanInput {
         abortClimb = false;
         
         if(!(leftSwitch) && !(rightSwitch)){ //ball + intake
-            hoodUp = buttonBox1.getRawButtonPressed(1);
-            hoodUpReleased = buttonBox1.getRawButtonReleased(1);
-            hoodDown = buttonBox1.getRawButtonPressed(2);
-            hoodUpReleased = buttonBox1.getRawButtonReleased(2);
+            intakeOut = buttonBox1.getRawButtonReleased(1);
+            intakeIn = buttonBox1.getRawButtonReleased(2);
             // activateIntake = buttonBox1.getRawButtonReleased(4);
             // activateGroundIntake = buttonBox1.getRawButtonReleased(5);
-            spinBallQueue = buttonBox1.getRawButton(7);
-            reverseBallQueue = buttonBox1.getRawButton(8);
+            spinBallQueue = buttonBox1.getRawButton(4);
+            reverseBallQueue = buttonBox1.getRawButton(4);
             // spinIntake = buttonBox1.getRawButton(6);
             // reverseIntake = buttonBox1.getRawButton(7);
             abortIntake = buttonBox1.getRawButtonReleased(10) || abortIntake;
         } else if(!(leftSwitch) && rightSwitch){ //shooter
-            intakeOut = buttonBox1.getRawButtonReleased(1);
-            intakeIn = buttonBox1.getRawButtonReleased(2);
+            hoodUp = buttonBox1.getRawButtonPressed(1);
+            hoodUpReleased = buttonBox1.getRawButtonReleased(1);
+            hoodDown = buttonBox1.getRawButtonPressed(2);
+            hoodUpReleased = buttonBox1.getRawButtonReleased(2);
             lightRing = buttonBox1.getRawButtonReleased(7);
             abortShooter = buttonBox1.getRawButtonReleased(10);
             // lightRingOff = buttonBox1.getRawButtonReleased(10);
