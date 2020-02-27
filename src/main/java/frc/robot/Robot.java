@@ -12,7 +12,12 @@ public class Robot extends MyRobot {
   boolean isForward = true;
   int driverCamNum = 0;
   int operatorCamNum = 0;
-  double targetShooterRPM, shooterRPMTolerance;
+  // TODO: These variable should be in Shooter. 
+  // Robot should set them there via a method 
+  // instead of keeping them here and passing 
+  // into ShootAll... 
+  // Something like shooter.setFiringSolution(...)
+  public static double targetShooterRPM, shooterRPMTolerance;
   double queuingBeltSpeed;
   boolean useGyro;
   double angleOffset;

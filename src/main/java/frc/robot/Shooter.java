@@ -267,6 +267,8 @@ public class Shooter {
         case DONE:
             homedHood = false;
             hoodSetpoint = 0;
+            targetShooterRPM = 2100;
+            Robot.targetShooterRPM = 2100;
             break;
         }
 
