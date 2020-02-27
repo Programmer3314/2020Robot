@@ -125,7 +125,9 @@ public class HumanInput {
         intakeOut = false;
         intakeIn = false;
         lightRing = false;
-        abortShooter = false;
+        // TODO: Review Change
+        // why clear it when we set it above...
+        // abortShooter = false;
         controlPanelAlignment = false;
         engageRatchet = false;
         disengageRatchet = false;
@@ -152,7 +154,7 @@ public class HumanInput {
             hoodDown = buttonBox1.getRawButtonPressed(2);
             hoodUpReleased = buttonBox1.getRawButtonReleased(2);
             lightRing = buttonBox1.getRawButtonReleased(7);
-            //abortShooter = buttonBox1.getRawButtonReleased(10);
+            abortShooter = abortShooter || buttonBox1.getRawButtonReleased(10);
             // lightRingOff = buttonBox1.getRawButtonReleased(10);
         } else if(leftSwitch && !(rightSwitch)){ //control panel
             controlPanelAlignment = buttonBox1.getRawButtonPressed(1);

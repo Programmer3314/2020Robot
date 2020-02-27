@@ -68,7 +68,7 @@ public class Constants{
     public static final double powerPortkD = 0;//0.04;
 
     //Ball Chasing
-    public static final double ballTolerance = 8;
+    public static final double ballTolerance = 15;
     public static final double ballkP = 0.0008;//.00065->.0009->.0008
     public static final double ballkD = 0.0009;//.00009->.0009
 
