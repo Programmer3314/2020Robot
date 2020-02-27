@@ -144,9 +144,9 @@ public class Shooter {
 
         // Manual Ball Queue Control:
         if (HumanInput.spinBallQueue) {
-            ballQueuing.set(ControlMode.PercentOutput, 0.5);
+            ballQueuing.set(ControlMode.PercentOutput, 0.75);
         } else if (HumanInput.reverseBallQueue) {
-            ballQueuing.set(ControlMode.PercentOutput, -0.5);
+            ballQueuing.set(ControlMode.PercentOutput, -0.75);
         } else {
             ballQueuing.set(ControlMode.PercentOutput, 0);
         }
@@ -262,7 +262,8 @@ public class Shooter {
             break;
 
         case DONE:
-
+            homedHood = false;
+            hoodSetpoint = 0;
             break;
         }
 
@@ -370,7 +371,7 @@ public class Shooter {
                         && (useGyro == false || (Math.abs(Robot.cleanGyro - desiredGyroAngle) <= gyroTolerance))) {
                         shooterStates = ShooterStates.FIRE_BALL_AUTO;
                     }
-                } else if (counter >= 100) {
+                } else if (counter >= 200) {
                     shooterStates = ShooterStates.DONE;
                 }
                 counter++;

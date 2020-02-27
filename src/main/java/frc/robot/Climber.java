@@ -112,7 +112,7 @@ public class Climber {
             case ENGAGE_RATCHET:
                 // TODO: Review Climber Change - Safety Change
                 mP.currentState = DriveState.MANUAL;
-                mP.forward = 0.4;
+                mP.forward = 0.3;
                 mP.turn = 0.0;
 
                 Solenoids.engageRatchet.set(true);

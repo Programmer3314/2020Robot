@@ -36,10 +36,11 @@ public class HumanInput {
     public static boolean intakeOut, intakeIn, engageRatchet, disengageRatchet, disengagePTO, engagePTO, lightRingOn, lightRingOff;
     public static boolean abortIntake;
     public static boolean testButton;
-    public static boolean closeShot, lineShot, trenchShot;
+    public static boolean closeShot, lineShot, trenchShot, farShot;
     public static boolean traverseClimbState, operatorStart, operatorBack;
     private static boolean driverCameraChangeValue, lastDriverCameraChangeValue;
     public static boolean abortShooter;
+    public static boolean sLeft, sRight;
 
     public HumanInput(){    
     }
@@ -63,6 +64,11 @@ public class HumanInput {
         // Driver's Controller
         forward = driverController.getRawAxis(1) * 0.6;
         turn = driverController.getRawAxis(4) * 0.5;
+        if(Math.abs(turn) < Constants.humanInputDeadband){
+            turn = 0;
+        }else if(Math.abs(turn)< Constants.humanInputMinTurn){
+            turn = Constants.humanInputMinTurn * Math.signum(turn);
+        }
         gyroLock = driverController.getRawAxis(2) > 0.5;
         trenchRunAlignment = driverController.getRawButton(3); // X
         ballChaseButton = driverController.getRawButton(4);    // Y
@@ -81,6 +87,8 @@ public class HumanInput {
         closeShot = operatorController.getPOV() == 0;
         lineShot = operatorController.getPOV() == 90;
         trenchShot = operatorController.getPOV() == 180;
+        farShot = operatorController.getPOV() == 270;
+        
         shooterAllInTarget = (operatorController.getRawButton(2) && operatorController.getRawAxis(2) < 0.5); // B 
         operatorCameraChange = operatorController.getRawButtonReleased(6);
         operatorBack = operatorController.getRawButton(7);
@@ -102,6 +110,8 @@ public class HumanInput {
         autoNumber = (booleanToInt(buttonBox1.getRawButton(13)) * 1) + (booleanToInt(buttonBox1.getRawButton(14)) * 2) + (booleanToInt(buttonBox1.getRawButton(15)) * 4) + (booleanToInt(buttonBox1.getRawButton(16)) * 8);
         leftSwitch = buttonBox1.getRawButton(11);
         rightSwitch = buttonBox1.getRawButton(12);
+        sLeft = buttonBox2.getRawButton(13);
+        sRight = buttonBox2.getRawButton(14);
 
         hoodUp = false;
         hoodUpReleased = false;

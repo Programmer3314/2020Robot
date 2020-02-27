@@ -72,6 +72,7 @@ public class ControlPanel {
     } else {
       currentState = SetColor.DONE;
       talon31.set(ControlMode.PercentOutput, 0.0);
+      inFourSpins = false;
     }
 
     // Color Sensor
@@ -149,7 +150,7 @@ public class ControlPanel {
       break;
 
     case SPINTOCOLOR:
-      talon31.set(ControlMode.PercentOutput, (0.15) * Math.signum(scale));
+      talon31.set(ControlMode.PercentOutput, (0.30) * Math.signum(scale));
       if (!(colorString.equalsIgnoreCase(desiredColor))) {
         colorCounter = 0;
       } else {
@@ -163,7 +164,7 @@ public class ControlPanel {
       break;
 
     case SPININCOLOR:
-      talon31.set(ControlMode.PercentOutput, (0.075) * Math.signum(scale));
+      talon31.set(ControlMode.PercentOutput, (0.15) * Math.signum(scale));
       if ((Math.abs(talon31.getSelectedSensorPosition()) <= tickMax)) {
 
       } else {
@@ -212,8 +213,8 @@ public class ControlPanel {
     // }
     if (inFourSpins) {
       if (talon31.getSelectedSensorPosition() <= 412000) {
-        talon31.set(ControlMode.PercentOutput, 0.4);
-        SmartDashboard.putNumber("CP Motor Speed", 0.4);
+        talon31.set(ControlMode.PercentOutput, 1.0);
+        SmartDashboard.putNumber("CP Motor Speed", 1.0);
       } else {
         talon31.set(ControlMode.PercentOutput, 0.0);
         inFourSpins = false;

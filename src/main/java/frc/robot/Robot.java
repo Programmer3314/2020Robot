@@ -25,6 +25,7 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeRobotInit() {
+    Solenoids.ejectIntake(false);
 
     ballTargetTable = ntInst.getTable("Ball Target");
     portalTapeTargetTable = ntInst.getTable("Retroreflective Tape Target");
@@ -66,6 +67,7 @@ public class Robot extends MyRobot {
   @Override
   public void RechargeAutonomousInit() {
     Solenoids.lightRing(true);
+    Solenoids.ejectIntake(false);
 
     HumanInput.update();
 
@@ -73,6 +75,10 @@ public class Robot extends MyRobot {
     auto1 = null;
     if (HumanInput.autoNumber == 3) {
       auto1 = new ThreeBallAuto(shooter);
+    }
+
+    if (HumanInput.autoNumber == 4) {
+      auto1 = new ThreeBallAutoSwitch(shooter);
     }
 
     mP = driveController.new MoveParameters();
@@ -124,6 +130,10 @@ public class Robot extends MyRobot {
        auto1 = new ThreeBallAuto(shooter);
     }
 
+    if (HumanInput.autoNumber == 4) {
+      auto1 = new ThreeBallAutoSwitch(shooter);
+   }
+
     trenchAlignment.resetState();
     shooter.resetState();
 
@@ -162,6 +172,11 @@ public class Robot extends MyRobot {
     if(HumanInput.trenchShot){
       shooter.setHoodSetpoint(-1450);
       targetShooterRPM = 3600;
+    }
+
+    if(HumanInput.farShot){
+      shooter.setHoodSetpoint(-1450);
+      targetShooterRPM = 4400;
     }
 
     SmartDashboard.putNumber("Target Shooter RPM:", targetShooterRPM);

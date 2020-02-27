@@ -35,8 +35,8 @@ public class Solenoids {
     }
 
     public static void init(){
-        intakeOut.set(true);
-        intakeIn.set(false);
+        intakeOut.set(false);
+        intakeIn.set(true);
         disengageRatchet.set(false);
         engageRatchet.set(true);
         disengagePTO.set(true);

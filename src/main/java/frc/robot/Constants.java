@@ -43,7 +43,8 @@ public class Constants{
     public static final double falconDrivetrainKMaxOutput =  0.869990; 
     public static final double falconDrivetrainKMinOutput = -0.869990;
     public static final double falconTrackingMaxCorrection = 0.4; // = 0.1;
-    public static final double falconTrackingMinCorrection = 0.04; // = 0.07;
+    public static final double falconTrackingMinCorrection = 0.08;
+    ; // = 0.07;
     public static final int    falconEncoderTicksToFeet = 12527;
     // Neo chassis set
     public static final double neoDrivetrainKP = 1.6e-5;//5e-5;
@@ -115,4 +116,6 @@ public class Constants{
     public static final int AIControlPanelSensor = 2;
     public static final double USSensorMB1013ToInchFactor = 0.0492126;
 
+    public static final double humanInputDeadband = 0.01;
+    public static final double humanInputMinTurn = 0.025;
 }
