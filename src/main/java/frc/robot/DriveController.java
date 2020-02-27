@@ -89,7 +89,7 @@ public class DriveController {
             if (ballTargetTable.getEntry("Target Found").getBoolean(false)) {
                 double centerX = ballTargetTable.getEntry("x").getDouble(0);
                 // mP.forward = HumanInput.forward;
-                mP.turn = -ballTracking.calculate(0, centerX);
+                mP.turn = -ballTracking.calculate(0, centerX *.8);
             } else {
                 ballTracking.reset();
             }

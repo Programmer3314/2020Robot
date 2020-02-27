@@ -46,6 +46,7 @@ public class Shooter {
     CANPIDController shooterPidController;
     PDController hoodPDController;
     boolean abortShooter;
+    double intakeMotorSpeed = .35;
 
     public Shooter(int CANMcshooterLeft, int CANMcshooterRight, int CANMcBallQueuing, 
         int CANMcHood, int CANMcIndexer, int CANMcIntake) {
@@ -190,26 +191,26 @@ public class Shooter {
 
             case GROUND_GET_HALF_BALL:
             Solenoids.ejectIntake(true); //Comment 1 of 2 when test loading station intake
-            intake.set(ControlMode.PercentOutput, 0.5);
+            intake.set(ControlMode.PercentOutput, intakeMotorSpeed);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.0);
             break;
     
             case GROUND_GOT_BALL:
-            // Solenoids.ejectIntake(false); //Comment 2 of 2 when test loading station intake
-            intake.set(ControlMode.PercentOutput, 0.5);
+            Solenoids.ejectIntake(false); //Comment 2 of 2 when test loading station intake
+            intake.set(ControlMode.PercentOutput, intakeMotorSpeed);
             indexer.set(ControlMode.PercentOutput, 0.5);
-            ballQueuing.set(ControlMode.PercentOutput, 0.5);
+            ballQueuing.set(ControlMode.PercentOutput, 0.0); // 0.5);
             break;
 
             case GROUND_GAP_BALL:
-            intake.set(ControlMode.PercentOutput, 0.5);
+            intake.set(ControlMode.PercentOutput, intakeMotorSpeed);
             indexer.set(ControlMode.PercentOutput, 0);
             ballQueuing.set(ControlMode.PercentOutput, 0.5);
             break;
 
             case INTAKE_DONE:
-            intake.set(ControlMode.PercentOutput, 0.5);
+            intake.set(ControlMode.PercentOutput, 0); // intakeMotorSpeed);
             indexer.set(ControlMode.PercentOutput, 0);
             ballQueuing.set(ControlMode.PercentOutput, 0);
             Solenoids.ejectIntake(false);
