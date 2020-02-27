@@ -27,7 +27,7 @@ public class HumanInput {
     public static boolean activateAuto;
     public static boolean shutDownAuto;
     public static boolean leftSwitch, rightSwitch;
-    public static boolean activateIntake, activateGroundIntake, spinIntake, reverseIntake; //
+    public static boolean activateIntake, activateGroundIntake, spinIntake, reverseIntake, reverseIntakeReleased; //
     public static boolean spinBallQueue, reverseBallQueue;
     public static boolean lightRing; //
     public static boolean fourSpins, spinToColor, spinToBlue, spinToRed, spinToGreen, spinToYellow, manualControlPanel, CPManipulatorDown, CPManipulatorUp;
@@ -78,6 +78,8 @@ public class HumanInput {
         activateGroundIntake = driverController.getRawButtonPressed(6);
         activateIntake = driverController.getRawButtonPressed(5);
         abortIntake = driverController.getRawButtonReleased(5) || driverController.getRawButtonReleased(6);
+        reverseIntake = driverController.getRawButton(9);
+        reverseIntakeReleased = driverController.getRawButtonReleased(9);
 
 
         // Operator's Controller
@@ -90,6 +92,7 @@ public class HumanInput {
         farShot = operatorController.getPOV() == 270;
         
         shooterAllInTarget = (operatorController.getRawButton(2) && operatorController.getRawAxis(2) < 0.5); // B 
+        abortShooter = operatorController.getRawButtonReleased(5);
         operatorCameraChange = operatorController.getRawButtonReleased(6);
         operatorBack = operatorController.getRawButton(7);
         operatorStart = operatorController.getRawButton(8);
@@ -132,6 +135,7 @@ public class HumanInput {
         reset = false;
         abortClimb = false;
         
+        
         if(!(leftSwitch) && !(rightSwitch)){ //ball + intake
             intakeOut = buttonBox1.getRawButtonReleased(1);
             intakeIn = buttonBox1.getRawButtonReleased(2);
@@ -148,7 +152,7 @@ public class HumanInput {
             hoodDown = buttonBox1.getRawButtonPressed(2);
             hoodUpReleased = buttonBox1.getRawButtonReleased(2);
             lightRing = buttonBox1.getRawButtonReleased(7);
-            abortShooter = buttonBox1.getRawButtonReleased(10);
+            //abortShooter = buttonBox1.getRawButtonReleased(10);
             // lightRingOff = buttonBox1.getRawButtonReleased(10);
         } else if(leftSwitch && !(rightSwitch)){ //control panel
             controlPanelAlignment = buttonBox1.getRawButtonPressed(1);

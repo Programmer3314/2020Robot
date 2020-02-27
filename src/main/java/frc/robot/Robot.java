@@ -287,6 +287,13 @@ public class Robot extends MyRobot {
     if (hasShooter) {
       shooter.update(mP);
     }
+
+    
+    if(HumanInput.reverseIntake){
+      shooter.reverseIntake();
+    }else if(HumanInput.reverseIntakeReleased){
+      shooter.reverseIntakeRelease();
+    }
     if (HumanInput.reset) {
       shooter.reset();
       if(auto1 != null){

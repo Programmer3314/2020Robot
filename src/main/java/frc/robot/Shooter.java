@@ -45,6 +45,7 @@ public class Shooter {
     int counter;
     CANPIDController shooterPidController;
     PDController hoodPDController;
+    boolean abortShooter;
 
     public Shooter(int CANMcshooterLeft, int CANMcshooterRight, int CANMcBallQueuing, 
         int CANMcHood, int CANMcIndexer, int CANMcIntake) {
@@ -243,6 +244,7 @@ public class Shooter {
                 //intake.set(ControlMode.PercentOutput, 0.25);
                 intake.set(ControlMode.PercentOutput, 0);
 
+               
                 break;
         case FIRE_BALL_AUTO:
             // shooterLeft.set(-HumanInput.throttle);
@@ -376,6 +378,11 @@ public class Shooter {
                 }
                 counter++;
     
+                if(abortShooter){
+                    shooterStates = ShooterStates.DONE;
+                    counter = 0;
+                    abortShooter = false;
+                }
                 break;
     
             case FIRE_BALL_AUTO:
@@ -449,10 +456,21 @@ public class Shooter {
     }
 
     public void abortShooter(){
-        shooterStates = ShooterStates.DONE;
-        counter = 0;
+        // shooterStates = ShooterStates.DONE;
+        // counter = 0;
+        abortShooter = true;
     }
     
+    public void reverseIntake(){
+        Solenoids.ejectIntake(true);
+        intake.set(ControlMode.PercentOutput, -0.5);
+    }
+
+    public void reverseIntakeRelease(){
+        Solenoids.ejectIntake(false);
+        intake.set(ControlMode.PercentOutput, 0);
+    }
+
     public void reset() {
         shooterStates = ShooterStates.IDLE;
         ballQueuing.set(ControlMode.PercentOutput, 0);
