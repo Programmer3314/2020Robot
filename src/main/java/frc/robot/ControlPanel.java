@@ -28,7 +28,7 @@ public class ControlPanel {
   public boolean reset, inFourSpins;
   public int[][] colorTable = { { 0, 1, 2, -1 }, { -1, 0, 1, 2 }, { 2, -1, 0, 1 }, { 1, 2, -1, 0 } };
   public SetColor currentState, nextState;
-  public int destinationColor, currentColor;
+  public int destinationColor, FMSDestinationColor, currentColor;
   public int scale, colorCounter, tickMax;
   String gameData;
   private String FMSColor, wantedColor;
@@ -189,18 +189,22 @@ public class ControlPanel {
       case 'B':
         FMSColor = "Blue";
         wantedColor = "Red";
+        FMSDestinationColor = 0;
         break;
       case 'G':
         FMSColor = "Green";
         wantedColor = "Yellow";
+        FMSDestinationColor = 3;
         break;
       case 'R':
         FMSColor = "Red";
         wantedColor = "Blue";
+        FMSDestinationColor = 2;
         break;
       case 'Y':
         FMSColor = "Yellow";
         wantedColor = "Green";
+        FMSDestinationColor = 1;
         break;
     }
   }
@@ -263,6 +267,12 @@ public class ControlPanel {
     desiredColor = "Green";
     destinationColor = 1;
     currentState = SetColor.START; 
+  }
+
+  public void spinToFMSColor(){
+    desiredColor = wantedColor;
+    destinationColor = FMSDestinationColor;
+    currentState = SetColor.START;
   }
 
   

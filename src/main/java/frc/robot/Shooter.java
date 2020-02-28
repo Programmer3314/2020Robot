@@ -17,6 +17,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.ControlType;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DriveController.MoveParameters;
 
@@ -233,8 +234,7 @@ public class Shooter {
                     ballQueuing.set(ControlMode.PercentOutput, 0.5);
                 }
 
-                // TODO: Review this change and the similar one below
-                // I don't like this, but it may be the quick way to make this work
+
                 if(!SensorInput.queuedTrack1 && !SensorInput.queuedTrack2) {
                     indexer.set(ControlMode.PercentOutput, 0.5);
                 } else {
@@ -251,8 +251,7 @@ public class Shooter {
             // shooterLeft.set(-HumanInput.throttle);
             shooterPidController.setReference(targetShooterRPM, ControlType.kVelocity);
             ballQueuing.set(ControlMode.PercentOutput, queuingBeltSpeed);
-            // TODO: Review this change and the similar one above
-            // I don't like this, but it may be the quick way to make this work
+
             if(!SensorInput.queuedTrack1 && !SensorInput.queuedTrack2) {
                 indexer.set(ControlMode.PercentOutput, 0.5);
             } else {
@@ -268,7 +267,7 @@ public class Shooter {
             homedHood = false;
             hoodSetpoint = 0;
             targetShooterRPM = 2100;
-            Robot.targetShooterRPM = 2100;
+            //Robot.targetShooterRPM = 2100;
             break;
         }
 
@@ -368,6 +367,11 @@ public class Shooter {
             case PREPARE:
                 if (SensorInput.queuedShooter) {
                     shooterBusy = true;
+                    if(shooterEncoder.getVelocity() < 100){
+                        HumanInput.operatorController.setRumble(RumbleType.kLeftRumble, 1);
+                    } else {
+                        HumanInput.operatorController.setRumble(RumbleType.kLeftRumble, 0);
+                    }
 
                     // Confirm Firing Solution
                     // (consolidated conditions)
@@ -411,10 +415,13 @@ public class Shooter {
                 break;
     
             case DONE:
+                HumanInput.operatorController.setRumble(RumbleType.kLeftRumble, 0);
                 shooterBusy = false;
                 shooterStates = ShooterStates.IDLE;
                 break;
             }
+
+        Solenoids.confirmShooterLightRing(SensorInput.queuedShooter);
     
         SmartDashboard.putNumber("Current RPM of the Shooter Motors", shooterEncoder.getVelocity());
         SmartDashboard.putNumber("Belt Queue Value", beltQueuingEncoder);
@@ -422,8 +429,8 @@ public class Shooter {
         SmartDashboard.putString("Shoot All State", shooterStates.toString());
     }
 
-    public void shootAll(double targetShooterRPM, double shooterRPMTolerance, double queuingBeltSpeed, boolean useGyro,
-            double gyroAngleDesired, double gyroTolerance) {
+    public void shootAll(/*double targetShooterRPM, double shooterRPMTolerance,*/ double queuingBeltSpeed, boolean useGyro,
+        double gyroAngleDesired, double gyroTolerance) {
         this.targetShooterRPM = targetShooterRPM;
         this.shooterRPMTolerance = shooterRPMTolerance;
         this.queuingBeltSpeed = queuingBeltSpeed;
@@ -437,7 +444,26 @@ public class Shooter {
         SmartDashboard.putNumber("Gyro Tolerance", gyroTolerance);
         shooterStates = ShooterStates.PREPARE;
     }
+    // public void setFiringSolution(double targetShooterRPM, double shooterRPMTolerance){
+    //     this.targetShooterRPM = targetShooterRPM;
+    //     this.shooterRPMTolerance = shooterRPMTolerance;
+    // }
 
+    public void setTargetShooterRPM(double targetShooterRPM){
+        this.targetShooterRPM = targetShooterRPM;
+    }
+
+    public void setTargetShooterRPMTolerance(double shooterRPMTolerance){
+        this.shooterRPMTolerance = shooterRPMTolerance;
+    }
+
+    public double getTargetShooterRPM(){
+        return targetShooterRPM;
+    }
+
+    public double getTargetShooterRPMTolerance(){
+        return shooterRPMTolerance;
+    }
     public void groundIntakeAll() {
         shooterStates = ShooterStates.GROUND_GET_HALF_BALL;
     }
@@ -474,6 +500,18 @@ public class Shooter {
         intake.set(ControlMode.PercentOutput, 0);
     }
 
+    public void reverseAll(){
+        reverseIntake();
+        ballQueuing.set(ControlMode.PercentOutput, -0.75);
+        indexer.set(ControlMode.PercentOutput, -0.75);
+    }
+
+    public void reverseAllRelease(){
+        reverseIntakeRelease();
+        ballQueuing.set(ControlMode.PercentOutput, 0);
+        indexer.set(ControlMode.PercentOutput, 0);
+    }
+
     public void reset() {
         shooterStates = ShooterStates.IDLE;
         ballQueuing.set(ControlMode.PercentOutput, 0);
@@ -490,7 +528,7 @@ public class Shooter {
             hoodEncoder = 0;
             hood.set(ControlMode.PercentOutput, 0);
         }else{
-            hood.set(ControlMode.PercentOutput, 0.125);
+            hood.set(ControlMode.PercentOutput, 0.5);
         }
     }
 }

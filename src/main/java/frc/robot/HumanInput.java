@@ -30,7 +30,7 @@ public class HumanInput {
     public static boolean activateIntake, activateGroundIntake, spinIntake, reverseIntake, reverseIntakeReleased; //
     public static boolean spinBallQueue, reverseBallQueue;
     public static boolean lightRing; //
-    public static boolean fourSpins, spinToColor, spinToBlue, spinToRed, spinToGreen, spinToYellow, manualControlPanel, CPManipulatorDown, CPManipulatorUp;
+    public static boolean fourSpins, spinToColor, spinToFMSColor, spinToBlue, spinToRed, spinToGreen, spinToYellow, manualControlPanel, CPManipulatorDown, CPManipulatorUp;
     public static double spinCP;
     public static boolean winchItDown, creepOnBar, stopCreep, abortClimb;
     public static boolean intakeOut, intakeIn, engageRatchet, disengageRatchet, disengagePTO, engagePTO, lightRingOn, lightRingOff;
@@ -41,6 +41,7 @@ public class HumanInput {
     private static boolean driverCameraChangeValue, lastDriverCameraChangeValue;
     public static boolean abortShooter;
     public static boolean sLeft, sRight;
+    public static boolean reverseAll, reverseAllReleased;
 
     public HumanInput(){    
     }
@@ -107,6 +108,7 @@ public class HumanInput {
             spinToRed = operatorController.getRawButtonReleased(2);
             spinToBlue = operatorController.getRawButtonReleased(3);
             spinToYellow = operatorController.getRawButtonReleased(4);
+            spinToFMSColor = operatorController.getRawButtonReleased(10);
         }
 
         // Button Box
@@ -145,6 +147,8 @@ public class HumanInput {
             // activateGroundIntake = buttonBox1.getRawButtonReleased(5);
             spinBallQueue = buttonBox1.getRawButton(4);
             reverseBallQueue = buttonBox1.getRawButton(4);
+            reverseAll = buttonBox1.getRawButton(7);
+            reverseAllReleased = buttonBox1.getRawButtonReleased(7);
             // spinIntake = buttonBox1.getRawButton(6);
             // reverseIntake = buttonBox1.getRawButton(7);
             abortIntake = buttonBox1.getRawButtonReleased(10) || abortIntake;

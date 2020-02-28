@@ -17,7 +17,7 @@ public class Robot extends MyRobot {
   // instead of keeping them here and passing 
   // into ShootAll... 
   // Something like shooter.setFiringSolution(...)
-  public static double targetShooterRPM, shooterRPMTolerance;
+  //public static double targetShooterRPM, shooterRPMTolerance;
   double queuingBeltSpeed;
   boolean useGyro;
   double angleOffset;
@@ -41,12 +41,14 @@ public class Robot extends MyRobot {
     
     driveController = new DriveController(drivetrain, ballTargetTable, portalTapeTargetTable);
 
-    shooterRPMTolerance = Constants.shooterRPMTolerance;
+    //shooterRPMTolerance = Constants.shooterRPMTolerance;
 
     if (hasShooter) {
       shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight, CANMcBallQueuing, 
           CANMcHood, CANMcIndexer, CANMcIntake);
     }
+
+    shooter.setTargetShooterRPMTolerance(Constants.shooterRPMTolerance);
 
     if (isTalonFXTest) {
       fxTest = new TalonFXTest();
@@ -60,7 +62,7 @@ public class Robot extends MyRobot {
     // targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
     // shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
     // SmartDashboard.putNumber("Shooter RPM Desired", targetShooterRPM);
-    SmartDashboard.putNumber("Shooter RPM Tolerance Desired", shooterRPMTolerance);
+    SmartDashboard.putNumber("Shooter RPM Tolerance Desired", shooter.getTargetShooterRPMTolerance());
 
     queuingBeltSpeed = Constants.queuingBeltSpeed; //SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
     SmartDashboard.putNumber("Queuing Belt Speed", queuingBeltSpeed);
@@ -71,7 +73,7 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeAutonomousInit() {
-    Solenoids.lightRing(true);
+    Solenoids.targettingLightRing(true);
     Solenoids.ejectIntake(false);
 
     HumanInput.update();
@@ -121,7 +123,7 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeTeleopInit() {
-    Solenoids.lightRing(true);
+    Solenoids.targettingLightRing(true);
 
     // if (hasControlPanel) {
     //   controlPanel = new ControlPanel(CANMcctrlPanel);
@@ -166,25 +168,30 @@ public class Robot extends MyRobot {
 
     if(HumanInput.closeShot){
       shooter.setHoodSetpoint(0);
-      targetShooterRPM = 2100;
+      shooter.setTargetShooterRPM(2100);
+    //targetShooterRPM = 2100;
     }
 
     if(HumanInput.lineShot){
       shooter.setHoodSetpoint(-1400);
-      targetShooterRPM = 3600;
+      shooter.setTargetShooterRPM(3600);
+      //targetShooterRPM = 3600;
+
     }
 
     if(HumanInput.trenchShot){
       shooter.setHoodSetpoint(-1450);
-      targetShooterRPM = 3600;
+      shooter.setTargetShooterRPM(3600);
+      //targetShooterRPM = 3600;
     }
 
     if(HumanInput.farShot){
       shooter.setHoodSetpoint(-1450);
-      targetShooterRPM = 4400;
+      shooter.setTargetShooterRPM(4400);
+      //targetShooterRPM = 4400;
     }
 
-    SmartDashboard.putNumber("Target Shooter RPM:", targetShooterRPM);
+    SmartDashboard.putNumber("Target Shooter RPM:", shooter.getTargetShooterRPM());
 
     if (HumanInput.ballChaseButton) {
       mP.currentState = DriveController.DriveState.BALLCHASE;
@@ -198,7 +205,7 @@ public class Robot extends MyRobot {
       angleOffset += Robot.rawGyro;
       gyroAngleDesired = angleOffset;
       
-      shooter.shootAll(targetShooterRPM, shooterRPMTolerance, queuingBeltSpeed, useGyro, gyroAngleDesired,
+      shooter.shootAll(/*targetShooterRPM, shooterRPMTolerance, */queuingBeltSpeed, useGyro, gyroAngleDesired,
           gyroTolerance);
     } else if (HumanInput.trenchRunAlignment) {
       mP.currentState = DriveController.DriveState.TRENCHRUNALIGNMENT;
@@ -234,7 +241,7 @@ public class Robot extends MyRobot {
       shooter.abortIntake();
     } else if(HumanInput.lightRing){
       toggleLightRing = !toggleLightRing;
-      Solenoids.lightRing(toggleLightRing);
+      Solenoids.targettingLightRing(toggleLightRing);
     } else {
       mP.currentState = DriveController.DriveState.MANUAL;
     }
@@ -299,6 +306,12 @@ public class Robot extends MyRobot {
     }else if(HumanInput.reverseIntakeReleased){
       shooter.reverseIntakeRelease();
     }
+
+    if(HumanInput.reverseAll){
+      shooter.reverseAll();
+    }else if(HumanInput.reverseAllReleased){
+      shooter.reverseAllRelease();
+    }
     if (HumanInput.reset) {
       shooter.reset();
       if(auto1 != null){
@@ -330,7 +343,10 @@ public class Robot extends MyRobot {
       if(HumanInput.spinToRed){
         controlPanel.spinToRed();
       }
-        
+
+      if(HumanInput.spinToFMSColor){
+        controlPanel.spinToFMSColor();
+      }        
     }
 
    

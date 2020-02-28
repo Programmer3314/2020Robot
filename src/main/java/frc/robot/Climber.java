@@ -75,7 +75,7 @@ public class Climber {
             break;
 
             case ENGAGE_PTO:
-                // TODO: Review Climber Change - Safety Change
+                
                 mP.currentState = DriveState.MANUAL;
                 mP.forward = 0.0;
                 mP.turn = 0.0;
@@ -94,7 +94,6 @@ public class Climber {
 
             case DRIVE:
                 counter++;
-                // TODO: Review Climber Change - Safety Change
                 mP.currentState = DriveState.MANUAL;
                 mP.forward = 0.4;
                 mP.turn = 0.0;
@@ -110,7 +109,6 @@ public class Climber {
             break;
 
             case ENGAGE_RATCHET:
-                // TODO: Review Climber Change - Safety Change
                 mP.currentState = DriveState.MANUAL;
                 mP.forward = 0.3;
                 mP.turn = 0.0;
@@ -129,7 +127,6 @@ public class Climber {
             break;
 
             case DONE:
-                // TODO: Review Climber Change - Safety Change
                 mP.currentState = DriveState.MANUAL;
                 mP.forward = 0.0;
                 mP.turn = 0.0;

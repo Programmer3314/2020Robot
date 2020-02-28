@@ -98,7 +98,8 @@ public class ThreeBallAutoSwitch implements AutoStateMachines{
                 shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
                 queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
                 gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 5);
-                Robot.shooter.shootAll(targetShooterRPM, shooterRPMTolerance, queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
+                //TODO: Fix when can
+                //Robot.shooter.shootAll(targetShooterRPM, shooterRPMTolerance, queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
 
                 autoStates = AutoStates.SHOOT;
             break;

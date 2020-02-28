@@ -33,7 +33,7 @@ public class ThreeBallAuto implements AutoStateMachines{
     //Shooter shooter;
     //DriveController driveController;
     //DriveController.MoveParameters mP;
-    double targetShooterRPM, shooterRPMTolerance;
+    //double targetShooterRPM, shooterRPMTolerance;
     double queuingBeltSpeed;
     boolean useGyro;
     double angleOffset;
@@ -50,7 +50,8 @@ public class ThreeBallAuto implements AutoStateMachines{
         portalTapeTargetTable = Robot.ntInst.getTable("Retroreflective Tape Target");
         //mP = driveController.new MoveParameters();
         // targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
-        shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+        //shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+        shooter.setTargetShooterRPMTolerance(SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0));
         queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
         gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 1);
         
@@ -78,7 +79,8 @@ public class ThreeBallAuto implements AutoStateMachines{
 
             case START:
                 shooter.setHoodSetpoint(-1400);
-                targetShooterRPM = 3600;
+                shooter.setTargetShooterRPM(3600);
+                //targetShooterRPM = 3600;
 
                 counter = 0;
                 if(portalTapeTargetTable.getEntry("Retroreflective Target Found").getBoolean(false)){
@@ -95,10 +97,11 @@ public class ThreeBallAuto implements AutoStateMachines{
                 mP.angle = angleOffset;
                 mP.currentState = DriveState.TURN_TO_GYRO;
                 // targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
-                shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+                //shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+                shooter.setTargetShooterRPMTolerance(SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0));
                 queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
                 gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 5);
-                Robot.shooter.shootAll(targetShooterRPM, shooterRPMTolerance, queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
+                Robot.shooter.shootAll(/*targetShooterRPM, shooterRPMTolerance, */queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
 
                 autoStates = AutoStates.SHOOT;
             break;
