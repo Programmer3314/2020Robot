@@ -26,7 +26,7 @@ import frc.robot.DriveController.MoveParameters;
  */
 public class Shooter {
     public enum ShooterStates {
-        IDLE, GET_HALF_BALL, GET_BALL, GOT_BALL, GAP_BALL, GROUND_GET_HALF_BALL, GROUND_GOT_BALL, GROUND_GAP_BALL, INTAKE_DONE, INTAKE_DONE2, PREPARE, FIRE_BALL_AUTO, DONE
+        IDLE, GET_HALF_BALL, GET_BALL, GOT_BALL, GAP_BALL, GROUND_GET_HALF_BALL, GROUND_GOT_BALL, GROUND_GAP_BALL, GROUND_EXTRA_BALL, INTAKE_DONE, INTAKE_DONE2, PREPARE, FIRE_BALL_AUTO, DONE
     }
 
     double targetShooterRPM, shooterRPMTolerance;
@@ -47,11 +47,10 @@ public class Shooter {
     CANPIDController shooterPidController;
     PDController hoodPDController;
     boolean abortShooter;
-    double intakeMotorSpeed = .35;
+    double intakeMotorSpeed = 1.0;
 
     public Shooter(int CANMcshooterLeft, int CANMcshooterRight, int CANMcBallQueuing, 
         int CANMcHood, int CANMcIndexer, int CANMcIntake) {
-
 
         shooterStates = ShooterStates.IDLE;
 
@@ -106,6 +105,12 @@ public class Shooter {
     }
 
     public void update(MoveParameters mP) {
+        if(SensorInput.queuedHood){
+            HumanInput.driverController.setRumble(RumbleType.kLeftRumble, 0);
+        } else {
+            HumanInput.driverController.setRumble(RumbleType.kLeftRumble, 1);
+        }
+
         beltQueuingEncoder = ballQueuing.getSelectedSensorPosition();
 
         //mP.currentState = DriveController.DriveState.SHOOTERPOWERPORTALIGNMENT;
@@ -199,7 +204,7 @@ public class Shooter {
     
             case GROUND_GOT_BALL:
             Solenoids.ejectIntake(false); //Comment 2 of 2 when test loading station intake
-            intake.set(ControlMode.PercentOutput, intakeMotorSpeed);
+            intake.set(ControlMode.PercentOutput, 0.35);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.0); // 0.5);
             break;
@@ -210,6 +215,13 @@ public class Shooter {
             ballQueuing.set(ControlMode.PercentOutput, 0.5);
             break;
 
+            case GROUND_EXTRA_BALL:
+            Solenoids.ejectIntake(true);
+            intake.set(ControlMode.PercentOutput, intakeMotorSpeed);
+            indexer.set(ControlMode.PercentOutput, 0);
+            ballQueuing.set(ControlMode.PercentOutput, 0.0);
+            break;
+            
             case INTAKE_DONE:
             intake.set(ControlMode.PercentOutput, 0); // intakeMotorSpeed);
             indexer.set(ControlMode.PercentOutput, 0);
@@ -231,7 +243,7 @@ public class Shooter {
                 if (SensorInput.queuedShooter) {
                     ballQueuing.set(ControlMode.PercentOutput, 0);
                 } else {
-                    ballQueuing.set(ControlMode.PercentOutput, 0.5);
+                    ballQueuing.set(ControlMode.PercentOutput, 0.8/*1.0*//*0.5*/);
                 }
 
 
@@ -249,7 +261,7 @@ public class Shooter {
         case FIRE_BALL_AUTO:
             // shooterLeft.set(-HumanInput.throttle);
             shooterPidController.setReference(targetShooterRPM, ControlType.kVelocity);
-            ballQueuing.set(ControlMode.PercentOutput, queuingBeltSpeed);
+            ballQueuing.set(ControlMode.PercentOutput, 1.0/*queuingBeltSpeed*/);
 
             if(!SensorInput.queuedTrack1 && !SensorInput.queuedTrack2) {
                 indexer.set(ControlMode.PercentOutput, 0.5);
@@ -345,10 +357,14 @@ public class Shooter {
                 }
 
                 if (SensorInput.queuedShooter) {
-                    shooterStates = ShooterStates.INTAKE_DONE;
+                    shooterStates = ShooterStates.GROUND_EXTRA_BALL;
                     counter = 0;
                 }
                 break;
+
+            case GROUND_EXTRA_BALL:
+            //only way out of this is to abort intake
+            break;
 
             case INTAKE_DONE:
                 //shooterStates = ShooterStates.IDLE;
@@ -501,7 +517,7 @@ public class Shooter {
     public void reverseAll(){
         reverseIntake();
         ballQueuing.set(ControlMode.PercentOutput, -0.75);
-        indexer.set(ControlMode.PercentOutput, -0.75);
+        indexer.set(ControlMode.PercentOutput, -0.375);
     }
 
     public void reverseAllRelease(){

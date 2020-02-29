@@ -25,6 +25,7 @@ public class Robot extends MyRobot {
   DriveController.MoveParameters mP;
   boolean toggleLightRing = false;
   Climber climber = new Climber();
+  int LEDCounter;
 
   // public static DriveController.DriveState currentDriveState;
 
@@ -76,6 +77,15 @@ public class Robot extends MyRobot {
     Solenoids.targettingLightRing(true);
     Solenoids.ejectIntake(false);
 
+    Solenoids.intakeOut.set(false);
+    Solenoids.intakeIn.set(true);
+    Solenoids.disengageRatchet.set(false);
+    Solenoids.engageRatchet.set(true);
+    Solenoids.disengagePTO.set(true);
+    Solenoids.engagePTO.set(false);
+    Solenoids.CPManipulatorDown.set(true);
+    Solenoids.CPManipulatorUp.set(false);
+
     HumanInput.update();
 
     // set auto 
@@ -85,7 +95,7 @@ public class Robot extends MyRobot {
     }
 
     if (HumanInput.autoNumber == 4) {
-      auto1 = new ThreeBallAutoSwitch(shooter);
+      auto1 = new ThreeBallAutoBack(shooter);
     }
 
     mP = driveController.new MoveParameters();
@@ -125,6 +135,20 @@ public class Robot extends MyRobot {
   public void RechargeTeleopInit() {
     Solenoids.targettingLightRing(true);
 
+    Solenoids.intakeOut.set(false);
+    Solenoids.intakeIn.set(true);
+    Solenoids.disengageRatchet.set(false);
+    Solenoids.engageRatchet.set(true);
+    Solenoids.disengagePTO.set(true);
+    Solenoids.engagePTO.set(false);
+    Solenoids.CPManipulatorDown.set(true);
+    Solenoids.CPManipulatorUp.set(false);
+
+    Solenoids.backLED.set(false);
+    Solenoids.frontLED.set(false);
+
+    LEDCounter = 0;
+
     // if (hasControlPanel) {
     //   controlPanel = new ControlPanel(CANMcctrlPanel);
     // }
@@ -138,7 +162,7 @@ public class Robot extends MyRobot {
     }
 
     if (HumanInput.autoNumber == 4) {
-      auto1 = new ThreeBallAutoSwitch(shooter);
+      auto1 = new ThreeBallAutoBack(shooter);
    }
 
     trenchAlignment.resetState();
@@ -161,6 +185,13 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeTeleopPeriodic() {
+    LEDCounter++;
+
+    if(LEDCounter >= 4750){
+      Solenoids.backLED(true);
+      Solenoids.frontLED(true);
+    }
+
     HumanInput.update();
     Solenoids.update();
     SensorInput.update();
@@ -368,13 +399,13 @@ public class Robot extends MyRobot {
     climber.update(mP);
     driveController.update(mP);
 
-    SmartDashboard.putString("Ball & Intake Config", "Inactive");
+    SmartDashboard.putString("Ball Intake Config", "Inactive");
     SmartDashboard.putString("Shooter Config", "Inactive");
     SmartDashboard.putString("Control Panel Config", "Inactive");
     SmartDashboard.putString("Climber Config", "Inactive");
 
     if (!(HumanInput.leftSwitch) && !(HumanInput.rightSwitch)) { // ball + intake
-      SmartDashboard.putString("Ball & Intake Config", "Active");
+      SmartDashboard.putString("Ball Intake Config", "Active");
     } else if (!(HumanInput.leftSwitch) && HumanInput.rightSwitch) { // shooter
       SmartDashboard.putString("Shooter Config", "Active");
     } else if (HumanInput.leftSwitch && !(HumanInput.rightSwitch)) { // control panel
@@ -398,13 +429,13 @@ public class Robot extends MyRobot {
     Solenoids.update();
     Solenoids.startCompressor();
     // fxTest.Update();
-    SmartDashboard.putString("Ball & Intake Config", "Inactive");
+    SmartDashboard.putString("Ball Intake Config", "Inactive");
     SmartDashboard.putString("Shooter Config", "Inactive");
     SmartDashboard.putString("Control Panel Config", "Inactive");
     SmartDashboard.putString("Climber Config", "Inactive");
 
     if (!(HumanInput.leftSwitch) && !(HumanInput.rightSwitch)) { // ball + intake
-      SmartDashboard.putString("Ball & Intake Config", "Active");
+      SmartDashboard.putString("Ball Intake Config", "Active");
     } else if (!(HumanInput.leftSwitch) && HumanInput.rightSwitch) { // shooter
       SmartDashboard.putString("Shooter Config", "Active");
     } else if (HumanInput.leftSwitch && !(HumanInput.rightSwitch)) { // control panel

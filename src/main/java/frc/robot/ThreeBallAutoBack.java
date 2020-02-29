@@ -16,7 +16,7 @@ import frc.robot.DriveController.MoveParameters;
 /**
  * Add your docs here.
  */
-public class ThreeBallAutoSwitch implements AutoStateMachines{
+public class ThreeBallAutoBack implements AutoStateMachines{
     public enum AutoStates {
         IDLE,
         DELAY,
@@ -24,7 +24,7 @@ public class ThreeBallAutoSwitch implements AutoStateMachines{
         ALIGN, //Align to power port
         SHOOT, // Shoot 3 balls
         TURN_TO_GYRO, // Turn to gyro 0
-        FORWARD, //Move forward off the line
+        BACKWARD, //Move forward off the line
         DONE
     }
     NetworkTable portalTapeTargetTable;
@@ -44,7 +44,7 @@ public class ThreeBallAutoSwitch implements AutoStateMachines{
 
     Shooter shooter;
 
-    public ThreeBallAutoSwitch(Shooter shooter){
+    public ThreeBallAutoBack(Shooter shooter){
         autoStates = AutoStates.IDLE;
         //shooter = new Shooter(7, 8, 11, 9);
         counter = 0;
@@ -124,17 +124,17 @@ public class ThreeBallAutoSwitch implements AutoStateMachines{
                 }
 
                 if (counter >= 10) {
-                    autoStates = AutoStates.FORWARD;
+                    autoStates = AutoStates.BACKWARD;
                     counter = 0;
                 }
                 lastEncoderPos = encoderPos;
             break;
 
-            case FORWARD:
+            case BACKWARD:
                 //go 2 - 5 inches forward or something
                 mP.currentState = DriveState.GYROLOCK;
-                mP.forward = -0.2;
-                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet>=4){
+                mP.forward = 0.2;
+                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet>=2){
                     autoStates = AutoStates.DONE;
                 }
             break;

@@ -26,6 +26,8 @@ public class Solenoids {
     public static Solenoid CPManipulatorUp = new Solenoid(0, 7);
     public static Solenoid targettingLightRing = new Solenoid(1, 0);
     public static Solenoid confirmShooterLightRing = new Solenoid(1, 1);
+    public static Solenoid frontLED = new Solenoid(1, 2);
+    public static Solenoid backLED = new Solenoid(1, 3);
     
 
     public Solenoids() {
@@ -112,6 +114,14 @@ public class Solenoids {
 
     public static void confirmShooterLightRing(boolean toggle){
         confirmShooterLightRing.set(toggle);
+    }
+
+    public static void backLED(boolean toggle){
+        backLED.set(toggle);
+    }
+
+    public static void frontLED(boolean toggle){
+        frontLED.set(toggle);
     }
 
     public static void startCompressor() {
