@@ -62,6 +62,7 @@ public class DriveController {
         scaleForward = 1;
         encoderPos = drivetrain.getEncoderVal();
 
+        // TODO: Please add missing cases simply to remove the warnings...
         if (mP.currentState != lastDriveState) {
             switch (mP.currentState) {
             case POWERPORTALIGNMENT:

@@ -119,7 +119,6 @@ public class Climber {
                 if(!HumanInput.operatorBack || !HumanInput.operatorStart){
                     climbStates = ClimbStates.DONE;
                 }
-                // TODO: Review Climber Change
                 // Add climb limit
                 if(Math.abs(encoderPos - originalEncoderPos)>200000) {
                     climbStates = ClimbStates.DONE;

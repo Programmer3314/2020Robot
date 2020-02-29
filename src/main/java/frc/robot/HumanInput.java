@@ -127,9 +127,6 @@ public class HumanInput {
         intakeOut = false;
         intakeIn = false;
         lightRing = false;
-        // TODO: Review Change
-        // why clear it when we set it above...
-        // abortShooter = false;
         controlPanelAlignment = false;
         engageRatchet = false;
         disengageRatchet = false;

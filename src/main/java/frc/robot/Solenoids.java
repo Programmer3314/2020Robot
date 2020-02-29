@@ -7,11 +7,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Solenoid;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**

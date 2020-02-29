@@ -154,7 +154,6 @@ public class Robot extends MyRobot {
     shooter.setHoodSetpoint(0.0);
     shooter.homedHood = false;
 
-    // TODO: Reveiw Change
     isForward = true;
     driverCamNum = 1;
     operatorCamNum = 0;

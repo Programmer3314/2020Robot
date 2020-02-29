@@ -1,11 +1,16 @@
 Bookmark - pre-competition week one 
 
 TODOs
+Please init ratchet to engaged position in auto init and teleop init. 
+Please add timer (count cycles) and turn on vertical lights/rumble driver with 40 seconds left in match
+Please create ThreeBallAuto that drives back.
+Please read other todo's in "problems" screen.
+
 - DONE - Fix Target Align Button - probably fixed, must test
-Take in 5th Ball Sitting on Indexer - maybe fixed, must test
+- DONE - Take in 5th Ball Sitting on Indexer - maybe fixed, must test
 - DONE - Shooter not spinning down after timer - hopefully fixed, must test
 - DONE - Climber stopping by itself - not sure why... I made other changes though
-Init isForward and driverCamNum in both auto and periodic init - done, please check
+- DONE - Init isForward and driverCamNum in both auto and periodic init - done, please check
 - DONE - >>>Please add a shooter abort, I don't see one. 
 
 ***Actions***

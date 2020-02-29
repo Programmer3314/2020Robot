@@ -240,7 +240,6 @@ public class Shooter {
                 } else {
                     indexer.set(ControlMode.PercentOutput, 0);
                 }
-                // TODO: Review Change
                 // not sure why we'd run this here
                 //intake.set(ControlMode.PercentOutput, 0.25);
                 intake.set(ControlMode.PercentOutput, 0);
@@ -257,7 +256,6 @@ public class Shooter {
             } else {
                 indexer.set(ControlMode.PercentOutput, 0);
             }
-                // TODO: Review Change
                 // not sure why we'd run this here
                 //intake.set(ControlMode.PercentOutput, 0.25);
                 intake.set(ControlMode.PercentOutput, 0);
@@ -398,7 +396,6 @@ public class Shooter {
                     && (Math.abs(hoodEncoder - hoodSetpoint) > Constants.hoodkTolerance) ) {
                     shooterStates = ShooterStates.PREPARE;
                 }
-                // TODO: Review Change
                 // I believe that the shooter wasn't spinning down 
                 // because the RPM didn't fall enough to trigger the above 
                 // state change. So the counter is never checked and we just sit here. 
@@ -431,6 +428,7 @@ public class Shooter {
 
     public void shootAll(/*double targetShooterRPM, double shooterRPMTolerance,*/ double queuingBeltSpeed, boolean useGyro,
         double gyroAngleDesired, double gyroTolerance) {
+        // TODO: Now that the params don't exist. These lines do nothing. 
         this.targetShooterRPM = targetShooterRPM;
         this.shooterRPMTolerance = shooterRPMTolerance;
         this.queuingBeltSpeed = queuingBeltSpeed;
