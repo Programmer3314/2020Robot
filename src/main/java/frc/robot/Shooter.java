@@ -522,7 +522,7 @@ public class Shooter {
     public void resetState() {
         shooterStates = ShooterStates.IDLE;
     }
-
+ 
     public void resetHood(){
         if(SensorInput.queuedHood){
             hoodEncoder = 0;

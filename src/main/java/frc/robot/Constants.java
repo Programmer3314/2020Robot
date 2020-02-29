@@ -37,13 +37,13 @@ public class Constants{
     // Falcon chassis set
     public static final double falconDrivetrainKP = 0.002500;//5e-5;
     public static final double falconDrivetrainKI = 0.000000;
-    public static final double falconDrivetrainKD = 0; 
+    public static final double falconDrivetrainKD = 0.00025 ; 
     public static final double falconDrivetrainKIz = 0; 
     public static final double falconDrivetrainKFF = 0.050000; 
     public static final double falconDrivetrainKMaxOutput =  0.869990; 
     public static final double falconDrivetrainKMinOutput = -0.869990;
     public static final double falconTrackingMaxCorrection = 0.4; // = 0.1;
-    public static final double falconTrackingMinCorrection = 0.06;
+    public static final double falconTrackingMinCorrection = 0.04;
     ; // = 0.07;
     public static final int    falconEncoderTicksToFeet = 12527;
     // Neo chassis set
