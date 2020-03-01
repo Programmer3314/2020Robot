@@ -58,6 +58,7 @@ public abstract class MyRobot extends AllRobots {
 
     @Override
     public void MyRobotInit() {
+        SmartDashboard.putNumber("Target Offset", Constants.targettingOffset);
 
         navx = new AHRS(SPI.Port.kMXP);
         navx.reset();
@@ -170,7 +171,13 @@ public abstract class MyRobot extends AllRobots {
         } else {
             IRSensorValue = true;
         }
-        rawGyro = navx.getAngle();
+
+        if(!HumanInput.KILLALLGYROS){
+            rawGyro = navx.getAngle();
+        } else {
+            rawGyro = 0;
+        }
+        
         cleanGyro = (rawGyro + 180 * Math.signum(rawGyro)) % 360 - 180 * Math.signum(rawGyro);
         ultraSonicDistance = uSSensor.getDistance();
         SmartDashboard.putNumber("Gyro Value", Robot.cleanGyro);

@@ -40,8 +40,10 @@ public class HumanInput {
     public static boolean traverseClimbState, operatorStart, operatorBack;
     // private static boolean driverCameraChangeValue, lastDriverCameraChangeValue;
     public static boolean abortShooter;
-    public static boolean sLeft, sRight;
+    public static boolean sLeft, KILLALLGYROS;
     public static boolean reverseAll, reverseAllReleased;
+
+    // public static boolean KILLALLGYROS;
 
     public HumanInput(){    
     }
@@ -105,11 +107,11 @@ public class HumanInput {
         if(CPManipulatorUp){
             fourSpins = operatorController.getRawButtonReleased(9);
             spinCP = operatorController.getRawAxis(0);
-            spinToGreen = operatorController.getRawButtonReleased(1);
-            spinToRed = operatorController.getRawButtonReleased(2);
-            spinToBlue = operatorController.getRawButtonReleased(3);
-            spinToYellow = operatorController.getRawButtonReleased(4);
-            spinToFMSColor = operatorController.getRawButtonReleased(10);
+            // spinToGreen = operatorController.getRawButtonReleased(1);
+            // spinToRed = operatorController.getRawButtonReleased(2);
+            // spinToBlue = operatorController.getRawButtonReleased(3);
+            // spinToYellow = operatorController.getRawButtonReleased(4);
+            // spinToFMSColor = operatorController.getRawButtonReleased(10);
         }
 
         // Button Box
@@ -117,7 +119,7 @@ public class HumanInput {
         leftSwitch = buttonBox1.getRawButton(11);
         rightSwitch = buttonBox1.getRawButton(12);
         sLeft = buttonBox2.getRawButton(13);
-        sRight = buttonBox2.getRawButton(14);
+        KILLALLGYROS = buttonBox2.getRawButton(14);
 
         hoodUp = false;
         hoodUpReleased = false;
@@ -136,7 +138,6 @@ public class HumanInput {
         gyroReset = false;
         reset = false;
         abortClimb = false;
-        
         
         if(!(leftSwitch) && !(rightSwitch)){ //ball + intake
             intakeOut = buttonBox1.getRawButtonReleased(1);

@@ -55,9 +55,10 @@ public class Robot extends MyRobot {
       fxTest = new TalonFXTest();
     }
 
-    if (hasControlPanel) {
-      controlPanel = new ControlPanel(CANMcctrlPanel);
-    }
+    //TODO revert later
+    // if (hasControlPanel) {
+    //   controlPanel = new ControlPanel(CANMcctrlPanel);
+    // }
     trenchAlignment = new ControlPanelAlignment();
 
     // targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
@@ -133,7 +134,7 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeTeleopInit() {
-    SmartDashboard.putNumber("Target Offset", Constants.targettingOffset);
+    // SmartDashboard.putNumber("Target Offset", Constants.targettingOffset);
 
     Solenoids.targettingLightRing(true);
 
@@ -187,12 +188,13 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeTeleopPeriodic() {
-    LEDCounter++;
 
-    if(LEDCounter >= 4750){
-      Solenoids.backLED(true);
-      Solenoids.frontLED(true);
-    }
+    // LEDCounter++;
+
+    // if(LEDCounter >= 4750){
+    //   Solenoids.backLED(true);
+    //   Solenoids.frontLED(true);
+    // }
 
     HumanInput.update();
     Solenoids.update();
@@ -244,31 +246,30 @@ public class Robot extends MyRobot {
     } else if(HumanInput.powerPortAlignment){
       mP.currentState = DriveController.DriveState.POWERPORTALIGNMENT;
       // mP.currentState = DriveController.DriveState.SHOOTERPOWERPORTALIGNMENT;
-    }else if (HumanInput.climbAlignmentButton) {
+    } else if (HumanInput.climbAlignmentButton) {
       mP.currentState = DriveController.DriveState.CLIMBALIGNMENT;
     } else if (HumanInput.gyroLock) {
       mP.currentState = DriveController.DriveState.GYROLOCK;
     } else if (HumanInput.controlPanelAlignment) {
       trenchAlignment.activate();
-    } else if (HumanInput.activateAuto) {
-      SmartDashboard.putString("In active Auto", "Yes");
+    // } else if (HumanInput.activateAuto) {
+    //   SmartDashboard.putString("In active Auto", "Yes");
 
-      if(auto1 != null){
-        auto1.activate();
-      }
+    //   if(auto1 != null){
+    //     auto1.activate();
+    //   }
 
-      if(auto1 != null){
-        auto1.update(mP);
-      }
+    //   if(auto1 != null){
+    //     auto1.update(mP);
+    //   }
 
-    } else if (HumanInput.shutDownAuto) {
-      SmartDashboard.putString("In Active Auto", "No");
-      mP.currentState = DriveController.DriveState.NONE;
+    // } else if (HumanInput.shutDownAuto) {
+    //   SmartDashboard.putString("In Active Auto", "No");
+    //   mP.currentState = DriveController.DriveState.NONE;
 
-      if(auto1 != null){
-        auto1.reset();
-      }
-
+    //   if(auto1 != null){
+    //     auto1.reset();
+    //   }
     } else if(HumanInput.abortIntake){
       shooter.abortIntake();
     } else if(HumanInput.lightRing){
@@ -316,9 +317,9 @@ public class Robot extends MyRobot {
 
     trenchAlignment.update(mP);
 
-    if(auto1 != null){
-      auto1.update(mP);
-    }
+    // if(auto1 != null){
+    //   auto1.update(mP);
+    // }
 
     if(HumanInput.activateGroundIntake){
       shooter.groundIntakeAll();
@@ -331,19 +332,19 @@ public class Robot extends MyRobot {
     if (hasShooter) {
       shooter.update(mP);
     }
-
     
     if(HumanInput.reverseIntake){
       shooter.reverseIntake();
-    }else if(HumanInput.reverseIntakeReleased){
+    } else if(HumanInput.reverseIntakeReleased){
       shooter.reverseIntakeRelease();
     }
 
     if(HumanInput.reverseAll){
       shooter.reverseAll();
-    }else if(HumanInput.reverseAllReleased){
+    } else if(HumanInput.reverseAllReleased){
       shooter.reverseAllRelease();
     }
+
     if (HumanInput.reset) {
       shooter.reset();
       if(auto1 != null){
@@ -360,31 +361,31 @@ public class Robot extends MyRobot {
         controlPanel.spinFourTimes();
       }
 
-      if(HumanInput.spinToYellow){
-        controlPanel.spinToYellow();
-      }
+      // if(HumanInput.spinToYellow){
+      //   controlPanel.spinToYellow();
+      // }
 
-      if(HumanInput.spinToGreen){
-        controlPanel.spinToGreen();
-      }
+      // if(HumanInput.spinToGreen){
+      //   controlPanel.spinToGreen();
+      // }
 
-      if(HumanInput.spinToBlue){
-        controlPanel.spinToBlue();
-      }
+      // if(HumanInput.spinToBlue){
+      //   controlPanel.spinToBlue();
+      // }
 
-      if(HumanInput.spinToRed){
-        controlPanel.spinToRed();
-      }
+      // if(HumanInput.spinToRed){
+      //   controlPanel.spinToRed();
+      // }
 
-      if(HumanInput.spinToFMSColor){
-        controlPanel.spinToFMSColor();
-      }        
+      // if(HumanInput.spinToFMSColor){
+      //   controlPanel.spinToFMSColor();
+      // }        
     }
 
-   
-    if (hasControlPanel) {
-      controlPanel.update();
-    }
+    //TODO revert later
+    // if (hasControlPanel) {
+    //   controlPanel.update();
+    // }
 
     if(HumanInput.operatorBack && HumanInput.operatorStart && climber.climbStates == ClimbStates.IDLE){
       climber.activate();
@@ -419,6 +420,7 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeTestInit() {
+    // SmartDashboard.putNumber("Target Offset", Constants.targettingOffset);
     // controlPanel.talon31.setSelectedSensorPosition(0);
     Solenoids.startCompressor();
     Solenoids.init();

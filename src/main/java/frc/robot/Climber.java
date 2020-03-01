@@ -84,7 +84,10 @@ public class Climber {
                 Solenoids.engagePTO.set(true);
                 Solenoids.disengagePTO.set(false);
 
-                if(counter >= 50){
+                Solenoids.disengageRatchet.set(false);
+                Solenoids.engageRatchet.set(true);
+
+                if(counter >= 5/*50*/){
                     encoderPos = 0;
                     counter = 0;
                     originalEncoderPos = Robot.driveController.encoderPos;
