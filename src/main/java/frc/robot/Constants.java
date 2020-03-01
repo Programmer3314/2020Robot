@@ -118,4 +118,6 @@ public class Constants{
 
     public static final double humanInputDeadband = 0.01;
     public static final double humanInputMinTurn = 0.025;
+
+    public static final int targettingOffset = 2;
 }

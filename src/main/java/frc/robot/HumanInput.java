@@ -38,7 +38,7 @@ public class HumanInput {
     public static boolean testButton;
     public static boolean closeShot, lineShot, trenchShot, farShot;
     public static boolean traverseClimbState, operatorStart, operatorBack;
-    private static boolean driverCameraChangeValue, lastDriverCameraChangeValue;
+    // private static boolean driverCameraChangeValue, lastDriverCameraChangeValue;
     public static boolean abortShooter;
     public static boolean sLeft, sRight;
     public static boolean reverseAll, reverseAllReleased;
@@ -73,9 +73,10 @@ public class HumanInput {
         gyroLock = driverController.getRawAxis(2) > 0.5;
         trenchRunAlignment = driverController.getRawButton(3); // X
         ballChaseButton = driverController.getRawButton(4);    // Y
-        driverCameraChangeValue = driverController.getPOV() == 0; // start
-        driverCameraChange = (!lastDriverCameraChangeValue && driverCameraChangeValue);
-        lastDriverCameraChangeValue = driverCameraChangeValue;
+        // driverCameraChangeValue = driverController.getPOV() == 0; // start
+        // driverCameraChange = (!lastDriverCameraChangeValue && driverCameraChangeValue);
+        // lastDriverCameraChangeValue = driverCameraChangeValue;
+        driverCameraChange = driverController.getRawButtonPressed(2);
         activateGroundIntake = driverController.getRawButtonPressed(6);
         activateIntake = driverController.getRawButtonPressed(5);
         abortIntake = driverController.getRawButtonReleased(5) || driverController.getRawButtonReleased(6);

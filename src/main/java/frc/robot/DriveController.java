@@ -68,7 +68,8 @@ public class DriveController {
             case POWERPORTALIGNMENT:
                 angleOffset = retroTapeTable.getEntry("X Angle").getDouble(0);
                 retroTapeTable.getEntry("gyro").setDouble(Robot.rawGyro);
-                angleOffset += Robot.rawGyro;
+                double temp = SmartDashboard.getNumber("Target Offset", 0);
+                angleOffset += Robot.rawGyro + temp;
                 break;
             case GYROLOCK:
                 gyroLockAngle = Robot.cleanGyro;

@@ -328,7 +328,7 @@ public class Shooter {
     
                 break;
             case GROUND_GET_HALF_BALL:
-                if(SensorInput.queuedIntake && counter >= 25){
+                if(SensorInput.queuedIntake && counter >= 5/*25*/){
                     shooterStates = ShooterStates.GROUND_GOT_BALL;
                     counter = 0;
                 }else if(SensorInput.queuedIntake){

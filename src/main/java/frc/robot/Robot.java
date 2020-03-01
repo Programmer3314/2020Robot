@@ -133,6 +133,8 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeTeleopInit() {
+    SmartDashboard.putNumber("Target Offset", Constants.targettingOffset);
+
     Solenoids.targettingLightRing(true);
 
     Solenoids.intakeOut.set(false);
@@ -295,9 +297,9 @@ public class Robot extends MyRobot {
       //Robot.ntInst.getEntry("PumpkinSwitch").setNumber(1);
     }
 
-    if (!isForward) {
-      mP.forward *= -1;
-    } 
+    // if (!isForward) {
+    //   mP.forward *= -1;
+    // } 
 
     if (HumanInput.operatorCameraChange) {
 
