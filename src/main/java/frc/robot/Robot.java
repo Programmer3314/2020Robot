@@ -55,7 +55,8 @@ public class Robot extends MyRobot {
       fxTest = new TalonFXTest();
     }
 
-    //TODO revert later
+    // TODO: revert later
+    // Commented due to lag issue
     // if (hasControlPanel) {
     //   controlPanel = new ControlPanel(CANMcctrlPanel);
     // }
@@ -252,6 +253,7 @@ public class Robot extends MyRobot {
       mP.currentState = DriveController.DriveState.GYROLOCK;
     } else if (HumanInput.controlPanelAlignment) {
       trenchAlignment.activate();
+    // Commented due to lag issue
     // } else if (HumanInput.activateAuto) {
     //   SmartDashboard.putString("In active Auto", "Yes");
 
@@ -317,6 +319,7 @@ public class Robot extends MyRobot {
 
     trenchAlignment.update(mP);
 
+    // Commented due to lag issue
     // if(auto1 != null){
     //   auto1.update(mP);
     // }
@@ -361,6 +364,8 @@ public class Robot extends MyRobot {
         controlPanel.spinFourTimes();
       }
 
+    // TODO: revert later - maybe
+    // Commented due to lag issue
       // if(HumanInput.spinToYellow){
       //   controlPanel.spinToYellow();
       // }
@@ -382,7 +387,8 @@ public class Robot extends MyRobot {
       // }        
     }
 
-    //TODO revert later
+    // TODO: revert later
+    // Commented due to lag issue
     // if (hasControlPanel) {
     //   controlPanel.update();
     // }
