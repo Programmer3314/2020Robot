@@ -1,6 +1,18 @@
 Bookmark - pre-competition week one 
 
 TODOs
+
+Lag - Probably in commented code
+Ball 2 misses - check belt speed
+No need for Gyro 0
+Hood up only vibrates prior to shoot sequence 
+Lines on Driver Cam for alignment with lower target and other stuff
+Eject the Intake and yank it back in.
+
+Logging
+Image capture on pi's 
+
+
 Please init ratchet to engaged position in auto init and teleop init. 
 Please add timer (count cycles) and turn on vertical lights/rumble driver with 40 seconds left in match
 Please create ThreeBallAuto that drives back.
