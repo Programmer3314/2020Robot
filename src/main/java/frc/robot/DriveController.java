@@ -62,17 +62,28 @@ public class DriveController {
         scaleForward = 1;
         encoderPos = drivetrain.getEncoderVal();
 
-        // TODO: Please add missing cases simply to remove the warnings...
         if (mP.currentState != lastDriveState) {
             switch (mP.currentState) {
-            case POWERPORTALIGNMENT:
-                angleOffset = retroTapeTable.getEntry("X Angle").getDouble(0);
-                retroTapeTable.getEntry("gyro").setDouble(Robot.rawGyro);
-                double temp = SmartDashboard.getNumber("Target Offset", 0);
-                angleOffset += Robot.rawGyro + temp;
-                break;
-            case GYROLOCK:
-                gyroLockAngle = Robot.cleanGyro;
+                case BALLCHASE:
+                case CLIMBALIGNMENT:
+                case CONTROLPANELALIGNMENT:
+                case MANUAL:
+                case NONE:
+                case SHOOTERPOWERPORTALIGNMENT:
+                case TRENCHRUNALIGNMENT:
+                case TURN_TO_GYRO:
+                    break;
+
+                case POWERPORTALIGNMENT:
+                    angleOffset = retroTapeTable.getEntry("X Angle").getDouble(0);
+                    retroTapeTable.getEntry("gyro").setDouble(Robot.rawGyro);
+                    double temp = SmartDashboard.getNumber("Target Offset", 0);
+                    angleOffset += Robot.rawGyro + temp;
+                    break;
+
+                case GYROLOCK:
+                    gyroLockAngle = Robot.cleanGyro;
+                    break;
             }
         }
 

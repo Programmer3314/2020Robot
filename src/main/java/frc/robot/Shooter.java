@@ -444,9 +444,9 @@ public class Shooter {
 
     public void shootAll(/*double targetShooterRPM, double shooterRPMTolerance,*/ double queuingBeltSpeed, boolean useGyro,
         double gyroAngleDesired, double gyroTolerance) {
-        // TODO: Now that the params don't exist. These lines do nothing. 
-        this.targetShooterRPM = targetShooterRPM;
-        this.shooterRPMTolerance = shooterRPMTolerance;
+        // Now that the params don't exist. These lines do nothing. 
+        // this.targetShooterRPM = targetShooterRPM;
+        // this.shooterRPMTolerance = shooterRPMTolerance;
         this.queuingBeltSpeed = queuingBeltSpeed;
         this.useGyro = useGyro;
         this.desiredGyroAngle = gyroAngleDesired;
