@@ -123,7 +123,7 @@ public class Climber {
                     climbStates = ClimbStates.DONE;
                 }
                 // Add climb limit
-                if(Math.abs(encoderPos - originalEncoderPos)>200000) {
+                if(Math.abs(encoderPos - originalEncoderPos)>300000) {
                     climbStates = ClimbStates.DONE;
                 }
             break;

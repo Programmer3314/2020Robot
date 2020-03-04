@@ -71,7 +71,7 @@ public class ThreeBallAuto implements AutoStateMachines{
 
             case DELAY:
                 counter++;
-                if(counter >= 50){
+                if(counter >= 75){
                     autoStates = AutoStates.START;
                 }
 
