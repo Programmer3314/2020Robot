@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Climber.ClimbStates;
@@ -153,9 +155,9 @@ public class Robot extends MyRobot {
 
     LEDCounter = 0;
 
-    // if (hasControlPanel) {
-    //   controlPanel = new ControlPanel(CANMcctrlPanel);
-    // }
+    if (hasControlPanel) {
+       controlPanel = new ControlPanel(CANMcctrlPanel);
+    }
 
     mP = driveController.new MoveParameters();
 
@@ -215,7 +217,7 @@ public class Robot extends MyRobot {
     }
 
     if(HumanInput.trenchShot){
-      shooter.setHoodSetpoint(-1450);
+      shooter.setHoodSetpoint(-1500);
       shooter.setTargetShooterRPM(3600);
       //targetShooterRPM = 3600;
     }
@@ -334,6 +336,9 @@ public class Robot extends MyRobot {
 
     if (hasShooter) {
       shooter.update(mP);
+    }
+    if(HumanInput.spinIntake){
+      shooter.intake.set(ControlMode.PercentOutput, 1.0);
     }
     
     if(HumanInput.reverseIntake){

@@ -91,7 +91,7 @@ public class ThreeBallAuto implements AutoStateMachines{
                     autoStates = AutoStates.ALIGN;
                 }
             break;
-
+            
             case ALIGN:
                 //mP.currentState = DriveState.POWERPORTALIGNMENT;
                 mP.angle = angleOffset;
@@ -101,7 +101,7 @@ public class ThreeBallAuto implements AutoStateMachines{
                 shooter.setTargetShooterRPMTolerance(SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0));
                 queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
                 gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 5);
-                Robot.shooter.shootAll(/*targetShooterRPM, shooterRPMTolerance, */queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
+                Robot.shooter.shootAll(queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
 
                 autoStates = AutoStates.SHOOT;
             break;

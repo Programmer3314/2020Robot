@@ -78,7 +78,7 @@ public class ThreeBallAutoBack implements AutoStateMachines{
 
             case START:
                 shooter.setHoodSetpoint(-1400);
-                targetShooterRPM = 3600;
+                shooter.setTargetShooterRPM(3600);
 
                 counter = 0;
                 if(portalTapeTargetTable.getEntry("Retroreflective Target Found").getBoolean(false)){
@@ -95,13 +95,14 @@ public class ThreeBallAutoBack implements AutoStateMachines{
                 mP.angle = angleOffset;
                 mP.currentState = DriveState.TURN_TO_GYRO;
                 // targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
-                shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+                //shooter.setTargetShooterRPMTolerance(SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0));
+                shooter.setTargetShooterRPMTolerance(50);
                 queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
                 gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 5);
 
                 // TODO: FIX THIS - This might be why the back Auto didn't work
                 // TODO: Fix when can
-                //Robot.shooter.shootAll(targetShooterRPM, shooterRPMTolerance, queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
+                Robot.shooter.shootAll( queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
 
                 autoStates = AutoStates.SHOOT;
             break;

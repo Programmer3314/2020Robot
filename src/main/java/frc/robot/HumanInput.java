@@ -144,6 +144,7 @@ public class HumanInput {
             intakeIn = buttonBox1.getRawButtonReleased(2);
             // activateIntake = buttonBox1.getRawButtonReleased(4);
             // activateGroundIntake = buttonBox1.getRawButtonReleased(5);
+            spinIntake = buttonBox1.getRawButton(3);
             spinBallQueue = buttonBox1.getRawButton(4);
             reverseBallQueue = buttonBox1.getRawButton(4);
             reverseAll = buttonBox1.getRawButton(7);

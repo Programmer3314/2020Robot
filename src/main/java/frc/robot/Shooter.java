@@ -48,6 +48,7 @@ public class Shooter {
     PDController hoodPDController;
     boolean abortShooter;
     double intakeMotorSpeed = 1.0;
+    final boolean pullIntakeInBetweenBalls = false;
 
     public Shooter(int CANMcshooterLeft, int CANMcshooterRight, int CANMcBallQueuing, 
         int CANMcHood, int CANMcIndexer, int CANMcIntake) {
@@ -203,7 +204,9 @@ public class Shooter {
             break;
     
             case GROUND_GOT_BALL:
-            Solenoids.ejectIntake(false); //Comment 2 of 2 when test loading station intake
+            if(pullIntakeInBetweenBalls){
+                Solenoids.ejectIntake(false); //Comment 2 of 2 when test loading station intake
+            }
             intake.set(ControlMode.PercentOutput, 0.35);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.0); // 0.5);
@@ -243,7 +246,7 @@ public class Shooter {
                 if (SensorInput.queuedShooter) {
                     ballQueuing.set(ControlMode.PercentOutput, 0);
                 } else {
-                    ballQueuing.set(ControlMode.PercentOutput, 0.8/*1.0*//*0.5*/);
+                    ballQueuing.set(ControlMode.PercentOutput, 0.9/*1.0*//*0.5*/);
                 }
 
 
@@ -261,7 +264,7 @@ public class Shooter {
         case FIRE_BALL_AUTO:
             // shooterLeft.set(-HumanInput.throttle);
             shooterPidController.setReference(targetShooterRPM, ControlType.kVelocity);
-            ballQueuing.set(ControlMode.PercentOutput, 1.0/*queuingBeltSpeed*/);
+            ballQueuing.set(ControlMode.PercentOutput, 0.9/*queuingBeltSpeed*/);
 
             if(!SensorInput.queuedTrack1 && !SensorInput.queuedTrack2) {
                 indexer.set(ControlMode.PercentOutput, 0.5);
