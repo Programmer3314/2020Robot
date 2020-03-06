@@ -42,7 +42,7 @@ public class Constants{
     public static final double falconDrivetrainKFF = 0.050000; 
     public static final double falconDrivetrainKMaxOutput =  0.869990; 
     public static final double falconDrivetrainKMinOutput = -0.869990;
-    public static final double falconTrackingMaxCorrection = 0.4; // = 0.1;
+    public static final double falconTrackingMaxCorrection = 0.2; // = 0.1;
     public static final double falconTrackingMinCorrection = 0.04;
     ; // = 0.07;
     public static final int    falconEncoderTicksToFeet = 12527;
@@ -70,7 +70,7 @@ public class Constants{
     //Ball Chasing
     public static final double ballTolerance = 15;
     public static final double ballkP = 0.0008;//.00065->.0009->.0008
-    public static final double ballkD = 0.0009;//.00009->.0009
+    public static final double ballkD = 0.00009;//.00009->.0009
 
     //Shooter Motors
     public static final int sparkShooterStallLimit = 40;
@@ -119,5 +119,5 @@ public class Constants{
     public static final double humanInputDeadband = 0.01;
     public static final double humanInputMinTurn = 0.025;
 
-    public static final int targettingOffset = 0;
+    public static final int targettingOffset = 2;
 }

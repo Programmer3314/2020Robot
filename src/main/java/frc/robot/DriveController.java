@@ -21,7 +21,8 @@ public class DriveController {
     }
 
     NetworkTable ballTargetTable, retroTapeTable;
-    int scaleForward = 1;
+    // int scaleForward = 1;
+    int scaleForward = -1;
     double scaleTurn = 1;
     // int camNum = 0;
     double distanceToWall;
@@ -59,6 +60,7 @@ public class DriveController {
     }
 
     public void update(MoveParameters mP) {
+        // scaleForward = 1;
         scaleForward = 1;
         encoderPos = drivetrain.getEncoderVal();
 
@@ -102,7 +104,7 @@ public class DriveController {
             if (ballTargetTable.getEntry("Target Found").getBoolean(false)) {
                 double centerX = ballTargetTable.getEntry("x").getDouble(0);
                 // mP.forward = HumanInput.forward;
-                mP.turn = -ballTracking.calculate(0, centerX *.8);
+                mP.turn = -ballTracking.calculate(0, centerX * .6/*.8*/);
             } else {
                 ballTracking.reset();
             }
@@ -191,6 +193,7 @@ public class DriveController {
         case TURN_TO_GYRO:
             mP.turn = powerPortTracking.calculate(mP.angle, Robot.cleanGyro);
             break;
+
         case NONE:
             mP.forward = 0;
             mP.turn = 0;

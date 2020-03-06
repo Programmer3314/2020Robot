@@ -78,6 +78,8 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeAutonomousInit() {
+    navx.reset();
+
     Solenoids.targettingLightRing(true);
     Solenoids.ejectIntake(false);
 
@@ -100,6 +102,10 @@ public class Robot extends MyRobot {
 
     if (HumanInput.autoNumber == 4) {
       auto1 = new ThreeBallAutoBack(shooter);
+    }
+
+    if (HumanInput.autoNumber == 6) {
+      auto1 = new SixBallAuto();
     }
 
     mP = driveController.new MoveParameters();
@@ -146,7 +152,8 @@ public class Robot extends MyRobot {
     Solenoids.disengageRatchet.set(false);
     Solenoids.engageRatchet.set(true);
     Solenoids.disengagePTO.set(true);
-    Solenoids.engagePTO.set(false);
+    Solenoids.engagePTO.set(false)
+    ;
     Solenoids.CPManipulatorDown.set(true);
     Solenoids.CPManipulatorUp.set(false);
 

@@ -8,7 +8,7 @@ No need for Gyro 0
 Hood up only vibrates prior to shoot sequence 
 Lines on Driver Cam for alignment with lower target and other stuff
 Eject the Intake and yank it back in.
-Fix three ball auto that drives back
+- DONE - Fix three ball auto that drives back
 Make forward not negative
 Create firing solution class to pass into shootAll
 

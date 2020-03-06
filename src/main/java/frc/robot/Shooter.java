@@ -43,12 +43,12 @@ public class Shooter {
     boolean useGyro;
     double desiredGyroAngle;
     double gyroTolerance;
-    int counter;
+    int counter, autoCounter;
     CANPIDController shooterPidController;
     PDController hoodPDController;
     boolean abortShooter;
     double intakeMotorSpeed = 1.0;
-    final boolean pullIntakeInBetweenBalls = false;
+    final boolean pullIntakeInBetweenBalls = true;
 
     public Shooter(int CANMcshooterLeft, int CANMcshooterRight, int CANMcBallQueuing, 
         int CANMcHood, int CANMcIndexer, int CANMcIntake) {
@@ -103,14 +103,15 @@ public class Shooter {
         shooterEncoder.setVelocityConversionFactor(Constants.sparkShooterVelocityConversionFactor);
 
         counter = 0;
+        autoCounter = 3;
     }
 
     public void update(MoveParameters mP) {
-        if(SensorInput.queuedHood){
-            HumanInput.driverController.setRumble(RumbleType.kLeftRumble, 0);
-        } else {
-            HumanInput.driverController.setRumble(RumbleType.kLeftRumble, 1);
-        }
+        // if(SensorInput.queuedHood){
+        //     HumanInput.driverController.setRumble(RumbleType.kLeftRumble, 0);
+        // } else {
+        //     HumanInput.driverController.setRumble(RumbleType.kLeftRumble, 1);
+        // }
 
         beltQueuingEncoder = ballQueuing.getSelectedSensorPosition();
 
@@ -287,8 +288,10 @@ public class Shooter {
         // Calc State Changes...
         switch (shooterStates) {
             case IDLE:
+                abortShooter = false;
                 shooterBusy = false;
                 counter = 0;
+                autoCounter = 3;
                 break;
 
             case GET_HALF_BALL:
@@ -402,17 +405,24 @@ public class Shooter {
                 }
                 counter++;
     
+                if(autoCounter == 0){
+                    abortShooter = true;
+                }
+
                 if(abortShooter){
                     shooterStates = ShooterStates.DONE;
                     counter = 0;
+                    autoCounter = 5;
                     abortShooter = false;
                 }
                 break;
     
             case FIRE_BALL_AUTO:
                 counter = 0;
-                if ((Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) > shooterRPMTolerance)
-                    && (Math.abs(hoodEncoder - hoodSetpoint) > Constants.hoodkTolerance) ) {
+                if (((Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) > shooterRPMTolerance)
+                    && (Math.abs(hoodEncoder - hoodSetpoint) > Constants.hoodkTolerance)) 
+                    || !SensorInput.queuedShooter) {
+                    autoCounter--;
                     shooterStates = ShooterStates.PREPARE;
                 }
                 // I believe that the shooter wasn't spinning down 
@@ -425,9 +435,10 @@ public class Shooter {
                 // (Actually, this is the start of a bigger change that will split Prepare
                 // into two states... Queue_Ball and Prepare. The first should queue the ball
                 // and the second should simply hold until the shooter is in the right condition.)
-                if (!SensorInput.queuedShooter) {
-                    shooterStates = ShooterStates.PREPARE;
-                }
+                // if (!SensorInput.queuedShooter) {
+                //     autoCounter--;
+                //     shooterStates = ShooterStates.PREPARE;
+                // }
                 break;
     
             case DONE:
