@@ -29,12 +29,16 @@ public class Shooter {
         IDLE, GET_HALF_BALL, GET_BALL, GOT_BALL, GAP_BALL, GROUND_GET_HALF_BALL, GROUND_GOT_BALL, GROUND_GAP_BALL, GROUND_EXTRA_BALL, INTAKE_DONE, INTAKE_DONE2, PREPARE, FIRE_BALL_AUTO, DONE
     }
 
-    double targetShooterRPM, shooterRPMTolerance;
-    double queuingBeltSpeed;
-    ShooterStates shooterStates;
     public CANSparkMax shooterLeft, shooterRight;
     public TalonSRX ballQueuing, hood, indexer, intake;
     public CANEncoder shooterEncoder;
+
+    CANPIDController shooterPidController;
+    PDController hoodPDController;
+
+    double targetShooterRPM, shooterRPMTolerance;
+    double queuingBeltSpeed;
+    ShooterStates shooterStates;
     public double hoodSetpoint;
     int hoodEncoder, beltQueuingEncoder;
     double lastEncoderVal;
@@ -44,8 +48,6 @@ public class Shooter {
     double desiredGyroAngle;
     double gyroTolerance;
     int counter, autoCounter;
-    CANPIDController shooterPidController;
-    PDController hoodPDController;
     boolean abortShooter;
     double intakeMotorSpeed = 1.0;
     final boolean pullIntakeInBetweenBalls = true;
@@ -558,5 +560,24 @@ public class Shooter {
         }else{
             hood.set(ControlMode.PercentOutput, 0.5);
         }
+    }
+
+    public void LogHeader() {
+        Logger.Header("targetShooterRPM,shooterRPMTolerance,queuingBeltSpeed,shooterStates"
+            + "hoodSetpoint,hoodEncoder,beltQueuingEncoder,lastEncoderVal,shooterBusy,"
+            + "homedHood,useGyro,desiredGyroAngle,gyroTolerance,counter,autoCounter,"
+            + "abortShooter,intakeMotorSpeed,pullIntakeInBetweenBalls,"
+        );
+    }
+
+    public void LogData() {
+        Logger.doubles(targetShooterRPM, shooterRPMTolerance,queuingBeltSpeed);
+        Logger.singleEnum(shooterStates);
+        Logger.doubles(hoodSetpoint,hoodEncoder, beltQueuingEncoder,lastEncoderVal);
+        Logger.booleans(shooterBusy,homedHood,useGyro);
+        Logger.doubles(desiredGyroAngle,gyroTolerance,counter, autoCounter);
+        Logger.booleans(abortShooter);
+        Logger.doubles(intakeMotorSpeed);
+        Logger.booleans(pullIntakeInBetweenBalls);
     }
 }

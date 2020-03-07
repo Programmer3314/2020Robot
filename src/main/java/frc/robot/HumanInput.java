@@ -182,4 +182,51 @@ public class HumanInput {
         }
         return 0;
     }
+
+    public static void LogHeading() {
+        Logger.Header("forward,turn,trenchRunAlignment,shooterAllInTarget,powerPortAlignment,"
+            +"ballChaseButton,climbAlignmentButton,driverCameraChange,operatorCameraChange,"
+            +"controlPanelAlignment,reset,"
+            +"hoodUp,hoodDown,hoodUpReleased,hoodDownReleased,"
+            +"gyroLock,gyroReset,autoNumber,"
+            +"activateAuto,shutDownAuto,leftSwitch,rightSwitch,activateIntake, activateGroundIntake,"
+            +"spinIntake,reverseIntake,reverseIntakeReleased,spinBallQueue,reverseBallQueue,lightRing,"
+            +"fourSpins,spinToColor,spinToFMSColor,spinToBlue,spinToRed,spinToGreen,spinToYellow,"
+            +"manualControlPanel,CPManipulatorDown,CPManipulatorUp"
+            +"spinCP,winchItDown,creepOnBar,stopCreep,abortClimb"
+            +"intakeOut,intakeIn,engageRatchet,disengageRatchet,disengagePTO,engagePTO,"
+            +"lightRingOn,lightRingOff"
+            +"abortIntake,testButton,closeShot,lineShot,trenchShot,farShot"
+            +"traverseClimbState,operatorStart,operatorBack"
+            +"abortShooter,sLeft,KILLALLGYROS,reverseAll,reverseAllReleased,"
+        );
+    }
+
+    public static void LogData() {
+
+        Logger.doubles(forward, turn);
+        Logger.booleans(trenchRunAlignment, shooterAllInTarget, powerPortAlignment, ballChaseButton, climbAlignmentButton, driverCameraChange, operatorCameraChange, controlPanelAlignment, reset);
+        Logger.booleans(hoodUp, hoodDown, hoodUpReleased, hoodDownReleased);
+        Logger.booleans(gyroLock, gyroReset);
+        Logger.doubles(autoNumber);
+        Logger.booleans(activateAuto);
+        Logger.booleans(shutDownAuto);
+        Logger.booleans(leftSwitch, rightSwitch);
+        Logger.booleans(activateIntake, activateGroundIntake, spinIntake, reverseIntake, reverseIntakeReleased);
+        Logger.booleans(spinBallQueue, reverseBallQueue);
+        Logger.booleans(lightRing);
+        Logger.booleans(fourSpins, spinToColor, spinToFMSColor, spinToBlue, spinToRed, spinToGreen, spinToYellow, manualControlPanel, CPManipulatorDown, CPManipulatorUp);
+        Logger.doubles(spinCP);
+        Logger.booleans(winchItDown, creepOnBar, stopCreep, abortClimb);
+        Logger.booleans(intakeOut, intakeIn, engageRatchet, disengageRatchet, disengagePTO, engagePTO, lightRingOn, lightRingOff);
+        Logger.booleans(abortIntake);
+        Logger.booleans(testButton);
+        Logger.booleans(closeShot, lineShot, trenchShot, farShot);
+        Logger.booleans(traverseClimbState, operatorStart, operatorBack);
+        Logger.booleans(abortShooter);
+        Logger.booleans(sLeft, KILLALLGYROS);
+        Logger.booleans(reverseAll, reverseAllReleased);
+
+    }
+
 }

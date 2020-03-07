@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public class SensorInput {
     public static DigitalInput IRSensor2 = new DigitalInput(9);
     public static AnalogInput m_ultrasonic = new AnalogInput(Constants.AIControlPanelSensor);
+
     public static boolean queuedShooter, queuedTrack1, queuedTrack2, queuedHood, queuedIntake;
     public static double sensor1Distance;
 
@@ -32,4 +33,15 @@ public class SensorInput {
         queuedHood = !IRSensor5.get();
         queuedIntake = !IRSensor6.get();
     }
+
+    public static void LogHeader() {
+        Logger.Header("queuedShooter, queuedTrack1, queuedTrack2, queuedHood, queuedIntake"
+        +"sensor1Distance");
+    }
+
+    public static void LogData() {
+        Logger.booleans(queuedShooter, queuedTrack1, queuedTrack2, queuedHood, queuedIntake);
+        Logger.doubles(sensor1Distance);
+    }
+
 }

@@ -33,6 +33,9 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeRobotInit() {
+    
+    Logger.Enabled = false;
+
     Solenoids.ejectIntake(false);
 
     ballTargetTable = ntInst.getTable("Ball Target");
@@ -79,6 +82,10 @@ public class Robot extends MyRobot {
   @Override
   public void RechargeAutonomousInit() {
     navx.reset();
+
+    SensorInput.LogHeader();
+    shooter.LogHeader();
+
 
     Solenoids.targettingLightRing(true);
     Solenoids.ejectIntake(false);
@@ -133,10 +140,14 @@ public class Robot extends MyRobot {
   public void RechargeAutonomousPeriodic() {
     SensorInput.update();
 
+    SensorInput.LogData();
+    shooter.LogData();
+
     if(auto1 != null){
       auto1.update(mP);
     }
 
+    
     shooter.update(mP);
     driveController.update(mP);
   }
@@ -144,6 +155,11 @@ public class Robot extends MyRobot {
   @Override
   public void RechargeTeleopInit() {
     // SmartDashboard.putNumber("Target Offset", Constants.targettingOffset);
+
+    // Log Data
+    HumanInput.LogHeading();
+    SensorInput.LogHeader();
+    shooter.LogHeader();
 
     Solenoids.targettingLightRing(true);
 
@@ -209,6 +225,12 @@ public class Robot extends MyRobot {
     HumanInput.update();
     Solenoids.update();
     SensorInput.update();
+
+    // Log Data
+    HumanInput.LogData();
+    SensorInput.LogData();
+    shooter.LogData();
+
 
     if(HumanInput.closeShot){
       shooter.setHoodSetpoint(0);

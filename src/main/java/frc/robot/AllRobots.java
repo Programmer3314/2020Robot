@@ -24,22 +24,30 @@ public abstract class AllRobots extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        Logger.OpenLog("Auto");   
         MyAutonomousInit();
+        Logger.EndLine();
     }
 
     @Override
     public void autonomousPeriodic() {
+        Logger.StartLine();
         MyAutonomousPeriodic();
+        Logger.EndLine();
     }
 
     @Override
     public void teleopInit() {
+        Logger.OpenLog("Tele");   
         MyTeleopInit();
+        Logger.EndLine();
     }
 
     @Override
     public void teleopPeriodic() {
+        Logger.StartLine();
         MyTeleopPeriodic();
+        Logger.EndLine();
     }
 
     @Override
@@ -50,6 +58,11 @@ public abstract class AllRobots extends TimedRobot {
     @Override
     public void testPeriodic() {
         MyTestPeriodic();
+    }
+
+    @Override
+    public void disabledPeriodic() {
+        Logger.CloseLog();
     }
 
     public abstract void MyRobotInit();
