@@ -365,6 +365,13 @@ public class Shooter {
                 }
                 break;
             case GROUND_GAP_BALL:
+                // TODO: Consider... 
+                // !SensorInput.queuedTrack1 && !SensorInput.queuedTrack2
+                // Gap should make sure the ball has rolled through both
+                // sensors. I think it is getting here without having reached
+                // the second sensor. So !Track2 happens immediately, not when
+                // the ball has passed the sensor. I suspect the same may 
+                // need to be done above with GAP_BALL. 
                 if (!SensorInput.queuedTrack2) {
                     shooterStates = ShooterStates.GROUND_GET_HALF_BALL;
                 }
