@@ -5,7 +5,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DriveController.DriveState;
 import frc.robot.DriveController.MoveParameters;
-import frc.robot.ThreeBallAuto.AutoStates;
 
 public class SixBallAuto implements AutoStateMachines{
     public enum AutoStates{
@@ -172,6 +171,9 @@ public class SixBallAuto implements AutoStateMachines{
                 //     autoStates = AutoStates.SHOOT_2;
                 // }
 
+                // TODO: since this sets useGyro=true, it should simply call shootAll 
+                // and move on. The next state will wait on Shooter which will wait 
+                // on the gyro.
                 if(Math.abs(Robot.cleanGyro - gyroAngleDesired) <= gyroTolerance){
                     Robot.shooter.shootAll(queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
                     autoStates = AutoStates.SHOOT_2;

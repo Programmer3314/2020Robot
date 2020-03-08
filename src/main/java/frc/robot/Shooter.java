@@ -38,7 +38,7 @@ public class Shooter {
 
     double targetShooterRPM, shooterRPMTolerance;
     double queuingBeltSpeed;
-    ShooterStates shooterStates;
+    ShooterStates currentState, nextState;
     public double hoodSetpoint;
     int hoodEncoder, beltQueuingEncoder;
     double lastEncoderVal;
@@ -51,11 +51,13 @@ public class Shooter {
     boolean abortShooter;
     double intakeMotorSpeed = 1.0;
     final boolean pullIntakeInBetweenBalls = true;
+    int cyclesInState;
 
     public Shooter(int CANMcshooterLeft, int CANMcshooterRight, int CANMcBallQueuing, 
         int CANMcHood, int CANMcIndexer, int CANMcIntake) {
 
-        shooterStates = ShooterStates.IDLE;
+        currentState = ShooterStates.IDLE;
+        nextState = currentState;
 
         shooterLeft = new CANSparkMax(CANMcshooterLeft, CANSparkMaxLowLevel.MotorType.kBrushless);
         shooterRight = new CANSparkMax(CANMcshooterRight, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -106,6 +108,7 @@ public class Shooter {
 
         counter = 0;
         autoCounter = 3;
+        cyclesInState = 0;
     }
 
     public void update(MoveParameters mP) {
@@ -164,7 +167,7 @@ public class Shooter {
         }
 
         // Ball Management: (Intake, Queue, and Shoot)
-        switch (shooterStates) {
+        switch (currentState) {
             case IDLE:
             shooterLeft.set(0);
             intake.set(ControlMode.PercentOutput, 0);
@@ -193,6 +196,7 @@ public class Shooter {
             ballQueuing.set(ControlMode.PercentOutput, 0.5);
             break;
 
+            // TODO: Consider BallQueuing to 1.0
             case GAP_BALL:
             intake.set(ControlMode.PercentOutput, 0);
             indexer.set(ControlMode.PercentOutput, 0);
@@ -215,10 +219,11 @@ public class Shooter {
             ballQueuing.set(ControlMode.PercentOutput, 0.0); // 0.5);
             break;
 
+            // TODO: Consider ball Queuing to 1.0. 
             case GROUND_GAP_BALL:
             intake.set(ControlMode.PercentOutput, intakeMotorSpeed);
             indexer.set(ControlMode.PercentOutput, 0);
-            ballQueuing.set(ControlMode.PercentOutput, 0.5);
+            ballQueuing.set(ControlMode.PercentOutput, 0.5); 
             break;
 
             case GROUND_EXTRA_BALL:
@@ -292,8 +297,14 @@ public class Shooter {
             break;
         }
 
+
+        
+
         // Calc State Changes...
-        switch (shooterStates) {
+        // Calc State Changes...
+        // Calc State Changes...
+        nextState = currentState;
+        switch (currentState) {
             case IDLE:
                 abortShooter = false;
                 shooterBusy = false;
@@ -303,46 +314,46 @@ public class Shooter {
 
             case GET_HALF_BALL:
                 if(SensorInput.queuedTrack1){
-                    shooterStates = ShooterStates.GOT_BALL;
+                    nextState = ShooterStates.GOT_BALL;
                 }
                 break;
 
             case GET_BALL:
                 if (SensorInput.queuedTrack1){
-                    shooterStates = ShooterStates.GOT_BALL;
+                    nextState = ShooterStates.GOT_BALL;
                 }
 
                 if (SensorInput.queuedShooter) {
-                    shooterStates = ShooterStates.INTAKE_DONE;
+                    nextState = ShooterStates.INTAKE_DONE;
                     counter = 0;
                 }
 
                 break;
             case GOT_BALL:
                 if (SensorInput.queuedTrack2) {
-                    shooterStates = ShooterStates.GAP_BALL;
+                    nextState = ShooterStates.GAP_BALL;
                 }
 
                 if (SensorInput.queuedShooter) {
-                    shooterStates = ShooterStates.INTAKE_DONE;
+                    nextState = ShooterStates.INTAKE_DONE;
                     counter = 0;
                 }
 
                 break;
             case GAP_BALL:
                 if (!SensorInput.queuedTrack2) {
-                    shooterStates = ShooterStates.GET_HALF_BALL;
+                    nextState = ShooterStates.GET_HALF_BALL;
                 }
     
                 if (SensorInput.queuedShooter) {
-                    shooterStates = ShooterStates.INTAKE_DONE;
+                    nextState = ShooterStates.INTAKE_DONE;
                     counter = 0;
                 }
     
                 break;
             case GROUND_GET_HALF_BALL:
                 if(SensorInput.queuedIntake && counter >= 5/*25*/){
-                    shooterStates = ShooterStates.GROUND_GOT_BALL;
+                    nextState = ShooterStates.GROUND_GOT_BALL;
                     counter = 0;
                 }else if(SensorInput.queuedIntake){
                     counter++;
@@ -351,16 +362,16 @@ public class Shooter {
                 }
 
                 if(SensorInput.queuedTrack1){
-                    shooterStates = ShooterStates.GROUND_GAP_BALL;
+                    nextState = ShooterStates.GROUND_GAP_BALL;
                 }
                 break;
             case GROUND_GOT_BALL:
                 if (SensorInput.queuedTrack1) {
-                    shooterStates = ShooterStates.GROUND_GAP_BALL;
+                    nextState = ShooterStates.GROUND_GAP_BALL;
                 }
 
                 if (SensorInput.queuedShooter) {
-                    shooterStates = ShooterStates.INTAKE_DONE;
+                    nextState = ShooterStates.INTAKE_DONE;
                     counter = 0;
                 }
                 break;
@@ -373,11 +384,11 @@ public class Shooter {
                 // the ball has passed the sensor. I suspect the same may 
                 // need to be done above with GAP_BALL. 
                 if (!SensorInput.queuedTrack2) {
-                    shooterStates = ShooterStates.GROUND_GET_HALF_BALL;
+                    nextState = ShooterStates.GROUND_GET_HALF_BALL;
                 }
 
                 if (SensorInput.queuedShooter) {
-                    shooterStates = ShooterStates.GROUND_EXTRA_BALL;
+                    nextState = ShooterStates.GROUND_EXTRA_BALL;
                     counter = 0;
                 }
                 break;
@@ -390,17 +401,17 @@ public class Shooter {
                 //shooterStates = ShooterStates.IDLE;
                 counter++;
                 if(counter >= 150){
-                    shooterStates = ShooterStates.INTAKE_DONE2;
+                    nextState = ShooterStates.INTAKE_DONE2;
                 }
                 break;
 
             case INTAKE_DONE2:
-                shooterStates = ShooterStates.IDLE;
+                nextState = ShooterStates.IDLE;
                 break;
 
             case PREPARE_ONLY:
                 if(abortShooter){
-                    shooterStates = ShooterStates.DONE;
+                    nextState = ShooterStates.DONE;
                 }
             
             break;
@@ -415,14 +426,20 @@ public class Shooter {
 
                     // Confirm Firing Solution
                     // (consolidated conditions)
+
+                    // TODO: This check uses a desiredGyroAngle passed in from outside
+                    // But DriveController is making it's own calculation.  
+                    // This should be rewritten to use DriveController.angleOffset
+                    // instead of desiredGyroAngle. 
+
                     if ((Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) <= shooterRPMTolerance) 
                         && (Math.abs(hoodEncoder - hoodSetpoint) <= Constants.hoodkTolerance) 
                         && (useGyro == false || (Math.abs(Robot.cleanGyro - desiredGyroAngle) <= gyroTolerance))) {
                             counter = 0;
-                            shooterStates = ShooterStates.FIRE_BALL_AUTO;
+                            nextState = ShooterStates.FIRE_BALL_AUTO;
                     }
                 } else if (counter >= 200) {
-                    shooterStates = ShooterStates.DONE;
+                    nextState = ShooterStates.DONE;
                 }
                 counter++;
     
@@ -431,7 +448,7 @@ public class Shooter {
                 }
 
                 if(abortShooter){
-                    shooterStates = ShooterStates.DONE;
+                    nextState = ShooterStates.DONE;
                     counter = 0;
                     autoCounter = 5;
                     abortShooter = false;
@@ -449,7 +466,7 @@ public class Shooter {
 
                 if(!SensorInput.queuedShooter){
                     autoCounter--;
-                    shooterStates = ShooterStates.PREPARE;
+                    nextState = ShooterStates.PREPARE;
                 }
                 // I believe that the shooter wasn't spinning down 
                 // because the RPM didn't fall enough to trigger the above 
@@ -470,16 +487,26 @@ public class Shooter {
             case DONE:
                 HumanInput.operatorController.setRumble(RumbleType.kLeftRumble, 0);
                 shooterBusy = false;
-                shooterStates = ShooterStates.IDLE;
+                nextState = ShooterStates.IDLE;
                 break;
             }
+
+            cyclesInState++;
+            if (currentState!=nextState) {
+                cyclesInState = 0;
+            }
+
+            currentState = nextState;
+
+
+
 
         Solenoids.confirmShooterLightRing(SensorInput.queuedShooter);
     
         SmartDashboard.putNumber("Current RPM of the Shooter Motors", shooterEncoder.getVelocity());
         SmartDashboard.putNumber("Belt Queue Value", beltQueuingEncoder);
         SmartDashboard.putNumber("Hood Value", hoodEncoder);
-        SmartDashboard.putString("Shoot All State", shooterStates.toString());
+        SmartDashboard.putString("Shoot All State", currentState.toString());
     }
 
     public void shootAll(/*double targetShooterRPM, double shooterRPMTolerance,*/ double queuingBeltSpeed, boolean useGyro,
@@ -496,7 +523,7 @@ public class Shooter {
         SmartDashboard.putNumber("Shooter RPM Tolerance Desired", shooterRPMTolerance);
         SmartDashboard.putNumber("Queuing Belt Speed", queuingBeltSpeed);
         SmartDashboard.putNumber("Gyro Tolerance", gyroTolerance);
-        shooterStates = ShooterStates.PREPARE;
+        currentState = ShooterStates.PREPARE;
     }
     // public void setFiringSolution(double targetShooterRPM, double shooterRPMTolerance){
     //     this.targetShooterRPM = targetShooterRPM;
@@ -519,11 +546,11 @@ public class Shooter {
         return shooterRPMTolerance;
     }
     public void groundIntakeAll() {
-        shooterStates = ShooterStates.GROUND_GET_HALF_BALL;
+        currentState = ShooterStates.GROUND_GET_HALF_BALL;
     }
 
     public void intakeAll(){
-        shooterStates = ShooterStates.GET_HALF_BALL;
+        currentState = ShooterStates.GET_HALF_BALL;
     }
     public boolean getShooterStatus() {
         return shooterBusy;
@@ -534,7 +561,7 @@ public class Shooter {
     }
 
     public void abortIntake(){
-        shooterStates = ShooterStates.INTAKE_DONE;
+        currentState = ShooterStates.INTAKE_DONE;
         counter = 0;
     }
 
@@ -545,7 +572,7 @@ public class Shooter {
     }
     
     public void prepareShooter(){
-        shooterStates = ShooterStates.PREPARE_ONLY;
+        currentState = ShooterStates.PREPARE_ONLY;
     }
 
     public void reverseIntake(){
@@ -571,14 +598,14 @@ public class Shooter {
     }
 
     public void reset() {
-        shooterStates = ShooterStates.IDLE;
+        currentState = ShooterStates.IDLE;
         ballQueuing.set(ControlMode.PercentOutput, 0);
         shooterLeft.set(0);
         // hood.setSelectedSensorPosition(0);
     }
 
     public void resetState() {
-        shooterStates = ShooterStates.IDLE;
+        currentState = ShooterStates.IDLE;
     }
  
     public void resetHood(){
@@ -591,7 +618,8 @@ public class Shooter {
     }
 
     public void LogHeader() {
-        Logger.Header("targetShooterRPM,shooterRPMTolerance,queuingBeltSpeed,shooterStates,"
+        Logger.Header("targetShooterRPM,shooterRPMTolerance,queuingBeltSpeed,"
+            + "currentState,nextState,"
             + "hoodSetpoint,hoodEncoder,beltQueuingEncoder,lastEncoderVal,shooterBusy,"
             + "homedHood,useGyro,desiredGyroAngle,gyroTolerance,counter,autoCounter,"
             + "abortShooter,intakeMotorSpeed,pullIntakeInBetweenBalls,shooterRPMDiff,"
@@ -600,7 +628,8 @@ public class Shooter {
 
     public void LogData() {
         Logger.doubles(targetShooterRPM, shooterRPMTolerance,queuingBeltSpeed);
-        Logger.singleEnum(shooterStates);
+        Logger.singleEnum(currentState);
+        Logger.singleEnum(nextState);
         Logger.doubles(hoodSetpoint,hoodEncoder, beltQueuingEncoder,lastEncoderVal);
         Logger.booleans(shooterBusy,homedHood,useGyro);
         Logger.doubles(desiredGyroAngle,gyroTolerance,counter, autoCounter);
