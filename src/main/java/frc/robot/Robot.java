@@ -34,7 +34,7 @@ public class Robot extends MyRobot {
   @Override
   public void RechargeRobotInit() {
     
-    Logger.Enabled = false;
+    Logger.Enabled = true;
 
     Solenoids.ejectIntake(false);
 
@@ -81,11 +81,14 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeAutonomousInit() {
+    mP = driveController.new MoveParameters();
     navx.reset();
 
     SensorInput.LogHeader();
     shooter.LogHeader();
-
+    mP.LogHeader();
+    driveController.LogHeader();
+    SixBallAuto.LogHeader();
 
     Solenoids.targettingLightRing(true);
     Solenoids.ejectIntake(false);
@@ -115,7 +118,6 @@ public class Robot extends MyRobot {
       auto1 = new SixBallAuto();
     }
 
-    mP = driveController.new MoveParameters();
     shooter.resetState();
 
     if(auto1 != null){
@@ -142,6 +144,9 @@ public class Robot extends MyRobot {
 
     SensorInput.LogData();
     shooter.LogData();
+    mP.LogData();
+    driveController.LogData();
+    SixBallAuto.LogData();
 
     if(auto1 != null){
       auto1.update(mP);
@@ -154,12 +159,16 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeTeleopInit() {
+    mP = driveController.new MoveParameters();
     // SmartDashboard.putNumber("Target Offset", Constants.targettingOffset);
 
     // Log Data
-    HumanInput.LogHeading();
+    HumanInput.LogHeader();
     SensorInput.LogHeader();
     shooter.LogHeader();
+    mP.LogHeader();
+    driveController.LogHeader();
+    SixBallAuto.LogHeader();
 
     Solenoids.targettingLightRing(true);
 
@@ -168,8 +177,7 @@ public class Robot extends MyRobot {
     Solenoids.disengageRatchet.set(false);
     Solenoids.engageRatchet.set(true);
     Solenoids.disengagePTO.set(true);
-    Solenoids.engagePTO.set(false)
-    ;
+    Solenoids.engagePTO.set(false);
     Solenoids.CPManipulatorDown.set(true);
     Solenoids.CPManipulatorUp.set(false);
 
@@ -181,8 +189,6 @@ public class Robot extends MyRobot {
     if (hasControlPanel) {
        controlPanel = new ControlPanel(CANMcctrlPanel);
     }
-
-    mP = driveController.new MoveParameters();
 
     mP.currentState = DriveController.DriveState.MANUAL;
 
@@ -230,17 +236,21 @@ public class Robot extends MyRobot {
     HumanInput.LogData();
     SensorInput.LogData();
     shooter.LogData();
-
+    mP.LogData();
+    driveController.LogData();
+    SixBallAuto.LogData();
 
     if(HumanInput.closeShot){
       shooter.setHoodSetpoint(0);
       shooter.setTargetShooterRPM(2100);
+      shooter.prepareShooter();
     //targetShooterRPM = 2100;
     }
 
     if(HumanInput.lineShot){
       shooter.setHoodSetpoint(-1400);
       shooter.setTargetShooterRPM(3600);
+      shooter.prepareShooter();
       //targetShooterRPM = 3600;
 
     }
@@ -248,12 +258,14 @@ public class Robot extends MyRobot {
     if(HumanInput.trenchShot){
       shooter.setHoodSetpoint(-1500);
       shooter.setTargetShooterRPM(3600);
+      shooter.prepareShooter();
       //targetShooterRPM = 3600;
     }
 
     if(HumanInput.farShot){
       shooter.setHoodSetpoint(-1450);
       shooter.setTargetShooterRPM(4400);
+      shooter.prepareShooter();
       //targetShooterRPM = 4400;
     }
 
@@ -312,7 +324,7 @@ public class Robot extends MyRobot {
       mP.currentState = DriveController.DriveState.MANUAL;
     }
 
-    mP.forward = HumanInput.forward;
+    mP.forward = -HumanInput.forward;//HumanInput.forward;
     mP.turn = HumanInput.turn;
 
     mP.driverCameraToggle = HumanInput.driverCameraChange;

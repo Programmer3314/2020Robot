@@ -18,14 +18,28 @@ public class DriveController {
         public double distance = 0;
         public DriveState currentState = DriveState.NONE;
         public boolean driverCameraToggle = false;
+
+        public void LogHeader() {
+            Logger.Header( "forward,turn,angle,distance,currentState,driverCameraToggle,");
+        }
+    
+        public void LogData() {
+            Logger.doubles(forward);
+            Logger.doubles(turn);
+            Logger.doubles(angle);
+            Logger.doubles(distance);
+            Logger.singleEnum(currentState); 
+            Logger.booleans(driverCameraToggle);
+
+        }
     }
 
     NetworkTable ballTargetTable, retroTapeTable;
     // int scaleForward = 1;
-    int scaleForward = -1;
-    double scaleTurn = 1;
-    // int camNum = 0;
-    double distanceToWall;
+    // int scaleForward = -1;
+    // double scaleTurn = 1;
+    // // int camNum = 0;
+    // double distanceToWall;
     PDController powerPortTracking, ballTracking, trenchTracking;
 
     public static enum DriveState {
@@ -37,7 +51,11 @@ public class DriveController {
 
     private IDriveTrain drivetrain;
     // private double forward, turn;
-    private double angleOffset;
+    // private double angleOffset;
+    int scaleForward = -1;
+    double scaleTurn = 1;
+    double distanceToWall;
+    public static double angleOffset;
     private double gyroLockAngle;
     double encoderPos;
 
@@ -48,7 +66,7 @@ public class DriveController {
         powerPortTracking = new PDController(Constants.powerPortkP, Constants.powerPortkD);
         powerPortTracking.setToleranceValue(Constants.powerPortTolerance);
         powerPortTracking.setMaxCorrectionValue(Constants.drivetrainTrackingMaxCorrection);
-        powerPortTracking.setMinCorrectionValue(0.1);
+        powerPortTracking.setMinCorrectionValue(0.08/*0.1*/);
         ballTracking = new PDController(Constants.ballkP, Constants.ballkD);
         ballTracking.setToleranceValue(Constants.ballTolerance);
         ballTracking.setMaxCorrectionValue(Constants.drivetrainTrackingMaxCorrection);
@@ -61,7 +79,7 @@ public class DriveController {
 
     public void update(MoveParameters mP) {
         // scaleForward = 1;
-        scaleForward = 1;
+        scaleForward = -1;
         encoderPos = drivetrain.getEncoderVal();
 
         if (mP.currentState != lastDriveState) {
@@ -179,10 +197,10 @@ public class DriveController {
 
         case CONTROLPANELALIGNMENT:
             if (distanceToWall > 29) {
-                mP.forward = 0.05;
+                mP.forward = -0.05;//0.05;
                 mP.turn = 0;
             } else if (distanceToWall < 27) {
-                mP.forward = -0.05;
+                mP.forward = 0.05;//-0.05;
                 mP.turn = 0;
             } else {
                 mP.forward = 0;
@@ -211,5 +229,21 @@ public class DriveController {
 
         lastDriveState = mP.currentState;
         drivetrain.update(leftSetPoint, rightSetPoint);
+        
+    }
+
+    public void LogHeader() {
+        Logger.Header("scaleForward,scaleTurn,distanceToWall,angleOffset,cleanGyro,gyroDiff,gyroLockAngle,encoderPos,");
+    }
+
+    public void LogData() {
+        Logger.doubles(scaleForward);
+        Logger.doubles(scaleTurn);
+        Logger.doubles(distanceToWall);
+        Logger.doubles(angleOffset);
+        Logger.doubles(Robot.cleanGyro);
+        Logger.doubles(Math.abs(angleOffset - Robot.cleanGyro));
+        Logger.doubles(gyroLockAngle); 
+        Logger.doubles(encoderPos);
     }
 }

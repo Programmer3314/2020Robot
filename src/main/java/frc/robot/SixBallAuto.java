@@ -14,7 +14,8 @@ public class SixBallAuto implements AutoStateMachines{
         START,
         SHOOT,
         TURN_PERPENDICULAR_TO_ALLIANCE_STATION_WALL,
-        DRIVE_BACKWARDS_AND_BALLCHASE,
+        DRIVE_BACKWARDS_AND_BALLCHASE_1,
+        DRIVE_BACKWARDS_AND_BALLCHASE_2,
         DRIVE_FORWARD,
         CALCULATE_GYRO,
         ALIGN_2,
@@ -23,12 +24,12 @@ public class SixBallAuto implements AutoStateMachines{
         
     }
     NetworkTable portalTapeTargetTable;
-    AutoStates autoStates;
+    public static AutoStates autoStates = AutoStates.IDLE;
     double targetShooterRPM, shooterRPMTolerance;
     double queuingBeltSpeed;
     int counter;
     double encoderPos;
-    double lastEncoderPos;
+    double lastEncoderPos;  
     double gyroTolerance, gyroAngleDesired;
     boolean useGyro;
     double angleOffset;
@@ -56,12 +57,12 @@ public class SixBallAuto implements AutoStateMachines{
             break;
             
             case START:
-                Robot.shooter.setHoodSetpoint(-1400);
+                Robot.shooter.setHoodSetpoint(-1450);
                 Robot.shooter.setTargetShooterRPM(3600);
 
                 Robot.shooter.setTargetShooterRPMTolerance(50);
-                queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
-                gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 5);
+                queuingBeltSpeed = Constants.queuingBeltSpeed;
+                gyroTolerance = 2;
 
                 Robot.shooter.shootAll(queuingBeltSpeed, useGyro, 0, gyroTolerance);
 
@@ -78,7 +79,7 @@ public class SixBallAuto implements AutoStateMachines{
                 mP.angle = 25;
                 mP.currentState = DriveState.TURN_TO_GYRO;
 
-                if (Math.abs(Robot.cleanGyro) <= 25) {
+                if (Math.abs(mP.angle - Robot.cleanGyro) <= gyroTolerance) {
                     counter++;
                 } else {
                     counter = 0;
@@ -86,65 +87,102 @@ public class SixBallAuto implements AutoStateMachines{
 
                 if (counter >= 10) {
                     Robot.shooter.groundIntakeAll();
-                    autoStates = AutoStates.DRIVE_BACKWARDS_AND_BALLCHASE;
+                    autoStates = AutoStates.DRIVE_BACKWARDS_AND_BALLCHASE_1;
+                    lastEncoderPos = encoderPos;
                     counter = 0;
                 }
 
-                lastEncoderPos = encoderPos;
+                // lastEncoderPos = encoderPos;
             break;
 
-            case DRIVE_BACKWARDS_AND_BALLCHASE:
+            case DRIVE_BACKWARDS_AND_BALLCHASE_1:
 
                 mP.currentState = DriveState.BALLCHASE;
-                mP.forward = 0.175;
+                // mP.forward = -0.18;//-0.175;//0.175;
 
-                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 16){
-                    Robot.shooter.abortIntake();
-                    mP.currentState = DriveState.NONE;
-                    autoStates = AutoStates.DRIVE_FORWARD;
+                mP.forward = -0.3;//-0.26;//-0.175;//0.175;
+
+                // if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 15.0){
+                //     Robot.shooter.abortIntake();
+                //     // Robot.shooter.prepareShooter();
+                //     mP.currentState = DriveState.NONE;
+                //     autoStates = AutoStates.DRIVE_FORWARD_2;
+                //     lastEncoderPos = encoderPos;
+                // }
+
+                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 3.5){
+                    autoStates = AutoStates.DRIVE_BACKWARDS_AND_BALLCHASE_2;
                     lastEncoderPos = encoderPos;
                 }
             break;
 
+            case DRIVE_BACKWARDS_AND_BALLCHASE_2:
+                mP.forward = -0.165;//-0.17;//-0.18;
+
+                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 11.5){
+                    Robot.shooter.abortIntake();
+                    // Robot.shooter.prepareShooter();
+                    mP.currentState = DriveState.NONE;
+                    autoStates = AutoStates.DRIVE_FORWARD;
+                    lastEncoderPos = encoderPos;
+                }
+
+            break;
+
             case DRIVE_FORWARD:
-                mP.currentState = DriveState.GYROLOCK;
-                mP.forward = -0.2;
+                mP.currentState = DriveState.POWERPORTALIGNMENT;
+                mP.forward = 0.325;//0.3;//0.2//-0.2;
+
+                Robot.shooter.setHoodSetpoint(-1500);
+                Robot.shooter.setTargetShooterRPM(3600);
+                Robot.shooter.prepareShooter();
 
                 if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 5){
                     mP.forward = 0.0;
+                    mP.currentState = DriveState.NONE;//changed
                     autoStates = AutoStates.CALCULATE_GYRO;
                 }
             break;
 
             case CALCULATE_GYRO:
+                // mP.currentState = DriveState.NONE;
+
                 if(portalTapeTargetTable.getEntry("Retroreflective Target Found").getBoolean(false)){
                     angleOffset = portalTapeTargetTable.getEntry("X Angle").getDouble(0);
                     portalTapeTargetTable.getEntry("gyro").setDouble(Robot.rawGyro);
                     angleOffset += Robot.rawGyro;
                     gyroAngleDesired = angleOffset; 
+ 
                     autoStates = AutoStates.ALIGN_2;
                 }
             break;
 
             case ALIGN_2:
-                Robot.shooter.setHoodSetpoint(-1500);
-                Robot.shooter.setTargetShooterRPM(3600);
 
                 useGyro = true;
-                mP.angle = angleOffset;
-                mP.currentState = DriveState.TURN_TO_GYRO;
+                //mP.angle = angleOffset;
+                mP.currentState = DriveState.POWERPORTALIGNMENT;
                 
                 Robot.shooter.setTargetShooterRPMTolerance(50);
-                queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
-                gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 5);
+                queuingBeltSpeed = Constants.queuingBeltSpeed;
+                gyroTolerance = 2.0;//1.75;
 
-                Robot.shooter.shootAll(queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
+                // if(Math.abs(DriveController.angleOffset - Robot.cleanGyro) <= gyroTolerance){
+                //     Robot.shooter.shootAll(queuingBeltSpeed, useGyro, DriveController.angleOffset, gyroTolerance);
+                //     autoStates = AutoStates.SHOOT_2;
+                // }
 
-                autoStates = AutoStates.SHOOT_2;
+                if(Math.abs(Robot.cleanGyro - gyroAngleDesired) <= gyroTolerance){
+                    Robot.shooter.shootAll(queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
+                    autoStates = AutoStates.SHOOT_2;
+                }
+
             break;
             
             case SHOOT_2:
-                autoStates = AutoStates.DONE;
+                if(!Robot.shooter.getShooterStatus()){
+                    autoStates = AutoStates.DONE;
+                }
             break;
 
             case DONE:
@@ -164,5 +202,13 @@ public class SixBallAuto implements AutoStateMachines{
     public void reset(){
         autoStates = AutoStates.IDLE;
         Robot.shooter.reset();
+    }
+
+    public static void LogHeader() {
+        Logger.Header("autoStates,");
+    }
+
+    public static void LogData() {
+        Logger.singleEnum(autoStates);
     }
 }

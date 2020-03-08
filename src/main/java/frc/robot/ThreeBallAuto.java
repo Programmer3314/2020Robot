@@ -134,7 +134,7 @@ public class ThreeBallAuto implements AutoStateMachines{
             case FORWARD:
                 //go 2 - 5 inches forward or something
                 mP.currentState = DriveState.GYROLOCK;
-                mP.forward = -0.2;
+                mP.forward = 0.2;//-0.2;
                 if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet>=4){
                     autoStates = AutoStates.DONE;
                 }

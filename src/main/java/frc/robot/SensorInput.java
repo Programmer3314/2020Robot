@@ -35,8 +35,8 @@ public class SensorInput {
     }
 
     public static void LogHeader() {
-        Logger.Header("queuedShooter, queuedTrack1, queuedTrack2, queuedHood, queuedIntake"
-        +"sensor1Distance");
+        Logger.Header("queuedShooter, queuedTrack1, queuedTrack2, queuedHood, queuedIntake,"
+        +"sensor1Distance,");
     }
 
     public static void LogData() {

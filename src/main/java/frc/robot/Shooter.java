@@ -26,7 +26,7 @@ import frc.robot.DriveController.MoveParameters;
  */
 public class Shooter {
     public enum ShooterStates {
-        IDLE, GET_HALF_BALL, GET_BALL, GOT_BALL, GAP_BALL, GROUND_GET_HALF_BALL, GROUND_GOT_BALL, GROUND_GAP_BALL, GROUND_EXTRA_BALL, INTAKE_DONE, INTAKE_DONE2, PREPARE, FIRE_BALL_AUTO, DONE
+        IDLE, GET_HALF_BALL, GET_BALL, GOT_BALL, GAP_BALL, GROUND_GET_HALF_BALL, GROUND_GOT_BALL, GROUND_GAP_BALL, GROUND_EXTRA_BALL, INTAKE_DONE, INTAKE_DONE2, PREPARE_ONLY, PREPARE, FIRE_BALL_AUTO, DONE
     }
 
     public CANSparkMax shooterLeft, shooterRight;
@@ -242,6 +242,11 @@ public class Shooter {
             Solenoids.ejectIntake(false);
             break;
 
+            case PREPARE_ONLY:
+                shooterPidController.setReference(targetShooterRPM, ControlType.kVelocity);
+                setHoodSetpoint(hoodSetpoint);
+            break;
+
             case PREPARE:
                 // shooterLeft.set(-HumanInput.throttle);
                 shooterPidController.setReference(targetShooterRPM, ControlType.kVelocity);
@@ -386,6 +391,12 @@ public class Shooter {
                 shooterStates = ShooterStates.IDLE;
                 break;
 
+            case PREPARE_ONLY:
+                if(abortShooter){
+                    shooterStates = ShooterStates.DONE;
+                }
+            
+            break;
             case PREPARE:
                 if (SensorInput.queuedShooter) {
                     shooterBusy = true;
@@ -400,7 +411,8 @@ public class Shooter {
                     if ((Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) <= shooterRPMTolerance) 
                         && (Math.abs(hoodEncoder - hoodSetpoint) <= Constants.hoodkTolerance) 
                         && (useGyro == false || (Math.abs(Robot.cleanGyro - desiredGyroAngle) <= gyroTolerance))) {
-                        shooterStates = ShooterStates.FIRE_BALL_AUTO;
+                            counter = 0;
+                            shooterStates = ShooterStates.FIRE_BALL_AUTO;
                     }
                 } else if (counter >= 200) {
                     shooterStates = ShooterStates.DONE;
@@ -420,10 +432,15 @@ public class Shooter {
                 break;
     
             case FIRE_BALL_AUTO:
-                counter = 0;
-                if (((Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) > shooterRPMTolerance)
-                    && (Math.abs(hoodEncoder - hoodSetpoint) > Constants.hoodkTolerance)) 
-                    || !SensorInput.queuedShooter) {
+                //counter = 0;
+                // if (((Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) > shooterRPMTolerance)
+                //     && (Math.abs(hoodEncoder - hoodSetpoint) > Constants.hoodkTolerance)) 
+                //     || !SensorInput.queuedShooter) {
+                //     autoCounter--;
+                //     shooterStates = ShooterStates.PREPARE;
+                // }
+
+                if(!SensorInput.queuedShooter){
                     autoCounter--;
                     shooterStates = ShooterStates.PREPARE;
                 }
@@ -520,6 +537,10 @@ public class Shooter {
         abortShooter = true;
     }
     
+    public void prepareShooter(){
+        shooterStates = ShooterStates.PREPARE_ONLY;
+    }
+
     public void reverseIntake(){
         Solenoids.ejectIntake(true);
         intake.set(ControlMode.PercentOutput, -0.5);
@@ -563,10 +584,10 @@ public class Shooter {
     }
 
     public void LogHeader() {
-        Logger.Header("targetShooterRPM,shooterRPMTolerance,queuingBeltSpeed,shooterStates"
+        Logger.Header("targetShooterRPM,shooterRPMTolerance,queuingBeltSpeed,shooterStates,"
             + "hoodSetpoint,hoodEncoder,beltQueuingEncoder,lastEncoderVal,shooterBusy,"
             + "homedHood,useGyro,desiredGyroAngle,gyroTolerance,counter,autoCounter,"
-            + "abortShooter,intakeMotorSpeed,pullIntakeInBetweenBalls,"
+            + "abortShooter,intakeMotorSpeed,pullIntakeInBetweenBalls,shooterRPMDiff,"
         );
     }
 
@@ -579,5 +600,6 @@ public class Shooter {
         Logger.booleans(abortShooter);
         Logger.doubles(intakeMotorSpeed);
         Logger.booleans(pullIntakeInBetweenBalls);
+        Logger.doubles(Math.abs(shooterEncoder.getVelocity() - targetShooterRPM));
     }
 }

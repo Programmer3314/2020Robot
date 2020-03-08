@@ -22,13 +22,15 @@ public class Logger {
     private static StringBuilder sb = null;
     private static String fileName;
     private static boolean firstWrite;
+    private static double startTime;
 
     public static void OpenLog(String prefix) {
         if(Enabled) {
+            startTime = Timer.getFPGATimestamp();
             sb = new StringBuilder();
             firstWrite = true;
             sb.append("Time,");
-            fileName = "/home/lvuser/"+prefix+"Logging.txt";
+            fileName = "/home/lvuser/"+prefix+"Logging.csv";
         }
     }
 
@@ -40,7 +42,7 @@ public class Logger {
 
     public static void StartLine() {
         if(sb!=null) {
-            sb.append(Timer.getFPGATimestamp());
+            sb.append(Timer.getFPGATimestamp() - startTime);
             sb.append(",");
         }
 
@@ -49,6 +51,9 @@ public class Logger {
     public static void EndLine() {
         if (sb!=null) {
             sb.append("\n");
+            if(sb.length() > 500000){
+                WriteLog();
+            }
         }
     }
 
@@ -64,6 +69,8 @@ public class Logger {
                 firstWrite=false;
             }
         } catch(Exception e) {
+            System.out.println("Logger Error:");
+            System.out.println(e.getMessage());
         }
     }
 

@@ -183,7 +183,7 @@ public class HumanInput {
         return 0;
     }
 
-    public static void LogHeading() {
+    public static void LogHeader() {
         Logger.Header("forward,turn,trenchRunAlignment,shooterAllInTarget,powerPortAlignment,"
             +"ballChaseButton,climbAlignmentButton,driverCameraChange,operatorCameraChange,"
             +"controlPanelAlignment,reset,"
@@ -192,12 +192,12 @@ public class HumanInput {
             +"activateAuto,shutDownAuto,leftSwitch,rightSwitch,activateIntake, activateGroundIntake,"
             +"spinIntake,reverseIntake,reverseIntakeReleased,spinBallQueue,reverseBallQueue,lightRing,"
             +"fourSpins,spinToColor,spinToFMSColor,spinToBlue,spinToRed,spinToGreen,spinToYellow,"
-            +"manualControlPanel,CPManipulatorDown,CPManipulatorUp"
-            +"spinCP,winchItDown,creepOnBar,stopCreep,abortClimb"
+            +"manualControlPanel,CPManipulatorDown,CPManipulatorUp,"
+            +"spinCP,winchItDown,creepOnBar,stopCreep,abortClimb,"
             +"intakeOut,intakeIn,engageRatchet,disengageRatchet,disengagePTO,engagePTO,"
-            +"lightRingOn,lightRingOff"
-            +"abortIntake,testButton,closeShot,lineShot,trenchShot,farShot"
-            +"traverseClimbState,operatorStart,operatorBack"
+            +"lightRingOn,lightRingOff,"
+            +"abortIntake,testButton,closeShot,lineShot,trenchShot,farShot,"
+            +"traverseClimbState,operatorStart,operatorBack,"
             +"abortShooter,sLeft,KILLALLGYROS,reverseAll,reverseAllReleased,"
         );
     }

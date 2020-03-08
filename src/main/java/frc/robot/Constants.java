@@ -63,9 +63,9 @@ public class Constants{
     public static final int sparkDriveTrainFreeLimit = 20;
     
     //Power Port
-    public static final double powerPortTolerance = 0.5;
-    public static final double powerPortkP = 0.0225;
-    public static final double powerPortkD = 0;//0.04;
+    public static final double powerPortTolerance = 1.0;//2.0;//0.5;
+    public static final double powerPortkP = 0.0115;//0.0225;
+    public static final double powerPortkD = 0.002;//0;//0.04;
 
     //Ball Chasing
     public static final double ballTolerance = 15;
@@ -119,5 +119,5 @@ public class Constants{
     public static final double humanInputDeadband = 0.01;
     public static final double humanInputMinTurn = 0.025;
 
-    public static final int targettingOffset = 2;
+    public static final double targettingOffset = 2;
 }

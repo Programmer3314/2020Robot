@@ -98,7 +98,7 @@ public class Climber {
             case DRIVE:
                 counter++;
                 mP.currentState = DriveState.MANUAL;
-                mP.forward = 0.4;
+                mP.forward = -0.4;//0.4;
                 mP.turn = 0.0;
 
                 // delay engaging ratchet
@@ -113,7 +113,7 @@ public class Climber {
 
             case ENGAGE_RATCHET:
                 mP.currentState = DriveState.MANUAL;
-                mP.forward = 0.3;
+                mP.forward = -0.3;//0.3;
                 mP.turn = 0.0;
 
                 Solenoids.engageRatchet.set(true);

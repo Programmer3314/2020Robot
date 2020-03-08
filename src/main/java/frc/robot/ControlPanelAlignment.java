@@ -98,7 +98,7 @@ public class ControlPanelAlignment {
             break;
         case CENTER_ALIGN:
             mP.currentState = DriveState.GYROLOCK;
-            mP.forward = -controlPanel.calculate(0, Math.abs(distanceToWall - 28));
+            mP.forward = controlPanel.calculate(0, Math.abs(distanceToWall - 28));//-controlPanel.calculate(0, Math.abs(distanceToWall - 28));
             break;
         case GYRO_0_ADJUST:
             mP.currentState = DriveState.TRENCHRUNALIGNMENT;
@@ -107,7 +107,7 @@ public class ControlPanelAlignment {
             break;
         case FORWARD:
             mP.currentState = DriveState.GYROLOCK;
-            mP.forward = 0.2;
+            mP.forward = -0.2;//0.2;
             break;
         case DONE:
             mP.currentState = DriveState.MANUAL;
