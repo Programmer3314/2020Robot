@@ -78,7 +78,7 @@ public class Constants{
 
     //Shooter Motor Controllers
     //public static final double shooterRPM = 3200;
-    public static final double shooterkP = 0.0007;
+    public static final double shooterkP = 0.00085;//0.0007;
     public static final double shooterkI = 0.000001;
     public static final double shooterkIz = 50;
     public static final double shooterkIMax = 0.1;

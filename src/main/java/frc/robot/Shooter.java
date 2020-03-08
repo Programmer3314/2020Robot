@@ -200,7 +200,7 @@ public class Shooter {
             case GAP_BALL:
             intake.set(ControlMode.PercentOutput, 0);
             indexer.set(ControlMode.PercentOutput, 0);
-            ballQueuing.set(ControlMode.PercentOutput, 0.5);
+            ballQueuing.set(ControlMode.PercentOutput, 0.5/*1.0/*0.5*/);
             break;
 
             case GROUND_GET_HALF_BALL:
@@ -221,9 +221,10 @@ public class Shooter {
 
             // TODO: Consider ball Queuing to 1.0. 
             case GROUND_GAP_BALL:
+            Solenoids.ejectIntake(true);
             intake.set(ControlMode.PercentOutput, intakeMotorSpeed);
             indexer.set(ControlMode.PercentOutput, 0);
-            ballQueuing.set(ControlMode.PercentOutput, 0.5); 
+            ballQueuing.set(ControlMode.PercentOutput, 0.5/*1.0 /*0.5*/); 
             break;
 
             case GROUND_EXTRA_BALL:
@@ -376,14 +377,14 @@ public class Shooter {
                 }
                 break;
             case GROUND_GAP_BALL:
-                // TODO: Consider... 
+                // TODO: Consider...  did it. 
                 // !SensorInput.queuedTrack1 && !SensorInput.queuedTrack2
                 // Gap should make sure the ball has rolled through both
                 // sensors. I think it is getting here without having reached
                 // the second sensor. So !Track2 happens immediately, not when
                 // the ball has passed the sensor. I suspect the same may 
                 // need to be done above with GAP_BALL. 
-                if (!SensorInput.queuedTrack2) {
+                if (!SensorInput.queuedTrack1 && !SensorInput.queuedTrack2) {
                     nextState = ShooterStates.GROUND_GET_HALF_BALL;
                 }
 
@@ -434,8 +435,9 @@ public class Shooter {
 
                     if ((Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) <= shooterRPMTolerance) 
                         && (Math.abs(hoodEncoder - hoodSetpoint) <= Constants.hoodkTolerance) 
-                        && (useGyro == false || (Math.abs(Robot.cleanGyro - desiredGyroAngle) <= gyroTolerance))) {
-                            counter = 0;
+                        && (useGyro == false || (Math.abs(Robot.cleanGyro - DriveController.angleOffset) <= gyroTolerance))) {
+                        //&& (useGyro == false || (Math.abs(Robot.cleanGyro - desiredGyroAngle) <= gyroTolerance))) {
+                                counter = 0;
                             nextState = ShooterStates.FIRE_BALL_AUTO;
                     }
                 } else if (counter >= 200) {

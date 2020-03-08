@@ -1,3 +1,9 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
 
 package frc.robot;
 
@@ -6,7 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DriveController.DriveState;
 import frc.robot.DriveController.MoveParameters;
 
-public class SixBallAuto implements AutoStateMachines{
+/**
+ * Add your docs here.
+ */
+public class FiveBallAutoTrench implements AutoStateMachines{
     public enum AutoStates{
         IDLE,
         DELAY,
@@ -33,7 +42,7 @@ public class SixBallAuto implements AutoStateMachines{
     boolean useGyro;
     double angleOffset;
 
-    public SixBallAuto(){
+    public FiveBallAutoTrench(){
         autoStates = AutoStates.IDLE;
         counter = 0;
 
@@ -105,7 +114,7 @@ public class SixBallAuto implements AutoStateMachines{
                 mP.forward = -0.3;//-0.26;//-0.175;//0.175;
 
                 // if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 15.0){
-                //     Robot.shooter.abortIntake();
+                //     Robot.shooter.abortIntake();``   `````
                 //     // Robot.shooter.prepareShooter();
                 //     mP.currentState = DriveState.NONE;
                 //     autoStates = AutoStates.DRIVE_FORWARD_2;
@@ -122,7 +131,7 @@ public class SixBallAuto implements AutoStateMachines{
             case DRIVE_BACKWARDS_AND_BALLCHASE_2:
                 mP.forward = -0.1625;//-0.165;//-0.17;//-0.18;
 
-                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 10.0){
+                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 6.5){
                     Robot.shooter.abortIntake();
                     // Robot.shooter.prepareShooter();
                     mP.currentState = DriveState.NONE;
@@ -134,13 +143,13 @@ public class SixBallAuto implements AutoStateMachines{
 
             case DRIVE_FORWARD:
                 mP.currentState = DriveState.POWERPORTALIGNMENT;
-                mP.forward = 0.425;//0.325;//0.3;//0.2//-0.2;
+                mP.forward = 0.22;//0.325;//0.3;//0.2//-0.2;
 
                 Robot.shooter.setHoodSetpoint(-1450);
                 Robot.shooter.setTargetShooterRPM(3600);
                 Robot.shooter.prepareShooter();
 
-                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 5){
+                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 2.5){
                     mP.forward = 0.0;
                     mP.currentState = DriveState.NONE;//changed
                     counter = 0;

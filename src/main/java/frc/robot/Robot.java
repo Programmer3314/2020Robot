@@ -114,6 +114,10 @@ public class Robot extends MyRobot {
       auto1 = new ThreeBallAutoBack(shooter);
     }
 
+    if (HumanInput.autoNumber == 5){
+      auto1 = new FiveBallAutoTrench();
+    }
+
     if (HumanInput.autoNumber == 6) {
       auto1 = new SixBallAuto();
     }

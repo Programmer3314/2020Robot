@@ -66,7 +66,7 @@ public class DriveController {
         powerPortTracking = new PDController(Constants.powerPortkP, Constants.powerPortkD);
         powerPortTracking.setToleranceValue(Constants.powerPortTolerance);
         powerPortTracking.setMaxCorrectionValue(Constants.drivetrainTrackingMaxCorrection);
-        powerPortTracking.setMinCorrectionValue(0.08/*0.1*/);
+        powerPortTracking.setMinCorrectionValue(0.085/*0.1*/);
         ballTracking = new PDController(Constants.ballkP, Constants.ballkD);
         ballTracking.setToleranceValue(Constants.ballTolerance);
         ballTracking.setMaxCorrectionValue(Constants.drivetrainTrackingMaxCorrection);
