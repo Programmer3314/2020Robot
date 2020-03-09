@@ -40,7 +40,7 @@ public class DriveController {
     // double scaleTurn = 1;
     // // int camNum = 0;
     // double distanceToWall;
-    PDController powerPortTracking, ballTracking, trenchTracking;
+    PDController powerPortTracking, ballTracking, trenchTracking, gyroTracking;
 
     public static enum DriveState {
         MANUAL, BALLCHASE, POWERPORTALIGNMENT, SHOOTERPOWERPORTALIGNMENT, CLIMBALIGNMENT, TRENCHRUNALIGNMENT, GYROLOCK,
@@ -63,10 +63,14 @@ public class DriveController {
         this.drivetrain = drivetrain;
         this.ballTargetTable = ballTargetTable;
         this.retroTapeTable = retrotapeTable;
+        gyroTracking = new PDController(Constants.gyrokP, Constants.gyrokD);
+        gyroTracking.setToleranceValue(Constants.gyroTolerance);
+        gyroTracking.setMaxCorrectionValue(Constants.drivetrainTrackingMaxCorrection);
+        gyroTracking.setMinCorrectionValue(Constants.gyroMinCorrection);
         powerPortTracking = new PDController(Constants.powerPortkP, Constants.powerPortkD);
         powerPortTracking.setToleranceValue(Constants.powerPortTolerance);
         powerPortTracking.setMaxCorrectionValue(Constants.drivetrainTrackingMaxCorrection);
-        powerPortTracking.setMinCorrectionValue(0.085/*0.1*/);
+        powerPortTracking.setMinCorrectionValue(Constants.powerPortMinCorrection);
         ballTracking = new PDController(Constants.ballkP, Constants.ballkD);
         ballTracking.setToleranceValue(Constants.ballTolerance);
         ballTracking.setMaxCorrectionValue(Constants.drivetrainTrackingMaxCorrection);
@@ -209,7 +213,7 @@ public class DriveController {
             break;
 
         case TURN_TO_GYRO:
-            mP.turn = powerPortTracking.calculate(mP.angle, Robot.cleanGyro);
+            mP.turn = gyroTracking.calculate(mP.angle, Robot.cleanGyro);
             break;
 
         case NONE:

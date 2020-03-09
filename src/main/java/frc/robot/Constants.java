@@ -64,8 +64,15 @@ public class Constants{
     
     //Power Port
     public static final double powerPortTolerance = 1.0;//2.0;//0.5;
-    public static final double powerPortkP = 0.0115;//0.0225;
-    public static final double powerPortkD = 0.002;//0;//0.04;
+    public static final double powerPortkP = 0.025;//0.0225;
+    public static final double powerPortkD = 0.048;//0;//0.04;
+    public static final double powerPortMinCorrection = 0.085;
+
+    //Gyro
+    public static final double gyroTolerance = 1.0;//2.0;//0.5;
+    public static final double gyrokP = 0.025;//0.0225;
+    public static final double gyrokD = 0.0;//0;//0.04;
+    public static final double gyroMinCorrection = 0.1;
 
     //Ball Chasing
     public static final double ballTolerance = 15;
@@ -119,5 +126,5 @@ public class Constants{
     public static final double humanInputDeadband = 0.01;
     public static final double humanInputMinTurn = 0.025;
 
-    public static final double targettingOffset = 2;
+    public static final double targettingOffset = 1;
 }

@@ -72,6 +72,7 @@ public class FiveBallAutoTrench implements AutoStateMachines{
                 queuingBeltSpeed = Constants.queuingBeltSpeed;
                 gyroTolerance = 2;
 
+                Robot.shooter.autoCounter = 3;
                 Robot.shooter.shootAll(queuingBeltSpeed, useGyro, 0, gyroTolerance);
 
                 autoStates = AutoStates.SHOOT;
@@ -192,6 +193,7 @@ public class FiveBallAutoTrench implements AutoStateMachines{
                 // and move on. The next state will wait on Shooter which will wait 
                 // on the gyro.
                 //if(Math.abs(Robot.cleanGyro - gyroAngleDesired) <= gyroTolerance){
+                    Robot.shooter.autoCounter = 3;
                     Robot.shooter.shootAll(queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
                     autoStates = AutoStates.SHOOT_2;
                 //}

@@ -49,8 +49,8 @@ public class Shooter {
     double gyroTolerance;
     int counter, autoCounter;
     boolean abortShooter;
-    double intakeMotorSpeed = 1.0;
-    final boolean pullIntakeInBetweenBalls = true;
+    double intakeMotorSpeed = 0.75;
+    final boolean pullIntakeInBetweenBalls = false;
     int cyclesInState;
 
     public Shooter(int CANMcshooterLeft, int CANMcshooterRight, int CANMcBallQueuing, 
@@ -107,7 +107,6 @@ public class Shooter {
         shooterEncoder.setVelocityConversionFactor(Constants.sparkShooterVelocityConversionFactor);
 
         counter = 0;
-        autoCounter = 3;
         cyclesInState = 0;
     }
 
@@ -177,14 +176,14 @@ public class Shooter {
 
             case GET_HALF_BALL:
             //Solenoids.ejectIntake(true); //Comment 1 of 2 when test loading station intake
-            intake.set(ControlMode.PercentOutput, 0);
+            intake.set(ControlMode.PercentOutput, -0.5);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.0);
             Solenoids.ejectIntake(false);
             break;
 
             case GET_BALL:
-            intake.set(ControlMode.PercentOutput, 0.25);
+            intake.set(ControlMode.PercentOutput, 0.0);
             indexer.set(ControlMode.PercentOutput, 0.5);
             // Solenoids.ejectIntake(false);
             break;
@@ -310,7 +309,6 @@ public class Shooter {
                 abortShooter = false;
                 shooterBusy = false;
                 counter = 0;
-                autoCounter = 3;
                 break;
 
             case GET_HALF_BALL:
@@ -345,7 +343,7 @@ public class Shooter {
                 if (!SensorInput.queuedTrack2) {
                     nextState = ShooterStates.GET_HALF_BALL;
                 }
-    
+            
                 if (SensorInput.queuedShooter) {
                     nextState = ShooterStates.INTAKE_DONE;
                     counter = 0;

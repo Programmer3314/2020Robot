@@ -26,7 +26,7 @@ public class SixBallAuto implements AutoStateMachines{
     public static AutoStates autoStates = AutoStates.IDLE;
     double targetShooterRPM, shooterRPMTolerance;
     double queuingBeltSpeed;
-    int counter;
+    int counter, gameCounter;
     double encoderPos;
     double lastEncoderPos;  
     double gyroTolerance, gyroAngleDesired;
@@ -36,6 +36,7 @@ public class SixBallAuto implements AutoStateMachines{
     public SixBallAuto(){
         autoStates = AutoStates.IDLE;
         counter = 0;
+        gameCounter = 0;
 
         portalTapeTargetTable = Robot.ntInst.getTable("Retroreflective Tape Target");
         shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
@@ -46,6 +47,7 @@ public class SixBallAuto implements AutoStateMachines{
     }
     @Override
     public void update(MoveParameters mP){
+        gameCounter++;
         encoderPos = Robot.driveController.encoderPos;
         switch(autoStates){
             case IDLE:
@@ -63,6 +65,7 @@ public class SixBallAuto implements AutoStateMachines{
                 queuingBeltSpeed = Constants.queuingBeltSpeed;
                 gyroTolerance = 2;
 
+                Robot.shooter.autoCounter = 3;
                 Robot.shooter.shootAll(queuingBeltSpeed, useGyro, 0, gyroTolerance);
 
                 autoStates = AutoStates.SHOOT;
@@ -78,7 +81,7 @@ public class SixBallAuto implements AutoStateMachines{
                 mP.angle = 25;
                 mP.currentState = DriveState.TURN_TO_GYRO;
 
-                if (Math.abs(mP.angle - Robot.cleanGyro) <= gyroTolerance) {
+                if (Math.abs(Robot.cleanGyro) >= 25) {
                     counter++;
                 } else {
                     counter = 0;
@@ -120,9 +123,9 @@ public class SixBallAuto implements AutoStateMachines{
             break;
 
             case DRIVE_BACKWARDS_AND_BALLCHASE_2:
-                mP.forward = -0.1625;//-0.165;//-0.17;//-0.18;
+                mP.forward = -0.205;//-0.1625;//-0.165;//-0.17;//-0.18;
 
-                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 10.0){
+                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 10.0 || gameCounter >= 538){
                     Robot.shooter.abortIntake();
                     // Robot.shooter.prepareShooter();
                     mP.currentState = DriveState.NONE;
@@ -140,7 +143,7 @@ public class SixBallAuto implements AutoStateMachines{
                 Robot.shooter.setTargetShooterRPM(3600);
                 Robot.shooter.prepareShooter();
 
-                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 5){
+                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 3.5/*5*/   ){
                     mP.forward = 0.0;
                     mP.currentState = DriveState.NONE;//changed
                     counter = 0;
@@ -183,6 +186,7 @@ public class SixBallAuto implements AutoStateMachines{
                 // and move on. The next state will wait on Shooter which will wait 
                 // on the gyro.
                 //if(Math.abs(Robot.cleanGyro - gyroAngleDesired) <= gyroTolerance){
+                    Robot.shooter.autoCounter = 3;
                     Robot.shooter.shootAll(queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
                     autoStates = AutoStates.SHOOT_2;
                 //}

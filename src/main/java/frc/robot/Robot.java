@@ -81,6 +81,8 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeAutonomousInit() {
+    shooter.autoCounter = 3;
+
     mP = driveController.new MoveParameters();
     navx.reset();
 
@@ -163,6 +165,8 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeTeleopInit() {
+    shooter.autoCounter = 6;
+
     mP = driveController.new MoveParameters();
     // SmartDashboard.putNumber("Target Offset", Constants.targettingOffset);
 
@@ -260,8 +264,8 @@ public class Robot extends MyRobot {
     }
 
     if(HumanInput.trenchShot){
-      shooter.setHoodSetpoint(-1500);
-      shooter.setTargetShooterRPM(3600);
+      shooter.setHoodSetpoint(-1520);
+      shooter.setTargetShooterRPM(3800);
       shooter.prepareShooter();
       //targetShooterRPM = 3600;
     }
@@ -287,6 +291,7 @@ public class Robot extends MyRobot {
       angleOffset += Robot.rawGyro;
       gyroAngleDesired = angleOffset;
       
+      shooter.autoCounter = 6;
       shooter.shootAll(/*targetShooterRPM, shooterRPMTolerance, */queuingBeltSpeed, useGyro, gyroAngleDesired,
           gyroTolerance);
     } else if (HumanInput.trenchRunAlignment) {
@@ -439,9 +444,9 @@ public class Robot extends MyRobot {
 
     // TODO: revert later
     // Commented due to lag issue
-    // if (hasControlPanel) {
-    //   controlPanel.update();
-    // }
+    if (hasControlPanel) {
+      controlPanel.update();
+    }
 
     if(HumanInput.operatorBack && HumanInput.operatorStart && climber.climbStates == ClimbStates.IDLE){
       climber.activate();

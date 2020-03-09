@@ -100,6 +100,7 @@ public class ThreeBallAutoBack implements AutoStateMachines{
                 queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
                 gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 5);
 
+                Robot.shooter.autoCounter = 3;
                 Robot.shooter.shootAll( queuingBeltSpeed, useGyro, gyroAngleDesired, gyroTolerance);
 
                 autoStates = AutoStates.SHOOT;

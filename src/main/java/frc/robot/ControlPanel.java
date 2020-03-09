@@ -67,13 +67,6 @@ public class ControlPanel {
   public void update() {
     gameData = DriverStation.getInstance().getGameSpecificMessage();
 
-    if(HumanInput.CPManipulatorUp){
-      talon31.set(ControlMode.PercentOutput, HumanInput.spinCP * 0.25);
-    } else {
-      currentState = SetColor.DONE;
-      talon31.set(ControlMode.PercentOutput, 0.0);
-      inFourSpins = false;
-    }
 
     // Color Sensor
     Color detectedColor = m_colorSensor.getColor();
@@ -216,7 +209,7 @@ public class ControlPanel {
     //   talon31.setSelectedSensorPosition(0);
     // }
     if (inFourSpins) {
-      if (talon31.getSelectedSensorPosition() <= 412000) {
+      if (talon31.getSelectedSensorPosition() <= 412000*.8) {
         talon31.set(ControlMode.PercentOutput, 1.0);
         SmartDashboard.putNumber("CP Motor Speed", 1.0);
       } else {
@@ -224,8 +217,16 @@ public class ControlPanel {
         inFourSpins = false;
         SmartDashboard.putNumber("CP Motor Speed", -1);
       }
-
+    } else if(HumanInput.CPManipulatorUp){
+      talon31.set(ControlMode.PercentOutput, HumanInput.spinCP * 0.5);
+    } else {
+      currentState = SetColor.DONE;
+      talon31.set(ControlMode.PercentOutput, 0.0);
+      inFourSpins = false;
     }
+
+
+
     if (HumanInput.CPManipulatorDown) {
       talon31.set(ControlMode.PercentOutput, 0);
     }
