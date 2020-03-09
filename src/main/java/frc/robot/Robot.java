@@ -14,12 +14,6 @@ public class Robot extends MyRobot {
   boolean isForward = true;
   int driverCamNum = 0;
   int operatorCamNum = 0;
-  // TODO: These variable should be in Shooter. 
-  // Robot should set them there via a method 
-  // instead of keeping them here and passing 
-  // into ShootAll... 
-  // Something like shooter.setFiringSolution(...)
-  //public static double targetShooterRPM, shooterRPMTolerance;
   double queuingBeltSpeed;
   boolean useGyro;
   double angleOffset;
@@ -28,8 +22,6 @@ public class Robot extends MyRobot {
   boolean toggleLightRing = false;
   Climber climber = new Climber();
   int LEDCounter;
-
-  // public static DriveController.DriveState currentDriveState;
 
   @Override
   public void RechargeRobotInit() {
@@ -47,8 +39,6 @@ public class Robot extends MyRobot {
     
     driveController = new DriveController(drivetrain, ballTargetTable, portalTapeTargetTable);
 
-    //shooterRPMTolerance = Constants.shooterRPMTolerance;
-
     if (hasShooter) {
       shooter = new Shooter(CANMcshooterLeft, CANMcshooterRight, CANMcBallQueuing, 
           CANMcHood, CANMcIndexer, CANMcIntake);
@@ -62,9 +52,9 @@ public class Robot extends MyRobot {
 
     // TODO: revert later
     // Commented due to lag issue
-    // if (hasControlPanel) {
-    //   controlPanel = new ControlPanel(CANMcctrlPanel);
-    // }
+    if (hasControlPanel) {
+      controlPanel = new ControlPanel(CANMcctrlPanel);
+    }
     trenchAlignment = new ControlPanelAlignment();
 
     // targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
@@ -194,9 +184,10 @@ public class Robot extends MyRobot {
 
     LEDCounter = 0;
 
-    if (hasControlPanel) {
-       controlPanel = new ControlPanel(CANMcctrlPanel);
-    }
+    // Already done in Robot Init...
+    // if (hasControlPanel) {
+    //    controlPanel = new ControlPanel(CANMcctrlPanel);
+    // }
 
     mP.currentState = DriveController.DriveState.MANUAL;
 
@@ -442,8 +433,6 @@ public class Robot extends MyRobot {
       // }        
     }
 
-    // TODO: revert later
-    // Commented due to lag issue
     if (hasControlPanel) {
       controlPanel.update();
     }

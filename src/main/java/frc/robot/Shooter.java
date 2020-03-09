@@ -26,7 +26,8 @@ import frc.robot.DriveController.MoveParameters;
  */
 public class Shooter {
     public enum ShooterStates {
-        IDLE, GET_HALF_BALL, GET_BALL, GOT_BALL, GAP_BALL, GROUND_GET_HALF_BALL, GROUND_GOT_BALL, GROUND_GAP_BALL, GROUND_EXTRA_BALL, INTAKE_DONE, INTAKE_DONE2, PREPARE_ONLY, PREPARE, FIRE_BALL_AUTO, DONE
+        IDLE, GET_HALF_BALL, //GET_BALL, // Not Used 
+        GOT_BALL, GAP_BALL, GROUND_GET_HALF_BALL, GROUND_GOT_BALL, GROUND_GAP_BALL, GROUND_EXTRA_BALL, INTAKE_DONE, INTAKE_DONE2, PREPARE_ONLY, PREPARE, FIRE_BALL_AUTO, DONE
     }
 
     public CANSparkMax shooterLeft, shooterRight;
@@ -175,35 +176,34 @@ public class Shooter {
             break;
 
             case GET_HALF_BALL:
-            //Solenoids.ejectIntake(true); //Comment 1 of 2 when test loading station intake
+            //Solenoids.ejectIntake(true); 
             intake.set(ControlMode.PercentOutput, -0.5);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.0);
             Solenoids.ejectIntake(false);
             break;
 
-            case GET_BALL:
-            intake.set(ControlMode.PercentOutput, 0.0);
-            indexer.set(ControlMode.PercentOutput, 0.5);
-            // Solenoids.ejectIntake(false);
-            break;
+            // case GET_BALL:
+            // intake.set(ControlMode.PercentOutput, 0.0);
+            // indexer.set(ControlMode.PercentOutput, 0.5);
+            // // Solenoids.ejectIntake(false);
+            // break;
 
             case GOT_BALL:
-            //Solenoids.ejectIntake(true); //Comment 2 of 2 when test loading station intake
+            //Solenoids.ejectIntake(true); 
             intake.set(ControlMode.PercentOutput, 0);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.5);
             break;
 
-            // TODO: Consider BallQueuing to 1.0
             case GAP_BALL:
             intake.set(ControlMode.PercentOutput, 0);
             indexer.set(ControlMode.PercentOutput, 0);
-            ballQueuing.set(ControlMode.PercentOutput, 0.5/*1.0/*0.5*/);
+            ballQueuing.set(ControlMode.PercentOutput, 0.5);
             break;
 
             case GROUND_GET_HALF_BALL:
-            Solenoids.ejectIntake(true); //Comment 1 of 2 when test loading station intake
+            Solenoids.ejectIntake(true); 
             intake.set(ControlMode.PercentOutput, intakeMotorSpeed);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.0);
@@ -211,19 +211,18 @@ public class Shooter {
     
             case GROUND_GOT_BALL:
             if(pullIntakeInBetweenBalls){
-                Solenoids.ejectIntake(false); //Comment 2 of 2 when test loading station intake
+                Solenoids.ejectIntake(false); 
             }
             intake.set(ControlMode.PercentOutput, 0.35);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.0); // 0.5);
             break;
 
-            // TODO: Consider ball Queuing to 1.0. 
             case GROUND_GAP_BALL:
             Solenoids.ejectIntake(true);
             intake.set(ControlMode.PercentOutput, intakeMotorSpeed);
             indexer.set(ControlMode.PercentOutput, 0);
-            ballQueuing.set(ControlMode.PercentOutput, 0.5/*1.0 /*0.5*/); 
+            ballQueuing.set(ControlMode.PercentOutput, 0.5); 
             break;
 
             case GROUND_EXTRA_BALL:
@@ -317,17 +316,15 @@ public class Shooter {
                 }
                 break;
 
-            case GET_BALL:
-                if (SensorInput.queuedTrack1){
-                    nextState = ShooterStates.GOT_BALL;
-                }
-
-                if (SensorInput.queuedShooter) {
-                    nextState = ShooterStates.INTAKE_DONE;
-                    counter = 0;
-                }
-
-                break;
+            // case GET_BALL:
+            //     if (SensorInput.queuedTrack1){
+            //         nextState = ShooterStates.GOT_BALL;
+            //     }
+            //     if (SensorInput.queuedShooter) {
+            //         nextState = ShooterStates.INTAKE_DONE;
+            //         counter = 0;
+            //     }
+            //     break;
             case GOT_BALL:
                 if (SensorInput.queuedTrack2) {
                     nextState = ShooterStates.GAP_BALL;
@@ -344,12 +341,19 @@ public class Shooter {
                     nextState = ShooterStates.GET_HALF_BALL;
                 }
             
+                // TODO: Please add an "extra ball" state like in Ground Intake
+                // The new state should pull the ball down vertically, 
+                // by running the intake motor (reverse of normal, same as above)
+                // but none of the others, so that the ball gets pulled in, but not 
+                // indexed.
                 if (SensorInput.queuedShooter) {
                     nextState = ShooterStates.INTAKE_DONE;
                     counter = 0;
                 }
     
                 break;
+
+
             case GROUND_GET_HALF_BALL:
                 if(SensorInput.queuedIntake && counter >= 5/*25*/){
                     nextState = ShooterStates.GROUND_GOT_BALL;
@@ -375,13 +379,6 @@ public class Shooter {
                 }
                 break;
             case GROUND_GAP_BALL:
-                // TODO: Consider...  did it. 
-                // !SensorInput.queuedTrack1 && !SensorInput.queuedTrack2
-                // Gap should make sure the ball has rolled through both
-                // sensors. I think it is getting here without having reached
-                // the second sensor. So !Track2 happens immediately, not when
-                // the ball has passed the sensor. I suspect the same may 
-                // need to be done above with GAP_BALL. 
                 if (!SensorInput.queuedTrack1 && !SensorInput.queuedTrack2) {
                     nextState = ShooterStates.GROUND_GET_HALF_BALL;
                 }
@@ -393,8 +390,8 @@ public class Shooter {
                 break;
 
             case GROUND_EXTRA_BALL:
-            //only way out of this is to abort intake
-            break;
+                //only way out of this is to abort intake
+                break;
 
             case INTAKE_DONE:
                 //shooterStates = ShooterStates.IDLE;
@@ -412,8 +409,8 @@ public class Shooter {
                 if(abortShooter){
                     nextState = ShooterStates.DONE;
                 }
-            
-            break;
+                break;
+
             case PREPARE:
                 if (SensorInput.queuedShooter) {
                     shooterBusy = true;
@@ -425,11 +422,6 @@ public class Shooter {
 
                     // Confirm Firing Solution
                     // (consolidated conditions)
-
-                    // TODO: This check uses a desiredGyroAngle passed in from outside
-                    // But DriveController is making it's own calculation.  
-                    // This should be rewritten to use DriveController.angleOffset
-                    // instead of desiredGyroAngle. 
 
                     if ((Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) <= shooterRPMTolerance) 
                         && (Math.abs(hoodEncoder - hoodSetpoint) <= Constants.hoodkTolerance) 
@@ -443,7 +435,17 @@ public class Shooter {
                 }
                 counter++;
     
-                if(autoCounter == 0){
+                // TODO: Please go to a delay state before aborting shooter. 
+                // This will prevent the last ball in the sequence from 
+                // getting "half shot".
+                // It takes about a half second (@3600 rpm) for the ball 
+                // to move through the shooter. For about half of this (a little less)
+                // the ball is blocking the sensor and the state remains in FIRE_BALL_AUTO.
+                // If we hitting our max ball (autoCounter==0), then we should wait
+                // about 15 cycles before actually shutting down the shooter. 
+                // So please make a delay state that this will transfer to which will 
+                // then (after 15 cycles) do the abort. 
+                if(autoCounter == 0) {
                     abortShooter = true;
                 }
 
@@ -456,32 +458,10 @@ public class Shooter {
                 break;
     
             case FIRE_BALL_AUTO:
-                //counter = 0;
-                // if (((Math.abs(shooterEncoder.getVelocity() - targetShooterRPM) > shooterRPMTolerance)
-                //     && (Math.abs(hoodEncoder - hoodSetpoint) > Constants.hoodkTolerance)) 
-                //     || !SensorInput.queuedShooter) {
-                //     autoCounter--;
-                //     shooterStates = ShooterStates.PREPARE;
-                // }
-
                 if(!SensorInput.queuedShooter){
                     autoCounter--;
                     nextState = ShooterStates.PREPARE;
                 }
-                // I believe that the shooter wasn't spinning down 
-                // because the RPM didn't fall enough to trigger the above 
-                // state change. So the counter is never checked and we just sit here. 
-                // But, this state's job is to inject a ball into the shooting wheels. 
-                // We should check that by seeing the sensor loose the ball. Once that 
-                // happens we should go back to queue the next ball. Therefore if the 
-                // SensorInput.queuedShooter is false, we should go back and prepare. 
-                // (Actually, this is the start of a bigger change that will split Prepare
-                // into two states... Queue_Ball and Prepare. The first should queue the ball
-                // and the second should simply hold until the shooter is in the right condition.)
-                // if (!SensorInput.queuedShooter) {
-                //     autoCounter--;
-                //     shooterStates = ShooterStates.PREPARE;
-                // }
                 break;
     
             case DONE:

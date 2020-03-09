@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 public abstract class AllRobots extends TimedRobot {
@@ -15,10 +16,12 @@ public abstract class AllRobots extends TimedRobot {
     public AutoStateMachines auto;
     public static final double degtorad = Math.PI /180;
     public static final double radtodeg = 180/Math.PI;
+    public static DriverStation driverStation;
 
     @Override
     public void robotInit() {
         ntInst = NetworkTableInstance.getDefault();
+        driverStation = DriverStation.getInstance();
         MyRobotInit();
     }
 
