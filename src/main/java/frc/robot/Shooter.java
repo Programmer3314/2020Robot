@@ -47,7 +47,7 @@ public class Shooter {
     boolean useGyro;
     double desiredGyroAngle;
     double gyroTolerance;
-    int counter, autoCounter;
+    int counter, autoCounter, counterv2;
     boolean abortShooter;
     double intakeMotorSpeed = 0.75;
     final boolean pullIntakeInBetweenBalls = false;
@@ -106,6 +106,7 @@ public class Shooter {
 
         shooterEncoder.setVelocityConversionFactor(Constants.sparkShooterVelocityConversionFactor);
 
+        counterv2 = 0;
         counter = 0;
         cyclesInState = 0;
     }
@@ -309,6 +310,7 @@ public class Shooter {
                 abortShooter = false;
                 shooterBusy = false;
                 counter = 0;
+                counterv2 = 0;
                 break;
 
             case GET_HALF_BALL:
@@ -443,13 +445,21 @@ public class Shooter {
                 }
                 counter++;
     
-                if(autoCounter == 0){
-                    abortShooter = true;
+                // if(autoCounter == 0){
+                //     abortShooter = true;
+                // }
+
+                if(autoCounter == 1){
+                    counterv2++;
+                    if(counterv2 >= 15){
+                        abortShooter = true;
+                    }
                 }
 
                 if(abortShooter){
                     nextState = ShooterStates.DONE;
                     counter = 0;
+                    counterv2 = 0;
                     autoCounter = 5;
                     abortShooter = false;
                 }
