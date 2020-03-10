@@ -104,7 +104,7 @@ public class Robot extends MyRobot {
     }
     Solenoids.LogHeader();
 
-    
+
     Solenoids.targettingLightRing(true);
     Solenoids.ejectIntake(false);
 
@@ -265,8 +265,8 @@ public class Robot extends MyRobot {
     }
 
     if(HumanInput.trenchShot){
-      shooter.setHoodSetpoint(-1520);
-      shooter.setTargetShooterRPM(3800);
+      shooter.setHoodSetpoint(-1350); //-1475);
+      shooter.setTargetShooterRPM(3700); // 3800 //5200);
       shooter.prepareShooter();
       //targetShooterRPM = 3600;
     }
