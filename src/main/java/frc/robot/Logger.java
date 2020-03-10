@@ -8,6 +8,8 @@
 package frc.robot;
 
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
@@ -30,7 +32,14 @@ public class Logger {
             sb = new StringBuilder();
             firstWrite = true;
             sb.append("Time,");
-            fileName = "/home/lvuser/"+prefix+"Logging.csv";
+            int id = 0;
+            while(id<10) {
+                fileName = "/home/lvuser/"+prefix+"Logging"+Integer.toString(id)+".csv";
+                if(!Files.exists(Path.of(fileName),LinkOption.NOFOLLOW_LINKS)) {
+                    break;
+                }
+                id++;
+            }
         }
     }
 
@@ -51,7 +60,7 @@ public class Logger {
     public static void EndLine() {
         if (sb!=null) {
             sb.append("\n");
-            if(sb.length() > 500000){
+            if(sb.length() > 5000000){ //5,000,000 should never write during a match.
                 WriteLog();
             }
         }
@@ -112,5 +121,4 @@ public class Logger {
                 sb.append(",");
         }
     }
-   
 }

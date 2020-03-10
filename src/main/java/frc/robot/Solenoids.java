@@ -137,4 +137,19 @@ public class Solenoids {
         disengagePTO.set(true);
         engagePTO.set(false);
     }
+
+    public static void LogHeader() {
+        Logger.Header("intakeOut,intakeIn,disengageRatchet,engageRatchet,disengagePTO,engagePTO,CPManipulatorDown,CPManipulatorUp,");
+    }
+
+    public static void LogData() {
+        Logger.booleans(intakeOut.get());
+        Logger.booleans(intakeIn.get());
+        Logger.booleans(disengageRatchet.get());
+        Logger.booleans(engageRatchet.get());
+        Logger.booleans(disengagePTO.get());
+        Logger.booleans(engagePTO.get());
+        Logger.booleans(CPManipulatorDown.get());
+        Logger.booleans(CPManipulatorUp.get());
+    }
 }
