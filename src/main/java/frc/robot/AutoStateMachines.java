@@ -16,4 +16,6 @@ public interface AutoStateMachines {
     public void update(MoveParameters mP);
     public void activate();
     public void reset();
+    public void LogHeader();
+    public void LogData();
 }

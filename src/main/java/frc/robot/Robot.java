@@ -72,28 +72,6 @@ public class Robot extends MyRobot {
   @Override
   public void RechargeAutonomousInit() {
     shooter.autoCounter = 3;
-
-    mP = driveController.new MoveParameters();
-    navx.reset();
-
-    SensorInput.LogHeader();
-    shooter.LogHeader();
-    mP.LogHeader();
-    driveController.LogHeader();
-    SixBallAuto.LogHeader();
-
-    Solenoids.targettingLightRing(true);
-    Solenoids.ejectIntake(false);
-
-    Solenoids.intakeOut.set(false);
-    Solenoids.intakeIn.set(true);
-    Solenoids.disengageRatchet.set(false);
-    Solenoids.engageRatchet.set(true);
-    Solenoids.disengagePTO.set(true);
-    Solenoids.engagePTO.set(false);
-    Solenoids.CPManipulatorDown.set(true);
-    Solenoids.CPManipulatorUp.set(false);
-
     HumanInput.update();
 
     // set auto 
@@ -113,6 +91,35 @@ public class Robot extends MyRobot {
     if (HumanInput.autoNumber == 6) {
       auto1 = new SixBallAuto();
     }
+
+    mP = driveController.new MoveParameters();
+    navx.reset();
+
+    SensorInput.LogHeader();
+    shooter.LogHeader();
+    mP.LogHeader();
+    driveController.LogHeader();
+    if(auto1 != null){
+      auto1.LogHeader();
+    }
+    Solenoids.LogHeader();
+
+    
+    Solenoids.targettingLightRing(true);
+    Solenoids.ejectIntake(false);
+
+    Solenoids.intakeOut.set(false);
+    Solenoids.intakeIn.set(true);
+    Solenoids.disengageRatchet.set(false);
+    Solenoids.engageRatchet.set(true);
+    Solenoids.disengagePTO.set(true);
+    Solenoids.engagePTO.set(false);
+    Solenoids.CPManipulatorDown.set(true);
+    Solenoids.CPManipulatorUp.set(false);
+
+    
+
+    
 
     shooter.resetState();
 
@@ -142,7 +149,10 @@ public class Robot extends MyRobot {
     shooter.LogData();
     mP.LogData();
     driveController.LogData();
-    SixBallAuto.LogData();
+    if(auto1 != null){
+      auto1.LogData();
+    }
+    Solenoids.LogData();
 
     if(auto1 != null){
       auto1.update(mP);
@@ -166,7 +176,7 @@ public class Robot extends MyRobot {
     shooter.LogHeader();
     mP.LogHeader();
     driveController.LogHeader();
-    SixBallAuto.LogHeader();
+    Solenoids.LogHeader();
 
     Solenoids.targettingLightRing(true);
 
@@ -237,7 +247,7 @@ public class Robot extends MyRobot {
     shooter.LogData();
     mP.LogData();
     driveController.LogData();
-    SixBallAuto.LogData();
+    Solenoids.LogData();
 
     if(HumanInput.closeShot){
       shooter.setHoodSetpoint(0);

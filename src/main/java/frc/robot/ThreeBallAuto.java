@@ -82,6 +82,7 @@ public class ThreeBallAuto implements AutoStateMachines{
                 shooter.setTargetShooterRPM(3600);
                 //targetShooterRPM = 3600;
 
+                Robot.shooter.autoCounter = 3;
                 counter = 0;
                 if(portalTapeTargetTable.getEntry("Retroreflective Target Found").getBoolean(false)){
                     angleOffset = portalTapeTargetTable.getEntry("X Angle").getDouble(0);
@@ -94,10 +95,12 @@ public class ThreeBallAuto implements AutoStateMachines{
             
             case ALIGN:
                 //mP.currentState = DriveState.POWERPORTALIGNMENT;
-                mP.angle = angleOffset;
-                mP.currentState = DriveState.TURN_TO_GYRO;
+                //mP.angle = angleOffset;
+                //mP.currentState = DriveState.TURN_TO_GYRO;
                 // targetShooterRPM = SmartDashboard.getNumber("Shooter RPM Desired", 0);
                 //shooterRPMTolerance = SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0);
+                mP.currentState = DriveState.POWERPORTALIGNMENT;
+                
                 shooter.setTargetShooterRPMTolerance(SmartDashboard.getNumber("Shooter RPM Tolerance Desired", 0));
                 queuingBeltSpeed = SmartDashboard.getNumber("Queuing Belt Speed", 0.5);
                 gyroTolerance = SmartDashboard.getNumber("Gyro Tolerance" , 5);
@@ -109,8 +112,11 @@ public class ThreeBallAuto implements AutoStateMachines{
             break;
 
             case SHOOT:
-                mP.angle = angleOffset;
-                mP.currentState = DriveState.TURN_TO_GYRO;
+                // mP.angle = angleOffset;
+                // mP.currentState = DriveState.TURN_TO_GYRO;
+
+                mP.currentState = DriveState.POWERPORTALIGNMENT;
+
                 if(Robot.shooter.getShooterStatus() == false){
                     autoStates = AutoStates.TURN_TO_GYRO;
                 }
@@ -125,6 +131,9 @@ public class ThreeBallAuto implements AutoStateMachines{
                 } else {
                     counter = 0;
                 }
+
+                //mP.currentState = DriveState.POWERPORTALIGNMENT;
+
 
                 if (counter >= 10) {
                     autoStates = AutoStates.FORWARD;
@@ -159,5 +168,13 @@ public class ThreeBallAuto implements AutoStateMachines{
     public void reset(){
         autoStates = AutoStates.IDLE;
         Robot.shooter.reset();
+    }
+
+    public void LogHeader() {
+        Logger.Header("ThreeBall autoStates,");
+    }
+
+    public void LogData() {
+        Logger.singleEnum(autoStates);
     }
 }

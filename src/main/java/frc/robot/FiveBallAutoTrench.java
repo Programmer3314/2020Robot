@@ -225,11 +225,11 @@ public class FiveBallAutoTrench implements AutoStateMachines{
         Robot.shooter.reset();
     }
 
-    public static void LogHeader() {
+    public void LogHeader() {
         Logger.Header("autoStates,");
     }
 
-    public static void LogData() {
+    public void LogData() {
         Logger.singleEnum(autoStates);
     }
 }

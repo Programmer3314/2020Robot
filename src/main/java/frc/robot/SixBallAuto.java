@@ -123,7 +123,7 @@ public class SixBallAuto implements AutoStateMachines{
             break;
 
             case DRIVE_BACKWARDS_AND_BALLCHASE_2:
-                mP.forward = -0.205;//-0.1625;//-0.165;//-0.17;//-0.18;
+                mP.forward = -0.18;//-0.205;//-0.1625;//-0.165;//-0.17;//-0.18;
 
                 if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 10.0 || gameCounter >= 538){
                     Robot.shooter.abortIntake();
@@ -218,11 +218,11 @@ public class SixBallAuto implements AutoStateMachines{
         Robot.shooter.reset();
     }
 
-    public static void LogHeader() {
+    public void LogHeader() {
         Logger.Header("autoStates,");
     }
 
-    public static void LogData() {
+    public void LogData() {
         Logger.singleEnum(autoStates);
     }
 }
