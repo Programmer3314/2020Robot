@@ -377,11 +377,11 @@ public class Robot extends MyRobot {
     //   auto1.update(mP);
     // }
 
-    if(HumanInput.activateGroundIntake){
+    if(HumanInput.activateGroundIntake && !shooter.getShooterStatus()){
       shooter.groundIntakeAll();
     }
 
-    if(HumanInput.activateIntake){
+    if(HumanInput.activateIntake && !shooter.getShooterStatus()){
       shooter.intakeAll();
     }
 
