@@ -85,6 +85,7 @@ public class DriveController {
         // scaleForward = 1;
         scaleForward = -1;
         encoderPos = drivetrain.getEncoderVal();
+        
 
         if (mP.currentState != lastDriveState) {
             switch (mP.currentState) {
@@ -227,6 +228,7 @@ public class DriveController {
         SmartDashboard.putNumber("Forward Value", mP.forward);
         SmartDashboard.putNumber("Set Gyro Value", gyroLockAngle);
         SmartDashboard.putString("Drive State", mP.currentState.toString());
+        
 
         double leftSetPoint = (mP.forward * scaleForward - mP.turn * scaleTurn);
         double rightSetPoint = (mP.forward * scaleForward + mP.turn * scaleTurn);
@@ -237,7 +239,7 @@ public class DriveController {
     }
 
     public void LogHeader() {
-        Logger.Header("scaleForward,scaleTurn,distanceToWall,angleOffset,cleanGyro,gyroDiff,gyroLockAngle,encoderPos,");
+        Logger.Header("scaleForward,scaleTurn,distanceToWall,angleOffset,cleanGyro,gyroDiff,gyroLockAngle,encoderPos,VerticalAngle,");
     }
 
     public void LogData() {

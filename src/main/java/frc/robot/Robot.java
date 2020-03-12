@@ -22,6 +22,7 @@ public class Robot extends MyRobot {
   boolean toggleLightRing = false;
   Climber climber = new Climber();
   int LEDCounter;
+  public static double vertAngle;
 
   @Override
   public void RechargeRobotInit() {
@@ -103,7 +104,7 @@ public class Robot extends MyRobot {
       auto1.LogHeader();
     }
     Solenoids.LogHeader();
-
+    LogHeader();
 
     Solenoids.targettingLightRing(true);
     Solenoids.ejectIntake(false);
@@ -143,8 +144,10 @@ public class Robot extends MyRobot {
 
   @Override
   public void RechargeAutonomousPeriodic() {
-    SensorInput.update();
+    vertAngle = -portalTapeTargetTable.getEntry("Vertical Angle").getDouble(-100);
+    vertAngle += 8;
 
+    SensorInput.update();
     SensorInput.LogData();
     shooter.LogData();
     mP.LogData();
@@ -153,11 +156,13 @@ public class Robot extends MyRobot {
       auto1.LogData();
     }
     Solenoids.LogData();
+    LogData();
 
     if(auto1 != null){
       auto1.update(mP);
     }
 
+    SmartDashboard.putNumber("Vertical Angle", vertAngle);
     
     shooter.update(mP);
     driveController.update(mP);
@@ -177,6 +182,7 @@ public class Robot extends MyRobot {
     mP.LogHeader();
     driveController.LogHeader();
     Solenoids.LogHeader();
+    LogHeader();
 
     Solenoids.targettingLightRing(true);
 
@@ -236,6 +242,8 @@ public class Robot extends MyRobot {
     //   Solenoids.backLED(true);
     //   Solenoids.frontLED(true);
     // }
+    vertAngle = -portalTapeTargetTable.getEntry("Vertical Angle").getDouble(-100);
+    vertAngle += 8;
 
     HumanInput.update();
     Solenoids.update();
@@ -248,32 +256,34 @@ public class Robot extends MyRobot {
     mP.LogData();
     driveController.LogData();
     Solenoids.LogData();
+    LogData();
+    
 
     if(HumanInput.closeShot){
       shooter.setHoodSetpoint(0);
-      shooter.setTargetShooterRPM(2100);
+      shooter.setTargetShooterRPM(2150);
       shooter.prepareShooter();
     //targetShooterRPM = 2100;
     }
 
     if(HumanInput.lineShot){
-      shooter.setHoodSetpoint(-1400);
-      shooter.setTargetShooterRPM(3600);
+      shooter.setHoodSetpoint(-1400);//-1400);
+      shooter.setTargetShooterRPM(3314);//3500);
       shooter.prepareShooter();
       //targetShooterRPM = 3600;
 
     }
 
     if(HumanInput.trenchShot){
-      shooter.setHoodSetpoint(-1350); //-1475);
+      shooter.setHoodSetpoint(-1550);//-1350); //-1475);
       shooter.setTargetShooterRPM(3700); // 3800 //5200);
       shooter.prepareShooter();
       //targetShooterRPM = 3600;
     }
 
     if(HumanInput.farShot){
-      shooter.setHoodSetpoint(-1450);
-      shooter.setTargetShooterRPM(4400);
+      shooter.setHoodSetpoint(-1350);//-1450);
+      shooter.setTargetShooterRPM(3700);//4400);
       shooter.prepareShooter();
       //targetShooterRPM = 4400;
     }
@@ -466,6 +476,7 @@ public class Robot extends MyRobot {
     SmartDashboard.putString("Shooter Config", "Inactive");
     SmartDashboard.putString("Control Panel Config", "Inactive");
     SmartDashboard.putString("Climber Config", "Inactive");
+    SmartDashboard.putNumber("Vertical Angle", vertAngle);
 
     if (!(HumanInput.leftSwitch) && !(HumanInput.rightSwitch)) { // ball + intake
       SmartDashboard.putString("Ball Intake Config", "Active");
@@ -509,4 +520,12 @@ public class Robot extends MyRobot {
     }
 
   }
+
+  public void LogHeader() {
+    Logger.Header("VerticalAngle,");
+}
+
+public void LogData() {
+    Logger.doubles(vertAngle);
+}
 }

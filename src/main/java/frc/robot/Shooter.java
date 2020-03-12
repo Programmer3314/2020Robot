@@ -51,7 +51,7 @@ public class Shooter {
     double gyroTolerance;
     int counter, autoCounter, counterv2;
     boolean abortShooter;
-    double intakeMotorSpeed = 0.75;
+    double intakeMotorSpeed = 1.00;//0.75;
     final boolean pullIntakeInBetweenBalls = false;
     int cyclesInState;
 
@@ -221,7 +221,7 @@ public class Shooter {
             if(pullIntakeInBetweenBalls){
                 Solenoids.ejectIntake(false); 
             }
-            intake.set(ControlMode.PercentOutput, 0.35);
+            intake.set(ControlMode.PercentOutput, intakeMotorSpeed/*0.35*/);
             indexer.set(ControlMode.PercentOutput, 0.5);
             ballQueuing.set(ControlMode.PercentOutput, 0.0); // 0.5);
             break;
@@ -564,7 +564,11 @@ public class Shooter {
     }
 
     public void intakeAll(){
-        currentState = ShooterStates.GET_HALF_BALL;
+        if(SensorInput.queuedShooter){
+            currentState = ShooterStates.EXTRA_BALL;
+        } else {
+            currentState = ShooterStates.GET_HALF_BALL;
+        }
     }
     public boolean getShooterStatus() {
         return shooterBusy;
@@ -591,7 +595,7 @@ public class Shooter {
 
     public void reverseIntake(){
         Solenoids.ejectIntake(true);
-        intake.set(ControlMode.PercentOutput, -0.5);
+        intake.set(ControlMode.PercentOutput, -1.0);
     }
 
     public void reverseIntakeRelease(){

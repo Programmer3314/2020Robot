@@ -12,6 +12,8 @@ Eject the Intake and yank it back in.
 Make forward not negative
 Create firing solution class to pass into shootAll
 
+when5thball,stopintakeroller
+
 Logging
 Image capture on pi's 
 
@@ -27,6 +29,10 @@ Please read other todo's in "problems" screen.
 - DONE - Climber stopping by itself - not sure why... I made other changes though
 - DONE - Init isForward and driverCamNum in both auto and periodic init - done, please check
 - DONE - >>>Please add a shooter abort, I don't see one. 
+
+
+
+
 
 ***Actions***
 Control Panel | revolutions 3 - 5 | color sensor | Camera

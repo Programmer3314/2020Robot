@@ -91,9 +91,9 @@ public class HumanInput {
         //powerPortAlignment = (driverController.getRawButton(1) && HumanInput.operatorController.getRawAxis(2) < 0.5); // A
         powerPortAlignment = (operatorController.getRawButton(1) && operatorController.getRawAxis(2) < 0.5); // A
         closeShot = operatorController.getPOV() == 0;
-        lineShot = operatorController.getPOV() == 90;
+        lineShot = operatorController.getPOV() == 270;
         trenchShot = operatorController.getPOV() == 180;
-        farShot = operatorController.getPOV() == 270;
+        farShot = operatorController.getPOV() == 90;
         
         shooterAllInTarget = (operatorController.getRawButton(2) && operatorController.getRawAxis(2) < 0.5); // B 
         abortShooter = operatorController.getRawButtonReleased(5);
