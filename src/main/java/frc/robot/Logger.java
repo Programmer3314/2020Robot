@@ -60,7 +60,7 @@ public class Logger {
     public static void EndLine() {
         if (sb!=null) {
             sb.append("\n");
-            if(sb.length() > 5000000){ //5,000,000 should never write during a match.
+            if(sb.length() > 2000){//5000000 <- Auto disabling){ //5,000,000 should never write during a match.
                 WriteLog();
             }
         }
