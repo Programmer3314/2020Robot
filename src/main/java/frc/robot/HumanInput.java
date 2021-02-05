@@ -65,7 +65,7 @@ public class HumanInput {
         // 10: Right Joystick
       
         // Driver's Controller
-        forward = driverController.getRawAxis(1) * 0.6;
+        forward = driverController.getRawAxis(1) * 1.0; //0.6
         turn = driverController.getRawAxis(4) * 0.5;
         if(Math.abs(turn) < Constants.humanInputDeadband){
             turn = 0;
