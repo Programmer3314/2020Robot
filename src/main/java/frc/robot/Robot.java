@@ -171,6 +171,7 @@ public class Robot extends MyRobot {
   @Override
   public void RechargeTeleopInit() {
     shooter.autoCounter = 5;
+    // navx.resetDisplacement();
 
     mP = driveController.new MoveParameters();
     // SmartDashboard.putNumber("Target Offset", Constants.targettingOffset);
@@ -289,6 +290,18 @@ public class Robot extends MyRobot {
     }
 
     SmartDashboard.putNumber("Target Shooter RPM:", shooter.getTargetShooterRPM());
+
+ 
+    if (HumanInput.hoodUp) {
+      shooter.setHoodSetpoint(shooter.getHoodSetpoint()+25);//hood.set(ControlMode.PercentOutput, -0.1);
+  } else if (HumanInput.hoodDown) {
+      shooter.setHoodSetpoint(shooter.getHoodSetpoint()-25);//hood.set(ControlMode.PercentOutput, 0.1);
+  } else if (HumanInput.hoodUpReleased || HumanInput.hoodDownReleased){
+      //hood.set(ControlMode.PercentOutput, 0);
+      //hoodSetpoint = hoodEncoder;
+  } 
+
+
 
     if (HumanInput.ballChaseButton) {
       mP.currentState = DriveController.DriveState.BALLCHASE;
@@ -487,6 +500,11 @@ public class Robot extends MyRobot {
     } else if (HumanInput.leftSwitch && HumanInput.rightSwitch) { // climber + autos
       SmartDashboard.putString("Climber Config", "Active");
     }
+
+    // SmartDashboard.putNumber("X Coordinate: ", navx.getDisplacementX());
+    // SmartDashboard.putNumber("Y Coordinate: ", navx.getDisplacementY());
+    // SmartDashboard.putNumber("Z Coordinate: ", navx.getDisplacementZ());
+
   }
 
   @Override

@@ -150,15 +150,16 @@ public class Shooter {
         SmartDashboard.putNumber("Hood Encoder", hoodEncoder);
 
 
-        if (HumanInput.hoodUp) {
-            hood.set(ControlMode.PercentOutput, -0.1);
-        } else if (HumanInput.hoodDown) {
-            hood.set(ControlMode.PercentOutput, 0.1);
-        } else if (HumanInput.hoodUpReleased || HumanInput.hoodDownReleased){
-            hood.set(ControlMode.PercentOutput, 0);
-            hoodSetpoint = hoodEncoder;
-        } 
+        // if (HumanInput.hoodUp) {
+        //     setHoodSetpoint(hoodSetpoint++);//hood.set(ControlMode.PercentOutput, -0.1);
+        // } else if (HumanInput.hoodDown) {
+        //     setHoodSetpoint(hoodSetpoint--);//hood.set(ControlMode.PercentOutput, 0.1);
+        // } else if (HumanInput.hoodUpReleased || HumanInput.hoodDownReleased){
+        //     hood.set(ControlMode.PercentOutput, 0);
+        //     hoodSetpoint = hoodEncoder;
+        // } 
 
+        
         // Manual Ball Queue Control:
         if (HumanInput.spinBallQueue) {
             ballQueuing.set(ControlMode.PercentOutput, 0.75);
@@ -578,6 +579,10 @@ public class Shooter {
         this.hoodSetpoint = hoodSetpoint;
     }
 
+    public double getHoodSetpoint(){
+        return hoodSetpoint;
+    }
+    
     public void abortIntake(){
         currentState = ShooterStates.INTAKE_DONE;
         counter = 0;

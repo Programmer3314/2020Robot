@@ -124,7 +124,7 @@ public class HumanInput {
         hoodUp = false;
         hoodUpReleased = false;
         hoodDown = false;
-        hoodUpReleased = false;
+        hoodDownReleased = false; //was hoodUpReleased again? 2/4/21
         spinBallQueue = false;
         reverseBallQueue = false;
         intakeOut = false;
@@ -153,10 +153,10 @@ public class HumanInput {
             // reverseIntake = buttonBox1.getRawButton(7);
             abortIntake = buttonBox1.getRawButtonReleased(10) || abortIntake;
         } else if(!(leftSwitch) && rightSwitch){ //shooter
-            hoodUp = buttonBox1.getRawButtonPressed(1);
+            hoodUp = buttonBox1.getRawButton(1);
             hoodUpReleased = buttonBox1.getRawButtonReleased(1);
-            hoodDown = buttonBox1.getRawButtonPressed(2);
-            hoodUpReleased = buttonBox1.getRawButtonReleased(2);
+            hoodDown = buttonBox1.getRawButton(2);
+            hoodDownReleased = buttonBox1.getRawButtonReleased(2); //was hoodUpReleased again? 2/4/21
             lightRing = buttonBox1.getRawButtonReleased(7);
             abortShooter = abortShooter || buttonBox1.getRawButtonReleased(10);
             // lightRingOff = buttonBox1.getRawButtonReleased(10);
