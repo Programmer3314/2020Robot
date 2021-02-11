@@ -22,6 +22,8 @@ public class Robot extends MyRobot {
   boolean toggleLightRing = false;
   Climber climber = new Climber();
   int LEDCounter;
+  double displacementX;
+  double displacementY;
   public static double vertAngle;
 
   @Override
@@ -171,7 +173,11 @@ public class Robot extends MyRobot {
   @Override
   public void RechargeTeleopInit() {
     shooter.autoCounter = 5;
-    // navx.resetDisplacement();
+    navx.reset();
+    navx.resetDisplacement();
+
+    displacementX = 0;
+    displacementY = 0;
 
     mP = driveController.new MoveParameters();
     // SmartDashboard.putNumber("Target Offset", Constants.targettingOffset);
@@ -501,9 +507,25 @@ public class Robot extends MyRobot {
       SmartDashboard.putString("Climber Config", "Active");
     }
 
-    // SmartDashboard.putNumber("X Coordinate: ", navx.getDisplacementX());
-    // SmartDashboard.putNumber("Y Coordinate: ", navx.getDisplacementY());
-    // SmartDashboard.putNumber("Z Coordinate: ", navx.getDisplacementZ());
+    SmartDashboard.putNumber("X Coordinate: ", navx.getDisplacementX());
+    SmartDashboard.putNumber("Y Coordinate: ", navx.getDisplacementY());
+    SmartDashboard.putNumber("Z Coordinate: ", navx.getDisplacementZ());
+
+    SmartDashboard.putNumber("Velocity X: ", navx.getVelocityX());
+    SmartDashboard.putNumber("Velocity Y: ", navx.getVelocityY());
+    SmartDashboard.putNumber("Velocity Z: ", navx.getVelocityZ());
+
+
+    displacementX += (navx.getVelocityX());// * 0.02);
+    displacementY += (navx.getVelocityY());// * 0.02); 
+
+    SmartDashboard.putNumber("X Displacement: ", displacementX);
+    SmartDashboard.putNumber("Y Displacement: ", displacementY);
+    // SmartDashboard.putNumber("Z Displacement: ");
+
+    SmartDashboard.putNumber("Acceleration X: ", navx.getWorldLinearAccelX());
+    SmartDashboard.putNumber("Acceleration Y: ", navx.getWorldLinearAccelY());
+    SmartDashboard.putNumber("Acceleration Z: ", navx.getWorldLinearAccelZ());
 
   }
 

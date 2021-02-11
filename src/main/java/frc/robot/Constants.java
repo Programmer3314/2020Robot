@@ -64,7 +64,7 @@ public class Constants{
     
     //Power Port
     public static final double powerPortTolerance = 1.0;//2.0;//0.5;
-    public static final double powerPortkP = 0.025;//0.0225;
+    public static final double powerPortkP = 0.01; //Changed Gear Ratios 2021 0.025;//0.0225;
     public static final double powerPortkD = 0.048;//0;//0.04;
     public static final double powerPortMinCorrection = 0.085;
 
