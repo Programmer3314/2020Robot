@@ -18,23 +18,20 @@ public class BounceAuto implements AutoStateMachines{
     int waypointCounter;
     double originalEncoderPos;
     double currentEncoderPos;
-    boolean activate = false;
     ArrayList <Waypoint> waypoints = new ArrayList<Waypoint>(); 
 
     @Override
     public void update(MoveParameters mP) {
-        // if(!activate){
-        //     originalEncoderPos = Robot.driveController.encoderPos;
-        //     activate = true;
-        // }
-
         currentEncoderPos = Robot.driveController.encoderPos - originalEncoderPos;
         mP.currentState = DriveState.MANUAL;
         mP.turn = 0;
 
+        //TODO: (Phase 1) Can this be done less often?
         Waypoint cw = waypoints.get(waypointCounter);
 
+        //TODO: (Phase 1) make this work when driving forward or backward
         if(currentEncoderPos < cw.encoderValue){
+            //TODO: (Phase 1) make this not crash at the end of the list        
             waypointCounter++;
             cw = waypoints.get(waypointCounter);
             originalEncoderPos = Robot.driveController.encoderPos;
@@ -47,11 +44,9 @@ public class BounceAuto implements AutoStateMachines{
         mP.forward = cw.forward;
         mP.turn = cw.turn;
         
-
         SmartDashboard.putNumber("Current Encoder Value", currentEncoderPos);
         SmartDashboard.putNumber("Original Encoder Value", originalEncoderPos);
         SmartDashboard.putNumber("Original Original Encoder Value", Robot.driveController.encoderPos);
-
     }
 
     @Override
@@ -63,11 +58,11 @@ public class BounceAuto implements AutoStateMachines{
     @Override
     public void reset() {
         waypointCounter = 0;
+        //TODO: (Phase 1) Make it simpler to enter distances
+        //TODO: (Phase 1) Add Stop/Done Waypoint
         waypoints.add(new Waypoint(0.3, 0.0, 5 * Constants.falconEncoderTicksToFeet));
         waypoints.add(new Waypoint(0.2, -0.05, 4 * Constants.falconEncoderTicksToFeet));
         waypoints.add(new Waypoint(0.3, 0, 2 * Constants.falconEncoderTicksToFeet));
-
-
     }
 
     @Override
