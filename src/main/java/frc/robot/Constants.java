@@ -45,7 +45,8 @@ public class Constants{
     public static final double falconTrackingMaxCorrection = 0.2; // = 0.1;
     public static final double falconTrackingMinCorrection = 0.04;
     ; // = 0.07;
-    public static final int    falconEncoderTicksToFeet = 12527;
+    public static final int    falconEncoderTicksToFeet = -19188;//12527;
+    public static final int    falconEncoderTicksToInch = -1600;
     // Neo chassis set
     public static final double neoDrivetrainKP = 1.6e-5;//5e-5;
     public static final double neoDrivetrainKI = 0;

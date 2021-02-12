@@ -79,6 +79,8 @@ public class DriveController {
         trenchTracking.setToleranceValue(Constants.trenchTolerance);
         trenchTracking.setMaxCorrectionValue(Constants.drivetrainTrackingMaxCorrection);
         trenchTracking.setMinCorrectionValue(Constants.drivetrainTrackingMinCorrection);
+    
+        encoderPos = drivetrain.getEncoderVal();
     }
 
     public void update(MoveParameters mP) {
@@ -228,6 +230,7 @@ public class DriveController {
         SmartDashboard.putNumber("Forward Value", mP.forward);
         SmartDashboard.putNumber("Set Gyro Value", gyroLockAngle);
         SmartDashboard.putString("Drive State", mP.currentState.toString());
+        SmartDashboard.putNumber("Drive Encoder Value", encoderPos);
         
 
         double leftSetPoint = (mP.forward * scaleForward - mP.turn * scaleTurn);

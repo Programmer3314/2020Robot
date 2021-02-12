@@ -95,8 +95,14 @@ public class Robot extends MyRobot {
       auto1 = new SixBallAuto();
     }
 
+    if(HumanInput.autoNumber == 7) {
+      auto1 = new BounceAuto();
+    }
+
     mP = driveController.new MoveParameters();
     navx.reset();
+
+    SmartDashboard.putNumber("Auto Number", HumanInput.autoNumber);
 
     SensorInput.LogHeader();
     shooter.LogHeader();

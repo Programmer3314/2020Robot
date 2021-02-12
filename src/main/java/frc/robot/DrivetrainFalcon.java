@@ -107,4 +107,5 @@ public class DrivetrainFalcon implements IDriveTrain{
     public double getEncoderVal(){
         return talon1.getSelectedSensorPosition();
     }
+
 }

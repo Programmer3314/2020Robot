@@ -1,17 +1,18 @@
 package frc.robot;
 
 public class Waypoint {
-    public float x;
-    public float y;
+    public double forward;
+    public double turn;
+    public long encoderValue;
 
 public Waypoint(){
 
 }
 
-public Waypoint(float x, float y){
-    this.x = x;
-    this.y = y;
-
+public Waypoint(double forward, double turn, long encoderValue){
+    this.forward = forward;
+    this.turn = turn;
+    this.encoderValue = encoderValue;
 
 }
 
