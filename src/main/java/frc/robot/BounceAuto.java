@@ -13,16 +13,20 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DriveController.DriveState;
 import frc.robot.DriveController.MoveParameters;
+import frc.robot.Waypoint.ExitCondition;
 
 public class BounceAuto implements AutoStateMachines{
     int waypointCounter;
     double originalEncoderPos;
     double currentEncoderPos;
+    double gyroAngle;
+
     ArrayList <Waypoint> waypoints = new ArrayList<Waypoint>(); 
 
     @Override
     public void update(MoveParameters mP) {
         currentEncoderPos = Robot.driveController.encoderPos - originalEncoderPos;
+        gyroAngle = Robot.cleanGyro;
         mP.currentState = DriveState.MANUAL;
         mP.turn = 0;
 
@@ -30,8 +34,14 @@ public class BounceAuto implements AutoStateMachines{
         Waypoint cw = waypoints.get(waypointCounter);
 
         if(waypointCounter < waypoints.size() - 1){
-            if ((cw.forward>=0 && currentEncoderPos < cw.encoderValue)
-                 || (cw.forward<0 && currentEncoderPos > cw.encoderValue)) {
+            if (
+                 (cw.forward >= 0 && cw.exit == ExitCondition.DISTANCE && currentEncoderPos < cw.encoderValue)
+                 || (cw.forward < 0 && cw.exit == ExitCondition.DISTANCE && currentEncoderPos > cw.encoderValue)
+                 || (cw.forward >= 0 && cw.turn >= 0 && cw.exit == ExitCondition.GYRO && gyroAngle < cw.gyroAngle)
+                 || (cw.forward >= 0 && cw.turn < 0 && cw.exit == ExitCondition.GYRO && gyroAngle > cw.gyroAngle)
+                 || (cw.forward < 0 && cw.turn >= 0 && cw.exit == ExitCondition.GYRO && gyroAngle < cw.gyroAngle)
+                 || (cw.forward < 0 && cw.turn < 0 && cw.exit == ExitCondition.GYRO && gyroAngle > cw.gyroAngle)
+                ) {
                 waypointCounter++;
                 cw = waypoints.get(waypointCounter);
                 originalEncoderPos = Robot.driveController.encoderPos;
@@ -56,22 +66,24 @@ public class BounceAuto implements AutoStateMachines{
     public void reset() {
         waypointCounter = 0;
 
+        waypoints.add(new Waypoint(0.2, 0.1, 90)); //FORWARD RIGHT
+
         //scale = 1.1
-        waypoints.add(new Waypoint(0.3, 0, 2)); //FORWARD
+        waypoints.add(new Waypoint(0.3, 0, 2.0)); //FORWARD
         waypoints.add(new Waypoint(0.3, -0.1, 3.1)); //QUARTER TURN FORWARD LEFT
         waypoints.add(new Waypoint(0.3, 0, 0.8)); //FORWARD TO CONE
         waypoints.add(new Waypoint(-0.3, -0.07, -2.8)); //SMALL TURN BACK RIGHT
-        waypoints.add(new Waypoint(-0.3, 0, -5)); //BACKWARD        
+        waypoints.add(new Waypoint(-0.3, 0, -5.0)); //BACKWARD        
         waypoints.add(new Waypoint(-0.3, -0.12, -9.5)); //SEMI TURN BACK RIGHT
-        waypoints.add(new Waypoint(-0.3, 0, -6)); //FORWARD TO CONE
+        waypoints.add(new Waypoint(-0.3, 0, -6.0)); //FORWARD TO CONE
         waypoints.add(new Waypoint(0.3, 0, 4.6)); //FORWARD
         waypoints.add(new Waypoint(0.3, -0.1, 3.42)); //QUARTER TURN LEFT
         waypoints.add(new Waypoint(0.3, 0, 0.5)); //FORWARD
         waypoints.add(new Waypoint(0.3, -0.1, 3.42)); //QUARTER TURN LEFT
-        waypoints.add(new Waypoint(0.3, 0, 5)); //FORWARD TO CONE
+        waypoints.add(new Waypoint(0.3, 0, 5.0)); //FORWARD TO CONE
         waypoints.add(new Waypoint(-0.3, -0.1, -6.5)); //QUARTER TURN BACK LEFT
         waypoints.add(new Waypoint(-0.3, 0, -1.5)); //FORWARD
-        waypoints.add(new Waypoint(0, 0, 0)); //STOP
+        waypoints.add(new Waypoint(0, 0, 0.0)); //STOP
     }
 
     @Override
