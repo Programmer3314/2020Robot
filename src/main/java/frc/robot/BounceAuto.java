@@ -29,15 +29,12 @@ public class BounceAuto implements AutoStateMachines{
         //TODO: (Phase 1) Can this be done less often?
         Waypoint cw = waypoints.get(waypointCounter);
 
-        //TODO: (Phase 1) make this work when driving forward or backward
-        if(currentEncoderPos < cw.encoderValue){
-            //TODO: (Phase 1) make this not crash at the end of the list        
-            waypointCounter++;
-            cw = waypoints.get(waypointCounter);
-            originalEncoderPos = Robot.driveController.encoderPos;
-            if(waypointCounter >= waypoints.size()){
-                mP.forward = 0;
-                mP.turn = 0;
+        if(waypointCounter < waypoints.size() - 1){
+            if ((cw.forward>=0 && currentEncoderPos < cw.encoderValue)
+                 || (cw.forward<0 && currentEncoderPos > cw.encoderValue)) {
+                waypointCounter++;
+                cw = waypoints.get(waypointCounter);
+                originalEncoderPos = Robot.driveController.encoderPos;
             }
         }
 
@@ -58,11 +55,23 @@ public class BounceAuto implements AutoStateMachines{
     @Override
     public void reset() {
         waypointCounter = 0;
-        //TODO: (Phase 1) Make it simpler to enter distances
-        //TODO: (Phase 1) Add Stop/Done Waypoint
-        waypoints.add(new Waypoint(0.3, 0.0, 5 * Constants.falconEncoderTicksToFeet));
-        waypoints.add(new Waypoint(0.2, -0.05, 4 * Constants.falconEncoderTicksToFeet));
-        waypoints.add(new Waypoint(0.3, 0, 2 * Constants.falconEncoderTicksToFeet));
+
+        //scale = 1.1
+        waypoints.add(new Waypoint(0.3, 0, 2)); //FORWARD
+        waypoints.add(new Waypoint(0.3, -0.1, 3.1)); //QUARTER TURN FORWARD LEFT
+        waypoints.add(new Waypoint(0.3, 0, 0.8)); //FORWARD TO CONE
+        waypoints.add(new Waypoint(-0.3, -0.07, -2.8)); //SMALL TURN BACK RIGHT
+        waypoints.add(new Waypoint(-0.3, 0, -5)); //BACKWARD        
+        waypoints.add(new Waypoint(-0.3, -0.12, -9.5)); //SEMI TURN BACK RIGHT
+        waypoints.add(new Waypoint(-0.3, 0, -6)); //FORWARD TO CONE
+        waypoints.add(new Waypoint(0.3, 0, 4.6)); //FORWARD
+        waypoints.add(new Waypoint(0.3, -0.1, 3.42)); //QUARTER TURN LEFT
+        waypoints.add(new Waypoint(0.3, 0, 0.5)); //FORWARD
+        waypoints.add(new Waypoint(0.3, -0.1, 3.42)); //QUARTER TURN LEFT
+        waypoints.add(new Waypoint(0.3, 0, 5)); //FORWARD TO CONE
+        waypoints.add(new Waypoint(-0.3, -0.1, -6.5)); //QUARTER TURN BACK LEFT
+        waypoints.add(new Waypoint(-0.3, 0, -1.5)); //FORWARD
+        waypoints.add(new Waypoint(0, 0, 0)); //STOP
     }
 
     @Override

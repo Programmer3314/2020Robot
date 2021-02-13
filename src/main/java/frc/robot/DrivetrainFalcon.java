@@ -108,4 +108,10 @@ public class DrivetrainFalcon implements IDriveTrain{
         return talon1.getSelectedSensorPosition();
     }
 
+    @Override
+    public void resetEncoderVal() {
+        // TODO Auto-generated method stub
+        talon1.setSelectedSensorPosition(0);
+    }
+
 }

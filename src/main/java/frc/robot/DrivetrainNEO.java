@@ -82,4 +82,12 @@ public class DrivetrainNEO implements IDriveTrain {
     public double getEncoderVal(){
         return leftEncoder.getPosition();
     }
+
+    @Override
+    public void resetEncoderVal() {
+        // TODO Auto-generated method stub
+
+    }
+
+    
 }

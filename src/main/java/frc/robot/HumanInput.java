@@ -42,6 +42,7 @@ public class HumanInput {
     public static boolean abortShooter;
     public static boolean sLeft, KILLALLGYROS;
     public static boolean reverseAll, reverseAllReleased;
+    public static boolean resetEncoderVal;
 
     // public static boolean KILLALLGYROS;
 
@@ -162,6 +163,7 @@ public class HumanInput {
             // lightRingOff = buttonBox1.getRawButtonReleased(10);
         } else if(leftSwitch && !(rightSwitch)){ //control panel
             controlPanelAlignment = buttonBox1.getRawButtonPressed(1);
+            resetEncoderVal = buttonBox1.getRawButtonPressed(2);
             // CPManipulatorDown = buttonBox1.getRawButtonReleased(7);
             // CPManipulatorUp = buttonBox1.getRawButtonReleased(8);
         } else if(leftSwitch && rightSwitch){ //climber + autos

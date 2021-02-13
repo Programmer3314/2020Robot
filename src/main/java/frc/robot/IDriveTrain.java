@@ -14,4 +14,5 @@ interface IDriveTrain {
 
     void update(double leftSetPoint, double rightSetPoint);
     double getEncoderVal();
+    void resetEncoderVal();
 }

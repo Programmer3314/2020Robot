@@ -494,6 +494,10 @@ public class Robot extends MyRobot {
       shooter.abortShooter();
     }
 
+    if(HumanInput.resetEncoderVal){
+      drivetrain.resetEncoderVal();
+    }
+
     climber.update(mP);
     driveController.update(mP);
 
