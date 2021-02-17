@@ -241,6 +241,10 @@ public class DriveController {
         
     }
 
+    public void resetEncoderVal(){
+        drivetrain.resetEncoderVal();
+    }
+
     public void LogHeader() {
         Logger.Header("scaleForward,scaleTurn,distanceToWall,angleOffset,cleanGyro,gyroDiff,gyroLockAngle,encoderPos,VerticalAngle,");
     }

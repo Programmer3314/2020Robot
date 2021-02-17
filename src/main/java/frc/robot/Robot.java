@@ -25,10 +25,11 @@ public class Robot extends MyRobot {
   double displacementX;
   double displacementY;
   public static double vertAngle;
+  public static Robot robot;
 
   @Override
   public void RechargeRobotInit() {
-    
+    robot = this;
     Logger.Enabled = true;
 
     Solenoids.ejectIntake(false);
@@ -97,6 +98,10 @@ public class Robot extends MyRobot {
 
     if(HumanInput.autoNumber == 7) {
       auto1 = new BounceAuto();
+    }
+
+    if(HumanInput.autoNumber == 8){
+      auto1 = new BarrelRunAuto();
     }
 
     mP = driveController.new MoveParameters();
@@ -495,7 +500,7 @@ public class Robot extends MyRobot {
     }
 
     if(HumanInput.resetEncoderVal){
-      drivetrain.resetEncoderVal();
+      driveController.resetEncoderVal();
     }
 
     climber.update(mP);
@@ -537,6 +542,8 @@ public class Robot extends MyRobot {
     SmartDashboard.putNumber("Acceleration Y: ", navx.getWorldLinearAccelY());
     SmartDashboard.putNumber("Acceleration Z: ", navx.getWorldLinearAccelZ());
 
+    SmartDashboard.putNumber("Teleop Encoder Val", driveController.encoderPos);
+
   }
 
   @Override
@@ -569,6 +576,10 @@ public class Robot extends MyRobot {
       SmartDashboard.putString("Climber Config", "Active");
     }
 
+  }
+
+  public void resetEncoderVal(){
+    drivetrain.resetEncoderVal();
   }
 
   public void LogHeader() {
