@@ -24,8 +24,7 @@ public class BarrelRunAuto implements AutoStateMachines{
 
     @Override
     public void update(MoveParameters mP) {
-        // currentEncoderPos = Robot.driveController.encoderPos - originalEncoderPos;
-        // gyroAngle = Robot.cleanGyro;
+        currentEncoderPos = Robot.driveController.encoderPos - originalEncoderPos;
         mP.currentState = DriveState.MANUAL;
         mP.turn = 0;
 
@@ -36,8 +35,8 @@ public class BarrelRunAuto implements AutoStateMachines{
             if(cw.isComplete()){
                 waypointCounter++;
                 cw = waypoints.get(waypointCounter);
-                Robot.driveController.resetEncoderVal();
-                Robot.robot.resetEncoderVal();
+                //Robot.driveController.resetEncoderVal();
+                cw.init();
             }
         }
 
@@ -51,18 +50,34 @@ public class BarrelRunAuto implements AutoStateMachines{
 
     @Override
     public void activate() {
-        Robot.robot.resetEncoderVal();
+        //Robot.driveController.resetEncoderVal();
+        waypoints.get(0).init();
         originalEncoderPos = Robot.driveController.encoderPos;
-        SmartDashboard.putNumber("Active Original Encoder pos !", originalEncoderPos);
+
+        SmartDashboard.putNumber("Activate encoderPos: ", originalEncoderPos);
     }
 
     @Override
     public void reset() {
         waypointCounter = 0;
 
-        waypoints.add(new WaypointDistance(0.3, -0.15, 4)); //FORWARD LEFT
-        //waypoints.add(new WaypointDistance(0.5, 0, 17.5)); //FORWARD 
+        waypoints.add(new WaypointDistance(0.6, 0, 9)); //FORWARD
+        waypoints.add(new WaypointGyro(0.3 * 1.2, 0.13 * 1.2, 340)); //FORWARD CIRCLE TURN RIGHT
+        waypoints.add(new WaypointDistance(0.6, 0, 6.5)); //FORWARD
+        waypoints.add(new WaypointGyro(0.3 * 1.2, -0.14 * 1.2, -290 + 360)); //FORWARD CIRCLE TURN LEFT
+        waypoints.add(new WaypointDistance(0.6, 0, 5.75)); //FORWARD
+        waypoints.add(new WaypointGyro(0.3 * 1.2 , -0.15 * 1.2, -500 + 360)); //FORWARD CIRCLE TURN LEFT
+        waypoints.add(new WaypointGyro(0.4, -0.05, -532 + 360)); //ADJUSTMENT TURN LEFT
+        waypoints.add(new WaypointDistance(0.6, 0, 16.5)); //FORWARD 
         waypoints.add(new WaypointDistance(0, 0, 0.0)); //STOP
+
+
+        // waypoints.add(new WaypointDistance(0.3, -0.15, 5.75)); //FORWARD CIRCLE TURN LEFT
+        // waypoints.add(new WaypointDistance(0.3, 0, 6.5)); //FORWARD
+        // waypoints.add(new WaypointDistance(0.3, -0.15, 3.5)); //FORWARD CIRCLE TURN LEFT
+        // waypoints.add(new WaypointDistance(0.4, -0.05, 2.5)); //ADJUSTMENT TURN LEFT
+        // waypoints.add(new WaypointDistance(0.4, 0, 15)); //FORWARD 
+        // waypoints.add(new WaypointDistance(0, 0, 0.0)); //STOP
 
     }
 

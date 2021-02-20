@@ -8,6 +8,7 @@ public class WaypointDistance extends Waypoint {
     public double turn;
     public int gyroAngle;
     public long encoderValue;
+    public long originalEncoderValue;
 
 public WaypointDistance(double forward, double turn, double feet){
     this.forward = forward * scale;
@@ -23,13 +24,17 @@ public WaypointDistance(double forward, double turn, double feet){
 
     @Override
     public boolean isComplete() {
-        if(forward > 0){
-        SmartDashboard.putNumber("isComplete encoderValue: ", encoderValue);
-        SmartDashboard.putNumber("isComplete encoderPos:", Robot.driveController.encoderPos);
-        }   
-        
-        return ((forward >= 0 && Robot.driveController.encoderPos < encoderValue)
-        || (forward < 0 && Robot.driveController.encoderPos > encoderValue));
+        long currentEncoderPos = (long)Robot.driveController.encoderPos - originalEncoderValue;
+
+        return ((forward > 0 && currentEncoderPos < encoderValue)
+        || (forward < 0 && currentEncoderPos > encoderValue)
+        || (forward == 0));
 }
+
+    @Override
+    public void init() {
+        originalEncoderValue = (long)Robot.driveController.encoderPos;
+
+    }
 
 }

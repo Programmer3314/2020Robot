@@ -243,6 +243,7 @@ public class DriveController {
 
     public void resetEncoderVal(){
         drivetrain.resetEncoderVal();
+        encoderPos = 0  ;
     }
 
     public void LogHeader() {

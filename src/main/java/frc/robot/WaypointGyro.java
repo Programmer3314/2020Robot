@@ -21,10 +21,16 @@ public class WaypointGyro extends Waypoint {
 
     @Override
     public boolean isComplete() {
-        return ((forward >= 0 && turn >= 0 && gyroAngle <= Robot.cleanGyro)
-        || (forward >= 0 && turn < 0 && gyroAngle >= Robot.cleanGyro)
-        || (forward < 0 && turn >= 0 && gyroAngle <= Robot.cleanGyro)
-        || (forward < 0 && turn < 0 && gyroAngle >= Robot.cleanGyro));
+        return ((forward >= 0 && turn >= 0 && gyroAngle <= Robot.rawGyro) //Robot.cleanGyro)
+        || (forward >= 0 && turn < 0 && gyroAngle >= Robot.rawGyro) //Robot.cleanGyro)
+        || (forward < 0 && turn >= 0 && gyroAngle <= Robot.rawGyro) //Robot.cleanGyro)
+        || (forward < 0 && turn < 0 && gyroAngle >= Robot.rawGyro)); //Robot.cleanGyro));
+    }
+
+    @Override
+    public void init() {
+        // TODO Auto-generated method stub
+
     }
 
 }

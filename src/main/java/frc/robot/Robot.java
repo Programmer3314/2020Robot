@@ -26,13 +26,8 @@ public class Robot extends MyRobot {
   double displacementY;
   public static double vertAngle;
 
-
-  // TODO: get rid of this and everything that follows
-  public static Robot robot;
-
   @Override
   public void RechargeRobotInit() {
-    robot = this;
     Logger.Enabled = true;
 
     Solenoids.ejectIntake(false);
@@ -581,12 +576,7 @@ public class Robot extends MyRobot {
 
   }
 
-  // TODO: DELETE THIS METHOD
-  public void resetEncoderVal(){
-    drivetrain.resetEncoderVal();
-  }
-
-  public void LogHeader() {
+public void LogHeader() {
     Logger.Header("VerticalAngle,");
 }
 

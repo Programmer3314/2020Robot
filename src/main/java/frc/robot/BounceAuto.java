@@ -36,7 +36,8 @@ public class BounceAuto implements AutoStateMachines{
             if(cw.isComplete()){
                 waypointCounter++;
                 cw = waypoints.get(waypointCounter);
-                Robot.driveController.resetEncoderVal();
+                //Robot.driveController.resetEncoderVal();
+                cw.init();
             }
         }
 
@@ -50,17 +51,34 @@ public class BounceAuto implements AutoStateMachines{
 
     @Override
     public void activate() {
+        waypoints.get(0).init();
         originalEncoderPos = Robot.driveController.encoderPos;
+        
         SmartDashboard.putNumber("Active Original Encoder pos !", originalEncoderPos);
     }
 
     @Override
     public void reset() {
         waypointCounter = 0;
-        Robot.driveController.resetEncoderVal();
+        //Robot.driveController.resetEncoderVal();
 
-        waypoints.add(new WaypointGyro(0.2, -0.1, -82)); //FORWARD RIGHT
+        //scale = 1.1
+        waypoints.add(new WaypointDistance(0.3, 0, 2.0)); //FORWARD
+        waypoints.add(new WaypointGyro(0.3, -0.1, -90 + 8)); //QUARTER TURN FORWARD LEFT
+        waypoints.add(new WaypointDistance(0.3, 0, 0.8)); //FORWARD TO CONE
+        waypoints.add(new WaypointGyro(-0.3, -0.07, -100 + 8)); //SMALL TURN BACK RIGHT
+        waypoints.add(new WaypointDistance(-0.3, 0, -5.0)); //BACKWARD        
+        waypoints.add(new WaypointGyro(-0.3, -0.12, -270 + 8)); //SEMI TURN BACK RIGHT
+        waypoints.add(new WaypointDistance(-0.3, 0, -6.0)); //FORWARD TO CONE
+        waypoints.add(new WaypointDistance(0.3, 0, 4.6)); //FORWARD
+        waypoints.add(new WaypointGyro(0.3, -0.1, -360 + 8)); //QUARTER TURN LEFT
+        waypoints.add(new WaypointDistance(0.3, 0, 0.5)); //FORWARD
+        waypoints.add(new WaypointDistance(0.3, -0.1, -450 + 8)); //QUARTER TURN LEFT
+        waypoints.add(new WaypointDistance(0.3, 0, 5.0)); //FORWARD TO CONE
+        waypoints.add(new WaypointGyro(-0.3, -0.1, -540 + 8)); //QUARTER TURN BACK LEFT
+        waypoints.add(new WaypointDistance(-0.3, 0, -1.5)); //FORWARD
         waypoints.add(new WaypointDistance(0, 0, 0.0)); //STOP
+
 
         //scale = 1.1
         // waypoints.add(new WaypointDistance(0.3, 0, 2.0)); //FORWARD
