@@ -25,6 +25,9 @@ public class Robot extends MyRobot {
   double displacementX;
   double displacementY;
   public static double vertAngle;
+
+
+  // TODO: get rid of this and everything that follows
   public static Robot robot;
 
   @Override
@@ -578,6 +581,7 @@ public class Robot extends MyRobot {
 
   }
 
+  // TODO: DELETE THIS METHOD
   public void resetEncoderVal(){
     drivetrain.resetEncoderVal();
   }
