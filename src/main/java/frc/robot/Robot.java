@@ -102,6 +102,10 @@ public class Robot extends MyRobot {
       auto1 = new BarrelRunAuto();
     }
 
+    if(HumanInput.autoNumber == 9){
+      auto1 = new SlalomAuto();
+    }
+
     mP = driveController.new MoveParameters();
     navx.reset();
 

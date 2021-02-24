@@ -63,7 +63,7 @@ public class BarrelRunAuto implements AutoStateMachines{
 
         waypoints.add(new WaypointDistance(0.6, 0, 9)); //FORWARD
         waypoints.add(new WaypointGyro(0.3 * 1.2, 0.13 * 1.2, 340)); //FORWARD CIRCLE TURN RIGHT
-        waypoints.add(new WaypointDistance(0.6, 0, 6.5)); //FORWARD
+        waypoints.add(new WaypointDistance(0.6, 0, 7)); //FORWARD
         waypoints.add(new WaypointGyro(0.3 * 1.2, -0.14 * 1.2, -290 + 360)); //FORWARD CIRCLE TURN LEFT
         waypoints.add(new WaypointDistance(0.6, 0, 5.75)); //FORWARD
         waypoints.add(new WaypointGyro(0.3 * 1.2 , -0.15 * 1.2, -500 + 360)); //FORWARD CIRCLE TURN LEFT

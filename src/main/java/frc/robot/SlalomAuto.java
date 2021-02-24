@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.DriveController.DriveState;
 import frc.robot.DriveController.MoveParameters;
 
-public class BounceAuto implements AutoStateMachines{
+public class SlalomAuto implements AutoStateMachines{
     int waypointCounter;
     double originalEncoderPos;
     double currentEncoderPos;
@@ -64,40 +64,40 @@ public class BounceAuto implements AutoStateMachines{
         waypointCounter = 0;
         //Robot.driveController.resetEncoderVal();
 
-        //scale = 1.1
-        waypoints.add(new WaypointDistance(0.4, 0, 2.0)); //FORWARD
-        waypoints.add(new WaypointGyro(0.3, -0.1, -90 + 8)); //QUARTER TURN FORWARD LEFT
-        waypoints.add(new WaypointDistance(0.4, 0, 0.8)); //FORWARD TO CONE
-        waypoints.add(new WaypointGyro(-0.3, -0.07, -120)); //SMALL TURN BACK RIGHT
-        waypoints.add(new WaypointDistance(-0.4, 0, -5.0)); //BACKWARD        
-        waypoints.add(new WaypointGyro(-0.3, -0.13, -266 + 8)); //SEMI TURN BACK RIGHT
-        waypoints.add(new WaypointDistance(-0.4, 0, -6.0)); //FORWARD TO CONE
-        waypoints.add(new WaypointDistance(0.4, 0, 5)); //FORWARD
-        waypoints.add(new WaypointGyro(0.3, -0.1, -360 + 8)); //QUARTER TURN LEFT
-        waypoints.add(new WaypointDistance(0.4, 0, 0.5)); //FORWARD
-        waypoints.add(new WaypointGyro(0.3, -0.1, -450 + 8)); //QUARTER TURN LEFT
-        waypoints.add(new WaypointDistance(0.4, 0, 5.0)); //FORWARD TO CONE
-        waypoints.add(new WaypointGyro(-0.3, -0.1, -540 + 8)); //QUARTER TURN BACK LEFT
-        waypoints.add(new WaypointDistance(-0.4, 0, -1.5)); //FORWARD
-        waypoints.add(new WaypointDistance(0, 0, 0.0)); //STOP
+        waypoints.add(new WaypointDistance(0.4, 0, 2)); //FORWARD
+        waypoints.add(new WaypointGyro(0.3, -0.1, -55)); //TURN LEFT
+        waypoints.add(new WaypointDistance(0.4, 0, 1.25)); //FORWARD
+        waypoints.add(new WaypointGyro(0.3 * 1.6, 0.0575 * 1.6, 50)); //TURN RIGHT
+        //// waypoints.add(new WaypointDistance(0.4, 0, 6.5)); //FORWARD
+        //// waypoints.add(new WaypointGyro(0.3, 0.1, 50)); //TURN RIGHT
+        waypoints.add(new WaypointDistance(0.4, 0, 4)); //FORWARD
+        waypoints.add(new WaypointGyro(0.3, -0.13, -225)); //FULL CIRCLE TURN LEFT
+        waypoints.add(new WaypointDistance(0.4, 0, 2)); //FORWARD
+        waypoints.add(new WaypointGyro(0.3, 0.1, -180)); //TURN RIGHT
+        waypoints.add(new WaypointDistance(0.4, 0, 8.5)); //FORWARD
+        waypoints.add(new WaypointGyro(0.3, 0.1, -130)); // TURN RIGHT
+        waypoints.add(new WaypointDistance(0.4, 0, 3)); //FORWARD
+        waypoints.add(new WaypointGyro(0.3, -0.1, -180 + 8)); //TURN LEFT
+        waypoints.add(new WaypointDistance(0, 0, 0)); //STOP
 
 
-        //scale = 1.1
-        // waypoints.add(new WaypointDistance(0.3, 0, 2.0)); //FORWARD
-        // waypoints.add(new WaypointDistance(0.3, -0.1, 3.1)); //QUARTER TURN FORWARD LEFT
-        // waypoints.add(new WaypointDistance(0.3, 0, 0.8)); //FORWARD TO CONE
-        // waypoints.add(new WaypointDistance(-0.3, -0.07, -2.8)); //SMALL TURN BACK RIGHT
-        // waypoints.add(new WaypointDistance(-0.3, 0, -5.0)); //BACKWARD        
-        // waypoints.add(new WaypointDistance(-0.3, -0.12, -9.5)); //SEMI TURN BACK RIGHT
-        // waypoints.add(new WaypointDistance(-0.3, 0, -6.0)); //FORWARD TO CONE
-        // waypoints.add(new WaypointDistance(0.3, 0, 4.6)); //FORWARD
-        // waypoints.add(new WaypointDistance(0.3, -0.1, 3.42)); //QUARTER TURN LEFT
-        // waypoints.add(new WaypointDistance(0.3, 0, 0.5)); //FORWARD
-        // waypoints.add(new WaypointDistance(0.3, -0.1, 3.42)); //QUARTER TURN LEFT
-        // waypoints.add(new WaypointDistance(0.3, 0, 5.0)); //FORWARD TO CONE
-        // waypoints.add(new WaypointDistance(-0.3, -0.1, -6.5)); //QUARTER TURN BACK LEFT
-        // waypoints.add(new WaypointDistance(-0.3, 0, -1.5)); //FORWARD
-        // waypoints.add(new WaypointDistance(0, 0, 0.0)); //STOP
+        // //scale = 1.1
+        // waypoints.add(new WaypointDistance(0.4, 0, 2)); //FORWARD
+        // waypoints.add(new WaypointGyro(0.3, -0.1, -50)); //TURN LEFT
+        // waypoints.add(new WaypointDistance(0.4, 0, 1.25)); //FORWARD
+        // waypoints.add(new WaypointGyro(0.3, 0.1, -8)); //TURN RIGHT
+        // waypoints.add(new WaypointDistance(0.4, 0, 6.5)); //FORWARD
+        // waypoints.add(new WaypointGyro(0.3, 0.1, 50)); //TURN RIGHT
+        // waypoints.add(new WaypointDistance(0.4, 0, 2)); //FORWARD
+        // waypoints.add(new WaypointGyro(0.3, -0.13, -225)); //FULL CIRCLE TURN LEFT
+        // waypoints.add(new WaypointDistance(0.4, 0, 2)); //FORWARD
+        // waypoints.add(new WaypointGyro(0.3, 0.1, -180)); //TURN RIGHT
+        // waypoints.add(new WaypointDistance(0.4, 0, 8.5)); //FORWARD
+        // waypoints.add(new WaypointGyro(0.3, 0.1, -130)); // TURN RIGHT
+        // waypoints.add(new WaypointDistance(0.4, 0, 3)); //FORWARD
+        // waypoints.add(new WaypointGyro(0.3, -0.1, -180 + 8)); //TURN LEFT
+        // waypoints.add(new WaypointDistance(0, 0, 0)); //STOP
+
     }
 
     @Override
