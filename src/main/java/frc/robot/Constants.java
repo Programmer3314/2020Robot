@@ -33,7 +33,7 @@ public class Constants{
     public static double drivetrainTrackingMaxCorrection = 0.0; // = 0.1;
     public static double drivetrainTrackingMinCorrection = 0.0; // = 0.07;
     public static int    maxRPM = 0;
-    public static int    encoderTicksToFeet = 1;
+    public static int    encoderTicksToFeet = 19188;//1;
     // Falcon chassis set
     public static final double falconDrivetrainKP = 0.002500;//5e-5;
     public static final double falconDrivetrainKI = 0.000000;

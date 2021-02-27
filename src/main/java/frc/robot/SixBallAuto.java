@@ -125,7 +125,7 @@ public class SixBallAuto implements AutoStateMachines{
             case DRIVE_BACKWARDS_AND_BALLCHASE_2:
                 mP.forward = -0.18;//-0.205;//-0.1625;//-0.165;//-0.17;//-0.18;
 
-                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 10.0 || gameCounter >= 538){
+                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 5.0 || gameCounter >= 538){
                     Robot.shooter.abortIntake();
                     // Robot.shooter.prepareShooter();
                     mP.currentState = DriveState.NONE;

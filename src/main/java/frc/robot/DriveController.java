@@ -237,6 +237,15 @@ public class DriveController {
         double rightSetPoint = (mP.forward * scaleForward + mP.turn * scaleTurn);
 
         lastDriveState = mP.currentState;
+
+        if(HumanInput.buttonBox1.getRawButton(2)){
+            leftSetPoint = 0;
+        }
+
+        if(HumanInput.buttonBox1.getRawButton(3)){
+            rightSetPoint = 0;
+        }
+
         drivetrain.update(leftSetPoint, rightSetPoint);
         
     }
