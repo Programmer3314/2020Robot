@@ -7,79 +7,54 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
-
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.DriveController.DriveState;
-import frc.robot.DriveController.MoveParameters;
-
-public class BounceAuto implements AutoStateMachines{
-    int waypointCounter;
-    double originalEncoderPos;
-    double currentEncoderPos;
-    double gyroAngle;
-
-    ArrayList <Waypoint> waypoints = new ArrayList<Waypoint>(); 
+public class BounceAuto extends WaypointAuto{
 
     @Override
-    public void update(MoveParameters mP) {
-        currentEncoderPos = Robot.driveController.encoderPos - originalEncoderPos;
-        gyroAngle = Robot.rawGyro;
-        mP.currentState = DriveState.MANUAL;
-        mP.turn = 0;
+    public void setWaypoints() {
 
-        //TODO: (Phase 1) Can this be done less often?
-        Waypoint cw = waypoints.get(waypointCounter);
+        Waypoint.scale = 1.0;
 
-        if(waypointCounter < waypoints.size() - 1){
-            if(cw.isComplete()){
-                waypointCounter++;
-                cw = waypoints.get(waypointCounter);
-                //Robot.driveController.resetEncoderVal();
-                cw.init();
-            }
-        }
+        waypoints.add(new WaypointDistance(0.6, 0, 1.5)); //FORWARD
+        waypoints.add(new WaypointGyro(0.3 * 1.6, -0.1 * 1.6, -45 + 8)); //QUARTER TURN FORWARD LEFT
+        waypoints.add(new WaypointGyro(0.3 * 1.3, -0.1 * 1.3, -90 + 8)); //QUARTER TURN FORWARD LEFT (SLOW DOWN)
+        waypoints.add(new WaypointDistance(0.4, 0, 0.6)); //FORWARD TO CONE
+        waypoints.add(new WaypointGyro(-0.3 * 1.6, -0.07 * 1.6, -110)); //SMALL TURN BACK RIGHT //1.4
+        waypoints.add(new WaypointDistance(-0.6, 0, -3.8)); //BACKWARD 
 
-        cw.update(mP);
+        waypoints.add(new WaypointGyro(-0.3 * 1.6, -0.13 * 1.6, -250 + 8)); //SEMI TURN BACK RIGHT
+        //waypoints.add(new WaypointGyro(-0.3 * 1.2, -0.13 * 1.2, -260 + 8)); //SEMI TURN BACK RIGHT (SLOW DOWN)
+        waypoints.add(new WaypointDistance(-0.6, 0, -4.0)); //BACKWARD TO CONE
+        waypoints.add(new WaypointDistance(-0.4, 0, -2.0)); //BACKWARD TO CONE (SLOW DOWN)
+        waypoints.add(new WaypointDistance(0.6, 0, 4.5)); //FORWARD
 
-        SmartDashboard.putNumber("mP Forward: ", mP.forward);
-        SmartDashboard.putNumber("mP Turn: ", mP.turn);
-        SmartDashboard.putNumber("Current Encoder Value", currentEncoderPos);
-        SmartDashboard.putNumber("Original Encoder Value", originalEncoderPos);
-        SmartDashboard.putNumber("Original Original Encoder Value", Robot.driveController.encoderPos);
-        SmartDashboard.putNumber("Waypoint Index Position: ", waypointCounter);
-    }
+        waypoints.add(new WaypointGyro(0.3 * 1.6, -0.1 * 1.6, -360 + 8)); //QUARTER TURN LEFT
+        waypoints.add(new WaypointDistance(0.6, 0, 0.5)); //FORWARD
+        waypoints.add(new WaypointGyro(0.3 * 1.6, -0.1 * 1.6, -450 + 8)); //QUARTER TURN LEFT
+        waypoints.add(new WaypointDistance(0.6, 0, 3)); //FORWARD TO CONE
+        waypoints.add(new WaypointDistance(0.4, 0, 2)); //FORWARD TO CONE (SLOW DOWN)
 
-    @Override
-    public void activate() {
-        waypoints.get(0).init();
-        originalEncoderPos = Robot.driveController.encoderPos;
-        
-        SmartDashboard.putNumber("Active Original Encoder pos !", originalEncoderPos);
-    }
-
-    @Override
-    public void reset() {
-        waypointCounter = 0;
-        //Robot.driveController.resetEncoderVal();
-
-        //scale = 1.1
-        waypoints.add(new WaypointDistance(0.4, 0, 2.0)); //FORWARD
-        waypoints.add(new WaypointGyro(0.3, -0.1, -90 + 8)); //QUARTER TURN FORWARD LEFT
-        waypoints.add(new WaypointDistance(0.4, 0, 0.8)); //FORWARD TO CONE
-        waypoints.add(new WaypointGyro(-0.3, -0.07, -120)); //SMALL TURN BACK RIGHT
-        waypoints.add(new WaypointDistance(-0.4, 0, -5.0)); //BACKWARD        
-        waypoints.add(new WaypointGyro(-0.3, -0.13, -266 + 8)); //SEMI TURN BACK RIGHT
-        waypoints.add(new WaypointDistance(-0.4, 0, -6.0)); //FORWARD TO CONE
-        waypoints.add(new WaypointDistance(0.4, 0, 5)); //FORWARD
-        waypoints.add(new WaypointGyro(0.3, -0.1, -360 + 8)); //QUARTER TURN LEFT
-        waypoints.add(new WaypointDistance(0.4, 0, 0.5)); //FORWARD
-        waypoints.add(new WaypointGyro(0.3, -0.1, -450 + 8)); //QUARTER TURN LEFT
-        waypoints.add(new WaypointDistance(0.4, 0, 5.0)); //FORWARD TO CONE
-        waypoints.add(new WaypointGyro(-0.3, -0.1, -540 + 8)); //QUARTER TURN BACK LEFT
-        waypoints.add(new WaypointDistance(-0.4, 0, -1.5)); //FORWARD
+        waypoints.add(new WaypointDistance(-0.6, 0, -1)); //BACKWARD
+        waypoints.add(new WaypointGyro(-0.3 * 1.6, -0.1 * 1.6, -510 + 8)); //QUARTER TURN BACK LEFT
+        waypoints.add(new WaypointGyro(-0.3 * 1.3, -0.1 * 1.3, -540 + 8)); //QUARTER TURN BACK LEFT (SLOW DOWN)
+        waypoints.add(new WaypointDistance(-0.4, 0, -1)); //BACKWARD
         waypoints.add(new WaypointDistance(0, 0, 0.0)); //STOP
+
+
+        // waypoints.add(new WaypointDistance(0.4, 0, 2.0)); //FORWARD
+        // waypoints.add(new WaypointGyro(0.3, -0.1, -90 + 8)); //QUARTER TURN FORWARD LEFT
+        // waypoints.add(new WaypointDistance(0.4, 0, 0.8)); //FORWARD TO CONE
+        // waypoints.add(new WaypointGyro(-0.3, -0.07, -115)); //SMALL TURN BACK RIGHT
+        // waypoints.add(new WaypointDistance(-0.4, 0, -5.0)); //BACKWARD        
+        // waypoints.add(new WaypointGyro(-0.3, -0.13, -266 + 8)); //SEMI TURN BACK RIGHT
+        // waypoints.add(new WaypointDistance(-0.4, 0, -6.0)); //FORWARD TO CONE
+        // waypoints.add(new WaypointDistance(0.4, 0, 5)); //FORWARD
+        // waypoints.add(new WaypointGyro(0.3, -0.1, -360 + 8)); //QUARTER TURN LEFT
+        // waypoints.add(new WaypointDistance(0.4, 0, 0.5)); //FORWARD
+        // waypoints.add(new WaypointGyro(0.3, -0.1, -450 + 8)); //QUARTER TURN LEFT
+        // waypoints.add(new WaypointDistance(0.4, 0, 5.0)); //FORWARD TO CONE
+        // waypoints.add(new WaypointGyro(-0.3, -0.1, -540 + 8)); //QUARTER TURN BACK LEFT
+        // waypoints.add(new WaypointDistance(-0.4, 0, -1)); //FORWARD
+        // waypoints.add(new WaypointDistance(0, 0, 0.0)); //STOP
 
 
         //scale = 1.1
@@ -98,16 +73,6 @@ public class BounceAuto implements AutoStateMachines{
         // waypoints.add(new WaypointDistance(-0.3, -0.1, -6.5)); //QUARTER TURN BACK LEFT
         // waypoints.add(new WaypointDistance(-0.3, 0, -1.5)); //FORWARD
         // waypoints.add(new WaypointDistance(0, 0, 0.0)); //STOP
-    }
-
-    @Override
-    public void LogHeader() {
-
-    }
-
-    @Override
-    public void LogData() {
-
     }
 
 }
