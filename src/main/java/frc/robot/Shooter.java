@@ -449,7 +449,7 @@ public class Shooter {
                                 counter = 0;
                             nextState = ShooterStates.FIRE_BALL_AUTO;
                     }
-                } else if (counter >= 200) {
+                } else if (counter >= 100/*200*/) {
                     nextState = ShooterStates.DONE;
                 }
                 counter++;

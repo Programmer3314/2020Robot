@@ -105,7 +105,7 @@ public class SixBallAuto implements AutoStateMachines{
                 mP.currentState = DriveState.BALLCHASE;
                 // mP.forward = -0.18;//-0.175;//0.175;
 
-                mP.forward = -0.3;//-0.26;//-0.175;//0.175;
+                mP.forward = -0.5;//-0.3//-0.26;//-0.175;//0.175;
 
                 // if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 15.0){
                 //     Robot.shooter.abortIntake();
@@ -115,7 +115,7 @@ public class SixBallAuto implements AutoStateMachines{
                 //     lastEncoderPos = encoderPos;
                 // }
 
-                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 5.0){
+                if(Math.abs((encoderPos - lastEncoderPos)) / -Constants.encoderTicksToFeet >= 5.0){
                     autoStates = AutoStates.DRIVE_BACKWARDS_AND_BALLCHASE_2;
                     lastEncoderPos = encoderPos;
                 }
@@ -123,9 +123,9 @@ public class SixBallAuto implements AutoStateMachines{
             break;
 
             case DRIVE_BACKWARDS_AND_BALLCHASE_2:
-                mP.forward = -0.18;//-0.205;//-0.1625;//-0.165;//-0.17;//-0.18;
+                mP.forward = -0.25;//-.18//-0.205;//-0.1625;//-0.165;//-0.17;//-0.18;
 
-                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 5.0 || gameCounter >= 538){
+                if(Math.abs((encoderPos - lastEncoderPos)) / -Constants.encoderTicksToFeet >= 9.0 || gameCounter >= 538){
                     Robot.shooter.abortIntake();
                     // Robot.shooter.prepareShooter();
                     mP.currentState = DriveState.NONE;
@@ -143,7 +143,7 @@ public class SixBallAuto implements AutoStateMachines{
                 Robot.shooter.setTargetShooterRPM(3600);
                 Robot.shooter.prepareShooter();
 
-                if(Math.abs((encoderPos - lastEncoderPos)) / Constants.encoderTicksToFeet >= 3.5/*5*/   ){
+                if(Math.abs((encoderPos - lastEncoderPos)) / -Constants.encoderTicksToFeet >= 3.5/*5*/   ){
                     mP.forward = 0.0;
                     mP.currentState = DriveState.NONE;//changed
                     counter = 0;
@@ -205,6 +205,11 @@ public class SixBallAuto implements AutoStateMachines{
             break;
         
         }
+
+        SmartDashboard.putNumber("Six Ball Auto Current Encoder Value: ", encoderPos);
+        SmartDashboard.putNumber("Six Ball Auto Last Encoder Value: ", lastEncoderPos);
+        SmartDashboard.putString("Six Ball Auto State: ", autoStates.toString());
+        SmartDashboard.putNumber("Six Ball Auto Encoder Ticks (Feet): ", Constants.encoderTicksToFeet);
     }
     
     @Override

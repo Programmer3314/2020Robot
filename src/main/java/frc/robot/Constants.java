@@ -33,7 +33,7 @@ public class Constants{
     public static double drivetrainTrackingMaxCorrection = 0.0; // = 0.1;
     public static double drivetrainTrackingMinCorrection = 0.0; // = 0.07;
     public static int    maxRPM = 0;
-    public static int    encoderTicksToFeet = 19188;//1;
+    public static int    encoderTicksToFeet  = 19188;//1; //hey btw, this will be overidden by drivetrain in MyRobot
     // Falcon chassis set
     public static final double falconDrivetrainKP = 0.002500;//5e-5;
     public static final double falconDrivetrainKI = 0.000000;
@@ -65,8 +65,8 @@ public class Constants{
     
     //Power Port
     public static final double powerPortTolerance = 1.0;//2.0;//0.5;
-    public static final double powerPortkP = 0.01; //Changed Gear Ratios 2021 0.025;//0.0225;
-    public static final double powerPortkD = 0.048;//0;//0.04;
+    public static final double powerPortkP = 0.0075;//.01 //Changed Gear Ratios 2021 0.025;//0.0225;
+    public static final double powerPortkD = 0.075;//0.048;//0;//0.04;
     public static final double powerPortMinCorrection = 0.085;
 
     //Gyro
